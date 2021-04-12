@@ -1,18 +1,15 @@
 package mchorse.mclib.commands;
 
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import mchorse.mclib.McLib;
 import mchorse.mclib.commands.utils.L10n;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
 import java.util.List;
 
-public class CommandCheats extends McCommandBase
+final public class CommandCheats extends McCommandBase
 {
     @Override
     public L10n getL10n()
@@ -20,13 +17,13 @@ public class CommandCheats extends McCommandBase
         return McLib.l10n;
     }
 
-    @Override
+
     public String getName()
     {
         return "cheats";
     }
 
-    @Override
+
     public String getUsage(ICommandSender sender)
     {
         return "mclib.commands.cheats";
@@ -38,7 +35,7 @@ public class CommandCheats extends McCommandBase
         return "{l}{6}/{r}cheats {7}<enabled:true|false>{r}";
     }
 
-    @Override
+
     public boolean checkPermission(MinecraftServer server, ICommandSender sender)
     {
         return true;
@@ -57,7 +54,7 @@ public class CommandCheats extends McCommandBase
         server.saveAllWorlds(false);
     }
 
-    @Override
+
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos)
     {
         if (args.length == 1)
@@ -66,5 +63,10 @@ public class CommandCheats extends McCommandBase
         }
 
         return super.getTabCompletions(server, sender, args, targetPos);
+    }
+
+    @Override
+    public int run(CommandContext<Object> context) throws CommandSyntaxException {
+        return 0;
     }
 }

@@ -3,24 +3,21 @@ package mchorse.mclib;
 import mchorse.mclib.client.KeyboardHandler;
 import mchorse.mclib.client.InputRenderer;
 import mchorse.mclib.client.gui.utils.keys.LangKey;
+import mchorse.mclib.utils.Reference;
 import mchorse.mclib.utils.ReflectionUtils;
 import mchorse.mclib.utils.resources.MultiResourceLocation;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.ITextureObject;
-import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.common.Mod;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@SideOnly(Side.CLIENT)
-public class ClientProxy extends CommonProxy
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+public class ClientSetup extends CommonProxy
 {
     @Override
     public void preInit(FMLPreInitializationEvent event)

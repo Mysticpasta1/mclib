@@ -1,6 +1,7 @@
 package mchorse.mclib.commands;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.brigadier.Command;
 import mchorse.mclib.commands.utils.L10n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -22,8 +23,7 @@ import java.util.List;
  * is also frees the check for required arguments (which is very often
  * redundant if for args.length).
  */
-public abstract class McCommandBase extends CommandBase
-{
+public abstract class McCommandBase implements Command<Object> {
     public static final List<String> BOOLEANS = ImmutableList.of("true", "false", "1", "0");
 
     public static String processSyntax(String str)
@@ -51,7 +51,7 @@ public abstract class McCommandBase extends CommandBase
             .appendSibling(new TextComponentTranslation(this.getUsage(sender)));
     }
 
-    /**
+    /*
      * Get the count of arguments which are required
      */
     public int getRequiredArgs()
