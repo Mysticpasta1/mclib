@@ -18,10 +18,12 @@ import mchorse.mclib.utils.PayloadASM;
 import mchorse.mclib.utils.Reference;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import java.util.Map;
 
@@ -35,7 +37,10 @@ import java.util.Map;
 public class McLib
 {
     public McLib(){
-        proxy.preInit();
+        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(CommonProxy::init);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientProxy::init);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 
         MinecraftForge.EVENT_BUS.register(this);
     }
@@ -75,6 +80,11 @@ public class McLib
     public static ValueBoolean multiskinClear;
 
     public static ValueInt maxPacketSize;
+
+    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+    public static class RegistryEvents {
+
+    }
 
     @SubscribeEvent
     public void onConfigRegister(RegisterConfigEvent event)
@@ -133,27 +143,19 @@ public class McLib
     }
     public void setup(final FMLCommonSetupEvent event)
     {
-        proxy.init(event);
+
     }
 
-    @NetworkCheckHandler
     public boolean checkModDependencies(Map<String, String> map, Dist side)
     {
         return true;
     }
 
+    @SubscribeEvent
+    public void onServerStarting(FMLServerStartingEvent event) {
 
-    public void serverInit(FMLServerStartingEvent event)
-    {
-        if (event.getServer().isSinglePlayer())
-        {
-            event.registerServerCommand(new CommandCheats());
-        }
-        else
-        {
-            event.registerServerCommand(new CommandMcLib());
-        }
     }
+
 
     public static void main(String[] args) throws Exception
     {

@@ -3,8 +3,10 @@ package mchorse.mclib.utils;
 import com.google.common.base.Predicate;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -16,35 +18,35 @@ public class RayTracing
      */
     public static Entity getTargetEntity(Entity input, double maxReach)
     {
-        RayTraceResult result = rayTraceWithEntity(input, maxReach);
+        EntityRayTraceResult result = rayTraceWithEntity(input, maxReach);
 
-        return result.typeOfHit == RayTraceResult.Type.ENTITY ? result.entityHit : null;
+        return result.getType() == RayTraceResult.Type.ENTITY ? result.getEntity() : null;
     }
 
     /**
      * Kind of like rayTrace method, but as well it takes into account entity
      * ray tracing
      */
-    public static RayTraceResult rayTraceWithEntity(Entity input, double maxReach)
+    public static EntityRayTraceResult rayTraceWithEntity(Entity input, double maxReach)
     {
         double blockDistance = maxReach;
 
         RayTraceResult result = rayTrace(input, maxReach, 1.0F);
-        Vec3d eyes = new Vec3d(input.posX, input.posY + input.getEyeHeight(), input.posZ);
+        Vector3d eyes = new Vector3d(input.getPosX(), input.getPosY() + input.getEyeHeight(), input.getPosZ());
 
         if (result != null)
         {
-            blockDistance = result.hitVec.distanceTo(eyes);
+            blockDistance = result.getHitVec().distanceTo(eyes);
         }
 
-        Vec3d look = input.getLook(1.0F);
-        Vec3d max = eyes.addVector(look.x * maxReach, look.y * maxReach, look.z * maxReach);
-        Vec3d hit = null;
+        Vector3d look = input.getLook(1.0F);
+        Vector3d max = eyes.add(look.x * maxReach, look.y * maxReach, look.z * maxReach);
+        Vector3d hit = null;
         Entity target = null;
 
         float area = 1.0F;
 
-        List<Entity> list = input.world.getEntitiesInAABBexcluding(input, input.getEntityBoundingBox().expand(look.x * maxReach, look.y * maxReach, look.z * maxReach).grow(area, area, area), new Predicate<Entity>()
+        List<Entity> list = input.world.getEntitiesInAABBexcluding(input, input.getBoundingBox().expand(look.x * maxReach, look.y * maxReach, look.z * maxReach).grow(area, area, area), new Predicate<Entity>()
         {
             @Override
             public boolean apply(@Nullable Entity entity)
@@ -64,21 +66,21 @@ public class RayTracing
                 continue;
             }
 
-            AxisAlignedBB aabb = entity.getEntityBoundingBox().grow(entity.getCollisionBorderSize());
+            AxisAlignedBB aabb = entity.getEntity().getBoundingBox().grow(entity.getCollisionBorderSize());
             RayTraceResult intercept = aabb.calculateIntercept(eyes, max);
 
             if (aabb.contains(eyes))
             {
                 if (entityDistance >= 0.0D)
                 {
-                    hit = intercept == null ? eyes : intercept.hitVec;
+                    hit = intercept == null ? eyes : intercept.getHitVec();
                     target = entity;
                     entityDistance = 0.0D;
                 }
             }
             else if (intercept != null)
             {
-                double eyesDistance = eyes.distanceTo(intercept.hitVec);
+                double eyesDistance = eyes.distanceTo(intercept.getHitVec());
 
                 if (eyesDistance < entityDistance || entityDistance == 0.0D)
                 {
@@ -86,13 +88,13 @@ public class RayTracing
                     {
                         if (entityDistance == 0.0D)
                         {
-                            hit = intercept.hitVec;
+                            hit = intercept.getHitVec();
                             target = entity;
                         }
                     }
                     else
                     {
-                        hit = intercept.hitVec;
+                        hit = intercept.getHitVec();
                         target = entity;
                         entityDistance = eyesDistance;
                     }
@@ -102,7 +104,7 @@ public class RayTracing
 
         if (target != null)
         {
-            result = new RayTraceResult(target, hit);
+            result = new EntityRayTraceResult(target, hit);
         }
 
         return result;

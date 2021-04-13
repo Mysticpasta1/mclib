@@ -1,37 +1,36 @@
 package mchorse.mclib.utils;
 
-import java.io.File;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.network.INetHandler;
+import net.minecraft.resources.IResourceManager;
+import net.minecraft.resources.IResourcePack;
+import net.minecraft.resources.SimpleReloadableResourceManager;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 
-import mchorse.mclib.utils.files.GlobalTree;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.ITextureObject;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.resources.IResourceManager;
-import net.minecraft.client.resources.IResourcePack;
-import net.minecraft.client.resources.SimpleReloadableResourceManager;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
 public class ReflectionUtils
 {
     /**
      * Minecraft texture manager's field to the texture map (a map of 
-     * {@link ITextureObject} which is used to cache references to 
+     * {@link ITextComponent} which is used to cache references to
      * OpenGL textures). 
      */
     public static Field TEXTURE_MAP;
 
     /**
      * Get texture map from texture manager using reflection API
+     * @return
      */
     @SuppressWarnings("unchecked")
-    public static Map<ResourceLocation, ITextureObject> getTextures(TextureManager manager)
+    public static Map<ResourceLocation, ITextComponent> getTextures(TextureManager manager)
     {
         if (TEXTURE_MAP == null)
         {
@@ -40,7 +39,7 @@ public class ReflectionUtils
 
         try
         {
-            return (Map<ResourceLocation, ITextureObject>) TEXTURE_MAP.get(manager);
+            return (Map<ResourceLocation, ITextComponent>) TEXTURE_MAP.get(manager);
         }
         catch (Exception e)
         {
@@ -82,21 +81,21 @@ public class ReflectionUtils
         }
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public static boolean registerResourcePack(IResourcePack pack)
     {
         try
         {
-            Field field = FMLClientHandler.class.getDeclaredField("resourcePackList");
+            Field field = INetHandler.class.getDeclaredField("resourcePackList");
             field.setAccessible(true);
 
-            List<IResourcePack> packs = (List<IResourcePack>) field.get(FMLClientHandler.instance());
+            List<IResourcePack> packs = (List<IResourcePack>) field.get(INetHandler.class);
             packs.add(pack);
-            IResourceManager manager = Minecraft.getMinecraft().getResourceManager();
+            IResourceManager manager = Minecraft.getInstance().getResourceManager();
 
             if (manager instanceof SimpleReloadableResourceManager)
             {
-                ((SimpleReloadableResourceManager) manager).reloadResourcePack(pack);
+                ((SimpleReloadableResourceManager) manager).addResourcePack(pack);
             }
 
             return false;
