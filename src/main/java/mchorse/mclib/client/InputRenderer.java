@@ -1,12 +1,27 @@
 package mchorse.mclib.client;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.mclib.McLib;
-import net.minecraft.client.MainWindow;
+import mchorse.mclib.client.gui.framework.GuiBase;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
+import mchorse.mclib.client.gui.utils.Icons;
+import mchorse.mclib.events.RenderOverlayEvent;
+import mchorse.mclib.utils.Interpolation;
+import mchorse.mclib.utils.Keys;
+import mchorse.mclib.utils.MatrixUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -18,7 +33,7 @@ import java.util.List;
  * 
  * This class is responsible for rendering a mouse pointer on the screen 
  */
-@Mod.EventBusSubscriber(Dist.CLIENT)
+@SideOnly(Side.CLIENT)
 public class InputRenderer
 {
     public static boolean disabledForFrame = false;
@@ -41,8 +56,8 @@ public class InputRenderer
      */
     public static void preRenderOverlay()
     {
-        Minecraft mc = Minecraft.getInstance();
-        MainWindow resolution = new MainWindow();
+        Minecraft mc = Minecraft.getMinecraft();
+        ScaledResolution resolution = new ScaledResolution(mc);
 
         setupOrthoProjection(resolution);
 
@@ -54,23 +69,23 @@ public class InputRenderer
      */
     public static void postRenderOverlay()
     {
-        MinecraftClient mc = MinecraftClient.getInstance();
-        Window resolution = new Window(mc);
+        Minecraft mc = Minecraft.getMinecraft();
+        ScaledResolution resolution = new ScaledResolution(mc);
 
         setupOrthoProjection(resolution);
 
         McLib.EVENT_BUS.post(new RenderOverlayEvent.Post(mc, resolution));
     }
 
-    private static void setupOrthoProjection(Window resolution)
+    private static void setupOrthoProjection(ScaledResolution resolution)
     {
-        RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT);
-        RenderSystem.matrixMode(GL11.GL_PROJECTION);
-        RenderSystem.loadIdentity();
-        RenderSystem.ortho(0, resolution.getScaledWidth(), resolution.getScaledHeight(), 0, 1000D, 3000D);
-        RenderSystem.matrixMode(GL11.GL_MODELVIEW);
-        RenderSystem.loadIdentity();
-        RenderSystem.translatef(0, 0, -2000F);
+        GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
+        GlStateManager.matrixMode(GL11.GL_PROJECTION);
+        GlStateManager.loadIdentity();
+        GlStateManager.ortho(0, resolution.getScaledWidth_double(), resolution.getScaledHeight_double(), 0, 1000D, 3000D);
+        GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+        GlStateManager.loadIdentity();
+        GlStateManager.translate(0, 0, -2000F);
     }
 
     @SubscribeEvent

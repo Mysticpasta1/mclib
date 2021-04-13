@@ -1,13 +1,9 @@
 package mchorse.mclib;
 
-import com.mojang.brigadier.Command;
-import com.mojang.brigadier.arguments.BoolArgumentType;
-import com.mojang.brigadier.builder.ArgumentBuilder;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import mchorse.mclib.client.gui.utils.ValueColors;
 import mchorse.mclib.client.gui.utils.keys.IKey;
-import mchorse.mclib.commands.CommandCheats;
 import mchorse.mclib.commands.CommandMcLib;
+import mchorse.mclib.commands.CommandCheats;
 import mchorse.mclib.commands.utils.L10n;
 import mchorse.mclib.config.ConfigBuilder;
 import mchorse.mclib.config.values.ValueBoolean;
@@ -19,29 +15,40 @@ import mchorse.mclib.math.MathBuilder;
 import mchorse.mclib.math.Operation;
 import mchorse.mclib.math.Operator;
 import mchorse.mclib.utils.PayloadASM;
-import mchorse.mclib.utils.Reference;
-import net.fabricmc.api.Environment;
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.minecraft.server.command.CommandManager;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.eventhandler.EventBus;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.NetworkCheckHandler;
+import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.Map;
-import java.util.Objects;
 
-/*
+/**
  * McLib mod
  * 
  * All it does is provides common code for McHorse's mods.
  */
-public class McLib implements ModInitializer {
+@Mod.EventBusSubscriber
+@Mod(modid = McLib.MOD_ID, name = "McLib", version = McLib.VERSION, updateJSON = "https://raw.githubusercontent.com/mchorse/mclib/1.12/version.json")
+public class McLib
+{
+    public static final String MOD_ID = "mclib";
+    public static final String VERSION = "%VERSION%";
 
+    /* Proxies */
     public static final String CLIENT_PROXY = "mchorse.mclib.ClientProxy";
     public static final String SERVER_PROXY = "mchorse.mclib.CommonProxy";
 
+    @SidedProxy(clientSide = CLIENT_PROXY, serverSide = SERVER_PROXY)
     public static CommonProxy proxy;
 
-    public static L10n l10n = new L10n(Reference.MOD_ID);
+    public static final EventBus EVENT_BUS = new EventBus();
+
+    public static L10n l10n = new L10n(MOD_ID);
 
     /* Configuration */
     public static ValueBoolean opDropItems;
@@ -73,35 +80,13 @@ public class McLib implements ModInitializer {
 
     public static ValueInt maxPacketSize;
 
-
-    @Override
-    public void onInitialize() {
-        proxy.preInit();
-        proxy.init();
-        ServerLifecycleEvents.SERVER_STARTING.register(server -> {
-            if (server.isSinglePlayer())
-            {
-                CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
-                    dispatcher.register(CommandManager.literal("cheats").then(CommandManager.argument("enable", BoolArgumentType.bool()).executes((ctx) -> {
-                            Objects.requireNonNull(Objects.requireNonNull(ctx.getSource().getEntity()).getServer()).getPlayerManager().setCheatsAllowed(ctx.getArgument("cheats", Boolean.class));
-                            ctx.getSource().getEntity().getServer().save(false, false, true);
-                            return Command.SINGLE_SUCCESS;
-                })));
-            }
-            else
-            {
-                event.registerServerCommand(new CommandMcLib());
-            }
-        });
-
-    }
-
+    @SubscribeEvent
     public void onConfigRegister(RegisterConfigEvent event)
     {
-        opDropItems = event.opAccess.category(Reference.MOD_ID).getBoolean("drop_items", true);
+        opDropItems = event.opAccess.category(MOD_ID).getBoolean("drop_items", true);
 
         /* McLib's options */
-        ConfigBuilder builder = event.createBuilder(Reference.MOD_ID);
+        ConfigBuilder builder = event.createBuilder(MOD_ID);
 
         debugPanel = builder.category("appearance").getBoolean("debug_panel", false);
         debugPanel.invisible();
@@ -151,15 +136,37 @@ public class McLib implements ModInitializer {
         maxPacketSize.syncable();
     }
 
+    @Mod.EventHandler
+    public void preInit(FMLPreInitializationEvent event)
+    {
+        proxy.preInit(event);
 
-    public boolean checkModDependencies(Map<String, String> map, Environment side)
+        EVENT_BUS.register(this);
+    }
+
+    @Mod.EventHandler
+    public void init(FMLInitializationEvent event)
+    {
+        proxy.init(event);
+    }
+
+    @NetworkCheckHandler
+    public boolean checkModDependencies(Map<String, String> map, Side side)
     {
         return true;
     }
 
-    public void serverInit(ServerStartingEvent event)
+    @Mod.EventHandler
+    public void serverInit(FMLServerStartingEvent event)
     {
-
+        if (event.getServer().isSinglePlayer())
+        {
+            event.registerServerCommand(new CommandCheats());
+        }
+        else
+        {
+            event.registerServerCommand(new CommandMcLib());
+        }
     }
 
     public static void main(String[] args) throws Exception

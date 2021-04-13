@@ -1,84 +1,168 @@
-plugins {
-    id 'fabric-loom' version '0.5-SNAPSHOT'
-    id 'maven-publish'
-}
-
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
-
-archivesBaseName = project.archives_base_name
-version = project.mod_version
-group = project.maven_group
-repositories {
-    maven { url = 'https://jitpack.io' }
-}
-dependencies {
-    // To change the versions see the gradle.properties file
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-
-    // Fabric API. This is technically optional, but you probably want it anyway.
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-    // PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
-    // You may need to force-disable transitiveness on them.
-}
-
-processResources {
-    inputs.property "version", project.version
-
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version
+buildscript 
+{
+    repositories 
+    {
+        jcenter()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+    }
+    
+    dependencies 
+    {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
 
-tasks.withType(JavaCompile).configureEach {
-    // ensure that the encoding is set to UTF-8, no matter what the system default is
-    // this fixes some edge cases with special characters not displaying correctly
-    // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
-    // If Javadoc is generated, this must be specified in that task too.
-    it.options.encoding = "UTF-8"
+apply plugin: 'net.minecraftforge.gradle.forge'
 
-    // The Minecraft launcher currently installs Java 8 for users, so your mod probably wants to target Java 8 too
-    // JDK 9 introduced a new way of specifying this that will make sure no newer classes or methods are used.
-    // We'll use that if it's available, but otherwise we'll use the older option.
-    def targetVersion = 8
-    if (JavaVersion.current().isJava9Compatible()) {
-        it.options.release = targetVersion
-    }
+if (project.hasProperty("dev")) 
+{
+    version += "-dev" + dev
 }
 
-java {
-    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-    // if it is present.
-    // If you remove this line, sources will not be generated.
-    withSourcesJar()
+group = "mchorse.mclib"
+archivesBaseName = "mclib"
+sourceCompatibility = targetCompatibility = "1.8"
+
+compileJava 
+{
+    sourceCompatibility = targetCompatibility = "1.8"
+}
+
+/* Minecraft configuration */
+
+minecraft 
+{
+    version = "${mc_version}-${forge_version}"
+    runDir = "run"
+    mappings = snapshot
+    
+    clientJvmArgs = ["-Xmx1G", "-Dfml.coreMods.load=" + coremodPath]
+    serverJvmArgs = ["-Xmx1G"]
+    
+    replace "%VERSION%", project.version
 }
 
 jar {
-    from("LICENSE") {
-        rename { "${it}_${project.archivesBaseName}"}
+   manifest {
+       attributes 'FMLCorePlugin': coremodPath, 'FMLCorePluginContainsFMLMod': 'true'
+   }
+}
+
+processResources
+{
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+	project.version += "-" + project.minecraft.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+                
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
+        
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
     }
 }
 
-// configure the maven publication
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            // add all the jars that should be included when publishing to maven
-            artifact(remapJar) {
-                builtBy remapJar
+/* Dev build */
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'dev'
+    
+    manifest {
+        attributes 'FMLCorePlugin': coremodPath, 'FMLCorePluginContainsFMLMod': 'true'
+    }
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    classifier = 'sources'
+}
+
+artifacts {
+    archives deobfJar
+    archives sourcesJar
+}
+
+/* Comparing keys */
+task compareLangFiles {
+    doLast {
+        def help = file("src/main/resources/assets/${project.archivesBaseName}/lang/")
+        def parse = { File file ->
+            def map = new HashMap()
+            def splits = file.text.split("\n");
+
+            for (split in splits) {
+                def index = split.indexOf("=")
+
+                if (index == -1) {
+                    continue
+                }
+
+                map.put(split.substring(0, index), true)
             }
-            artifact(sourcesJar) {
-                builtBy remapSourcesJar
+
+            return map
+        }
+
+        if (!help.exists()) {
+            return
+        }
+
+        def en = file("${help.getAbsolutePath()}/en_US.lang")
+        def en_map = parse(en)
+
+        for (lang_file in help.listFiles()) {
+            if (!lang_file.name.endsWith(".lang") || lang_file.name.startsWith("en_US")) {
+                continue
+            }
+
+            def lang_map = parse(lang_file)
+            def missing = new ArrayList()
+            def extra = new ArrayList()
+
+            for (key in en_map.keySet()) {
+                if (!lang_map.containsKey(key)) {
+                    missing.add(key)
+                }
+            }
+
+            for (key in lang_map.keySet()) {
+                if (!en_map.containsKey(key)) {
+                    extra.add(key)
+                }
+            }
+
+            missing.sort()
+            extra.sort()
+
+            print("\n")
+
+            if (!missing.isEmpty() || !extra.isEmpty()) {
+                if (!missing.isEmpty()) {
+                    print("Language file ${lang_file.getName()} misses following keys:\n")
+
+                    for (key in missing) {
+                        print("- ${key}\n")
+                    }
+                }
+
+                if (!extra.isEmpty()) {
+                    print("Language file ${lang_file.getName()} has additional keys:\n")
+
+                    for (key in extra) {
+                        print("- ${key}\n")
+                    }
+                }
+            }
+            else {
+                print("Language file ${lang_file.getName()} fully matches ${en.getName()}!\n")
             }
         }
-    }
-
-    // Select the repositories you want to publish to
-    // To publish to maven local, no extra repositories are necessary. Just use the task `publishToMavenLocal`.
-    repositories {
-        // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
     }
 }
