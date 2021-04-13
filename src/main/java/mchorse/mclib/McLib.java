@@ -2,8 +2,8 @@ package mchorse.mclib;
 
 import mchorse.mclib.client.gui.utils.ValueColors;
 import mchorse.mclib.client.gui.utils.keys.IKey;
-import mchorse.mclib.commands.CommandMcLib;
 import mchorse.mclib.commands.CommandCheats;
+import mchorse.mclib.commands.CommandMcLib;
 import mchorse.mclib.commands.utils.L10n;
 import mchorse.mclib.config.ConfigBuilder;
 import mchorse.mclib.config.values.ValueBoolean;
@@ -15,15 +15,13 @@ import mchorse.mclib.math.MathBuilder;
 import mchorse.mclib.math.Operation;
 import mchorse.mclib.math.Operator;
 import mchorse.mclib.utils.PayloadASM;
+import mchorse.mclib.utils.Reference;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.eventhandler.EventBus;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.network.NetworkCheckHandler;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 
 import java.util.Map;
 
@@ -33,20 +31,18 @@ import java.util.Map;
  * All it does is provides common code for McHorse's mods.
  */
 @Mod.EventBusSubscriber
-@Mod(modid = McLib.MOD_ID, name = "McLib", version = McLib.VERSION, updateJSON = "https://raw.githubusercontent.com/mchorse/mclib/1.12/version.json")
+@Mod(Reference.MOD_ID)
 public class McLib
 {
+    public McLib(){
+        proxy.preInit();
+
+        MinecraftForge.EVENT_BUS.register(this);
+    }
     public static final String MOD_ID = "mclib";
     public static final String VERSION = "%VERSION%";
 
-    /* Proxies */
-    public static final String CLIENT_PROXY = "mchorse.mclib.ClientProxy";
-    public static final String SERVER_PROXY = "mchorse.mclib.CommonProxy";
-
-    @SidedProxy(clientSide = CLIENT_PROXY, serverSide = SERVER_PROXY)
     public static CommonProxy proxy;
-
-    public static final EventBus EVENT_BUS = new EventBus();
 
     public static L10n l10n = new L10n(MOD_ID);
 
@@ -135,28 +131,18 @@ public class McLib
         maxPacketSize = builder.category("vanilla").getInt("max_packet_size", PayloadASM.MIN_SIZE, PayloadASM.MIN_SIZE, Integer.MAX_VALUE);
         maxPacketSize.syncable();
     }
-
-    @Mod.EventHandler
-    public void preInit(FMLPreInitializationEvent event)
-    {
-        proxy.preInit(event);
-
-        EVENT_BUS.register(this);
-    }
-
-    @Mod.EventHandler
-    public void init(FMLInitializationEvent event)
+    public void setup(final FMLCommonSetupEvent event)
     {
         proxy.init(event);
     }
 
     @NetworkCheckHandler
-    public boolean checkModDependencies(Map<String, String> map, Side side)
+    public boolean checkModDependencies(Map<String, String> map, Dist side)
     {
         return true;
     }
 
-    @Mod.EventHandler
+
     public void serverInit(FMLServerStartingEvent event)
     {
         if (event.getServer().isSinglePlayer())

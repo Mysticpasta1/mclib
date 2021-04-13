@@ -2,7 +2,7 @@ package mchorse.mclib.events;
 
 import mchorse.mclib.config.Config;
 import mchorse.mclib.config.ConfigBuilder;
-import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.eventbus.api.Event;
 
 import java.io.File;
 import java.util.ArrayList;
