@@ -1,13 +1,13 @@
 package mchorse.mclib.utils;
 
-import java.util.Arrays;
-
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.world.World;
+
+import java.util.Arrays;
 
 /**
  * Dummy entity

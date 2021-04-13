@@ -1,8 +1,7 @@
 package mchorse.mclib.utils;
 
-import net.minecraft.client.resources.I18n;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public enum Interpolation implements IInterpolation
 {
@@ -437,13 +436,13 @@ public enum Interpolation implements IInterpolation
         this.key = key;
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public String getKey()
     {
         return "mclib.interpolations." + this.key;
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public String getTooltipKey()
     {
         return "mclib.interpolations.tooltips." + this.key;

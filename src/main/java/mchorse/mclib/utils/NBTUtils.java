@@ -3,13 +3,9 @@ package mchorse.mclib.utils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.handler.codec.EncoderException;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTSizeTracker;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagFloat;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.*;
+import net.minecraft.util.math.vector.Vector3f;
 
-import javax.vecmath.Vector3f;
 import java.io.IOException;
 
 /**
@@ -17,48 +13,51 @@ import java.io.IOException;
  */
 public class NBTUtils
 {
-    public static void readFloatList(NBTTagList list, float[] array)
+    public static void readFloatList(ListNBT list, float[] array)
     {
-        int count = Math.min(array.length, list.tagCount());
+        int count = Math.min(array.length, list.size());
 
         for (int i = 0; i < count; i++)
         {
-            array[i] = list.getFloatAt(i);
+            array[i] = list.getFloat(i);
         }
     }
 
-    public static NBTTagList writeFloatList(NBTTagList list, float[] array)
+    public static ListNBT writeFloatList(ListNBT list, float[] array)
     {
         for (int i = 0; i < array.length; i++)
         {
-            list.appendTag(new NBTTagFloat(array[i]));
+            list.add(FloatNBT.valueOf(array[i]));
         }
 
         return list;
     }
 
-    public static void readFloatList(NBTTagList list, Vector3f vector)
+    public static void readFloatList(ListNBT list, Vector3f vector)
     {
-        if (list.tagCount() != 3)
+        if (list.size() != 3)
         {
             return;
         }
 
-        vector.x = list.getFloatAt(0);
-        vector.y = list.getFloatAt(1);
-        vector.z = list.getFloatAt(2);
+        float x = vector.getX();
+        x = list.getFloat(0);
+        float y = vector.getY();
+        y = list.getFloat(1);
+        float z = vector.getZ();
+        z = list.getFloat(2);
     }
 
-    public static NBTTagList writeFloatList(NBTTagList list, Vector3f vector)
+    public static ListNBT writeFloatList(ListNBT list, Vector3f vector)
     {
-        list.appendTag(new NBTTagFloat(vector.x));
-        list.appendTag(new NBTTagFloat(vector.y));
-        list.appendTag(new NBTTagFloat(vector.z));
+        list.add(FloatNBT.valueOf(vector.getX()));
+        list.add(FloatNBT.valueOf(vector.getY()));
+        list.add(FloatNBT.valueOf(vector.getZ()));
 
         return list;
     }
 
-    public static NBTTagCompound readInfiniteTag(ByteBuf buf)
+    public static CompoundNBT readInfiniteTag(ByteBuf buf)
     {
         int i = buf.readerIndex();
         byte b0 = buf.readByte();

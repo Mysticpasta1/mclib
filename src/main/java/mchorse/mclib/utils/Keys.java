@@ -1,11 +1,11 @@
 package mchorse.mclib.utils;
 
 import net.minecraft.client.Minecraft;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFW;
 
 public class Keys
 {
-    public static final String[] KEYS = new String[Keyboard.KEYBOARD_SIZE];
+    public static final String[] KEYS = new String[GLFW.GLFW_KEY_LAST];
 
     public static String getKeyName(int key)
     {
@@ -26,61 +26,61 @@ public class Keys
     {
         switch (key)
         {
-            case Keyboard.KEY_MINUS:
+            case GLFW.GLFW_KEY_MINUS:
                 return "-";
-            case Keyboard.KEY_EQUALS:
+            case GLFW.GLFW_KEY_EQUAL:
                 return "=";
-            case Keyboard.KEY_LBRACKET:
+            case GLFW.GLFW_KEY_LEFT_BRACKET:
                 return "[";
-            case Keyboard.KEY_RBRACKET:
+            case GLFW.GLFW_KEY_RIGHT_BRACKET:
                 return "]";
-            case Keyboard.KEY_SEMICOLON:
+            case GLFW.GLFW_KEY_SEMICOLON:
                 return ";";
-            case Keyboard.KEY_APOSTROPHE:
+            case GLFW.GLFW_KEY_APOSTROPHE:
                 return "'";
-            case Keyboard.KEY_BACKSLASH:
+            case GLFW.GLFW_KEY_BACKSLASH:
                 return "\\";
-            case Keyboard.KEY_COMMA:
+            case GLFW.GLFW_KEY_COMMA:
                 return ",";
-            case Keyboard.KEY_PERIOD:
+            case GLFW.GLFW_KEY_PERIOD:
                 return ".";
-            case Keyboard.KEY_SLASH:
+            case GLFW.GLFW_KEY_SLASH:
                 return "/";
-            case Keyboard.KEY_GRAVE:
+            case GLFW.GLFW_KEY_GRAVE_ACCENT:
                 return "`";
-            case Keyboard.KEY_TAB:
+            case GLFW.GLFW_KEY_TAB:
                 return "Tab";
-            case Keyboard.KEY_CAPITAL:
+            case GLFW.GLFW_KEY_CAPS_LOCK:
                 return "Caps Lock";
-            case Keyboard.KEY_LSHIFT:
+            case GLFW.GLFW_KEY_LEFT_SHIFT:
                 return "L. Shift";
-            case Keyboard.KEY_LCONTROL:
+            case GLFW.GLFW_KEY_LEFT_CONTROL:
                 return "L. Ctrl";
-            case Keyboard.KEY_LMENU:
+            case GLFW.GLFW_KEY_LEFT_ALT:
                 return "L. Alt";
-            case Keyboard.KEY_LMETA:
+            case GLFW.GLFW_KEY_LEFT_SUPER:
                 return Minecraft.IS_RUNNING_ON_MAC ? "L. Cmd" : "L. Win";
-            case Keyboard.KEY_RSHIFT:
+            case GLFW.GLFW_KEY_RIGHT_SHIFT:
                 return "R. Shift";
-            case Keyboard.KEY_RCONTROL:
+            case GLFW.GLFW_KEY_RIGHT_CONTROL:
                 return "R. Ctrl";
-            case Keyboard.KEY_RMENU:
+            case GLFW.GLFW_KEY_RIGHT_ALT:
                 return "R. Alt";
-            case Keyboard.KEY_RMETA:
+            case GLFW.GLFW_KEY_RIGHT_SUPER:
                 return Minecraft.IS_RUNNING_ON_MAC ? "R. Cmd" : "R. Win";
-            case Keyboard.KEY_DIVIDE:
+            case GLFW.GLFW_KEY_KP_DIVIDE:
                 return "Numpad /";
-            case Keyboard.KEY_MULTIPLY:
+            case GLFW.GLFW_KEY_KP_MULTIPLY:
                 return "Numpad *";
-            case Keyboard.KEY_SUBTRACT:
+            case GLFW.GLFW_KEY_KP_SUBTRACT:
                 return "Numpad -";
-            case Keyboard.KEY_ADD:
+            case GLFW.GLFW_KEY_KP_ADD:
                 return "Numpad +";
-            case Keyboard.KEY_DECIMAL:
+            case GLFW.GLFW_KEY_KP_DECIMAL:
                 return "Numpad .";
         }
 
-        String name = Keyboard.getKeyName(key);
+        String name = GLFW.glfwGetKeyName(key, GLFW.glfwGetKeyScancode(key));
 
         if (name.length() > 1)
         {
