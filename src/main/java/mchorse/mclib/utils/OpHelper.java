@@ -1,11 +1,12 @@
 package mchorse.mclib.utils;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.UserListOpsEntry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.server.management.OpEntry;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
 
 public class OpHelper
 {
@@ -14,25 +15,26 @@ public class OpHelper
      */
     public static final int VANILLA_OP_LEVEL = 2;
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public static int getPlayerOpLevel()
     {
-        return Minecraft.getMinecraft().player.getPermissionLevel();
+        assert Minecraft.getInstance().player != null;
+        return Minecraft.getInstance().player.getPermissionLevel();
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public static boolean isPlayerOp()
     {
         return isOp(getPlayerOpLevel());
     }
 
-    public static boolean isPlayerOp(EntityPlayerMP player)
+    public static boolean isPlayerOp(ServerPlayerEntity player)
     {
-        MinecraftServer server = player.mcServer;
+        MinecraftServer server = player.server;
 
         if (server.getPlayerList().canSendCommands(player.getGameProfile()))
         {
-            UserListOpsEntry userEntry = server.getPlayerList().getOppedPlayers().getEntry(player.getGameProfile());
+            OpEntry userEntry = server.getPlayerList().getOppedPlayers().getEntry(player.getGameProfile());
 
             if (userEntry != null)
             {
