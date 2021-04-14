@@ -9,6 +9,7 @@ import mchorse.mclib.config.gui.GuiConfigPanel;
 import mchorse.mclib.events.RegisterDashboardPanels;
 import mchorse.mclib.utils.OpHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.text.ITextComponent;
 
 public abstract class GuiAbstractDashboard extends GuiBase
 {
@@ -18,8 +19,9 @@ public abstract class GuiAbstractDashboard extends GuiBase
     private boolean wasClosed = true;
     private int opLevel = -1;
 
-    public GuiAbstractDashboard(Minecraft mc)
+    public GuiAbstractDashboard(Minecraft mc, ITextComponent textComponent)
     {
+        super(textComponent);
         this.panels = this.createDashboardPanels(mc);
 
         this.panels.flex().relative(this.viewport).wh(1F, 1F);
@@ -34,7 +36,6 @@ public abstract class GuiAbstractDashboard extends GuiBase
 
     protected abstract void registerPanels(Minecraft mc);
 
-    @Override
     public boolean doesGuiPauseGame()
     {
         return false;
@@ -53,7 +54,6 @@ public abstract class GuiAbstractDashboard extends GuiBase
         this.wasClosed = true;
     }
 
-    @Override
     public void setWorldAndResolution(Minecraft mc, int width, int height)
     {
         this.updateOPAccess();

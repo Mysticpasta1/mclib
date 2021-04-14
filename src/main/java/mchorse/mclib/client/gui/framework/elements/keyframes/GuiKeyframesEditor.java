@@ -10,24 +10,20 @@ import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
 import mchorse.mclib.client.gui.framework.elements.list.GuiListElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.framework.tooltips.InterpolationTooltip;
-import mchorse.mclib.client.gui.utils.Area;
 import mchorse.mclib.client.gui.utils.GuiUtils;
 import mchorse.mclib.client.gui.utils.Icons;
-import mchorse.mclib.client.gui.utils.InterpolationRenderer;
 import mchorse.mclib.client.gui.utils.keys.IKey;
-import mchorse.mclib.utils.IInterpolation;
-import mchorse.mclib.utils.Interpolation;
 import mchorse.mclib.utils.MathUtils;
 import mchorse.mclib.utils.keyframes.Keyframe;
 import mchorse.mclib.utils.keyframes.KeyframeEasing;
 import mchorse.mclib.utils.keyframes.KeyframeInterpolation;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.util.Constants;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -101,8 +97,8 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
         this.add(this.graph, this.frameButtons);
         this.frameButtons.add(this.tick, this.value, this.interp, this.easing, this.interpolations);
 
-        this.keys().register(IKey.lang("mclib.gui.keyframes.context.maximize"), Keyboard.KEY_HOME, this::resetView).inside();
-        this.keys().register(IKey.lang("mclib.gui.keyframes.context.select_all"), Keyboard.KEY_A, this::selectAll).held(Keyboard.KEY_LCONTROL).inside();
+        this.keys().register(IKey.lang("mclib.gui.keyframes.context.maximize"), GLFW.GLFW_KEY_HOME, this::resetView).inside();
+        this.keys().register(IKey.lang("mclib.gui.keyframes.context.select_all"), GLFW.GLFW_KEY_A, this::selectAll).held(GLFW.GLFW_KEY_LEFT_CONTROL).inside();
     }
 
     protected abstract T createElement(Minecraft mc);
@@ -117,7 +113,7 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
         }
 
         KeyframeInterpolation interp = keyframe.interp;
-        int factor = GuiScreen.isShiftKeyDown() ? -1 : 1;
+        int factor = Screen.isShiftKeyDown() ? -1 : 1;
         int index = MathUtils.cycler(interp.ordinal() + factor, 0, KeyframeInterpolation.values().length - 1);
 
         this.pickInterpolation(KeyframeInterpolation.values()[index]);
@@ -127,7 +123,7 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
 
     protected void toggleEasing()
     {
-        this.easing.clickItself(GuiBase.getCurrent(), GuiScreen.isShiftKeyDown() ? 1 : 0);
+        this.easing.clickItself(GuiBase.getCurrent(), Screen.isShiftKeyDown() ? 1 : 0);
     }
 
     public void setConverter(IAxisConverter converter)
@@ -225,14 +221,14 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
     {
         try
         {
-            NBTTagCompound tag = JsonToNBT.getTagFromJson(GuiScreen.getClipboardString());
+            CompoundNBT tag = JsonToNBT.getTagFromJson(Screen.getClipboardString());
             Map<String, List<Keyframe>> temp = new HashMap<String, List<Keyframe>>();
 
-            for (String key : tag.getKeySet())
+            for (String key : tag.keySet())
             {
-                NBTTagList list = tag.getTagList(key, Constants.NBT.TAG_COMPOUND);
+                ListNBT list = tag.getList(key, Constants.NBT.TAG_COMPOUND);
 
-                for (int i = 0, c = list.tagCount(); i < c; i++)
+                for (int i = 0, c = list.size(); i < c; i++)
                 {
                     List<Keyframe> keyframes = temp.get(key);
 
@@ -245,7 +241,7 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
 
                     Keyframe keyframe = new Keyframe();
 
-                    keyframe.fromNBT(list.getCompoundTagAt(i));
+                    keyframe.fromNBT(list.getCompound(i));
                     keyframes.add(keyframe);
                 }
             }
@@ -266,7 +262,7 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
      */
     private void copyKeyframes()
     {
-        NBTTagCompound keyframes = new NBTTagCompound();
+        CompoundNBT keyframes = new CompoundNBT();
 
         for (GuiSheet sheet : this.graph.getSheets())
         {
@@ -274,23 +270,23 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
 
             if (c > 0)
             {
-                NBTTagList list = new NBTTagList();
+                ListNBT list = new ListNBT();
 
                 for (int i = 0; i < c; i++)
                 {
                     Keyframe keyframe = sheet.channel.get(sheet.selected.get(i));
 
-                    list.appendTag(keyframe.toNBT());
+                    list.add(keyframe.toNBT());
                 }
 
-                if (list.tagCount() > 0)
+                if (list.size() > 0)
                 {
                     keyframes.setTag(sheet.id, list);
                 }
             }
         }
 
-        GuiScreen.setClipboardString(keyframes.toString());
+        Screen.setClipboardString(keyframes.toString());
     }
 
     /**
@@ -335,7 +331,7 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
         long firstX = keyframes.get(0).tick;
         List<Keyframe> toSelect = new ArrayList<Keyframe>();
 
-        if (GuiScreen.isCtrlKeyDown())
+        if (Screen.isCtrlKeyDown())
         {
             offset = firstX;
         }

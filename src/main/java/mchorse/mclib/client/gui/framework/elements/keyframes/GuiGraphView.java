@@ -1,6 +1,7 @@
 package mchorse.mclib.client.gui.framework.elements.keyframes;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.utils.Area;
 import mchorse.mclib.client.gui.utils.Scale;
@@ -11,10 +12,8 @@ import mchorse.mclib.utils.keyframes.KeyframeChannel;
 import mchorse.mclib.utils.keyframes.KeyframeEasing;
 import mchorse.mclib.utils.keyframes.KeyframeInterpolation;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import org.lwjgl.opengl.GL11;
@@ -384,8 +383,8 @@ public class GuiGraphView extends GuiKeyframeElement
     @Override
     protected void zoom(int scroll)
     {
-        boolean x = GuiScreen.isShiftKeyDown();
-        boolean y = GuiScreen.isCtrlKeyDown();
+        boolean x = Screen.isShiftKeyDown();
+        boolean y = Screen.isCtrlKeyDown();
         boolean none = !x && !y;
 
         /* Scaling X */
@@ -492,7 +491,7 @@ public class GuiGraphView extends GuiKeyframeElement
         float g = COLOR.g;
         float b = COLOR.b;
 
-        GlStateManager.color(1, 1, 1, 1);
+        RenderSystem.color4f(1, 1, 1, 1);
 
         /* Draw the graph */
         vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
@@ -642,8 +641,8 @@ public class GuiGraphView extends GuiKeyframeElement
                 y = this.fromGraphY(yy + dy);
             }
 
-            if (GuiScreen.isShiftKeyDown()) x = this.lastT;
-            if (GuiScreen.isCtrlKeyDown()) y = this.lastV;
+            if (Screen.isShiftKeyDown()) x = this.lastT;
+            if (Screen.isCtrlKeyDown()) y = this.lastV;
 
             if (this.which == Selection.LEFT_HANDLE)
             {
@@ -656,8 +655,8 @@ public class GuiGraphView extends GuiKeyframeElement
                 y = y - frame.value;
             }
 
-            this.setTick(x, !GuiScreen.isAltKeyDown());
-            this.setValue(y, !GuiScreen.isAltKeyDown());
+            this.setTick(x, !Screen.isAltKeyDown());
+            this.setValue(y, !Screen.isAltKeyDown());
         }
 
         return frame;

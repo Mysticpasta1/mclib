@@ -1,5 +1,6 @@
 package mchorse.mclib.client.gui.mclib;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTextElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
@@ -12,13 +13,12 @@ import mchorse.mclib.math.IValue;
 import mchorse.mclib.math.MathBuilder;
 import mchorse.mclib.math.Variable;
 import mchorse.mclib.utils.Direction;
+import net.java.games.input.Mouse;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.MouseHelper;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 public class GuiGraphPanel extends GuiDashboardPanel<GuiDashboard>
@@ -168,7 +168,7 @@ public class GuiGraphPanel extends GuiDashboardPanel<GuiDashboard>
                 return;
             }
 
-            if (Mouse.isButtonDown(0) && !context.isFocused())
+            if (new MouseHelper(mc).isLeftDown() || new MouseHelper(mc).isRightDown() || new MouseHelper(mc).isMiddleDown() && !context.isFocused())
             {
                 int mouseX = context.mouseX;
                 double x = this.scaleX.from(mouseX);
@@ -201,8 +201,8 @@ public class GuiGraphPanel extends GuiDashboardPanel<GuiDashboard>
                 this.font.drawString(coordinate, mouseX + 2, y3 + 2, 0x000000);
             }
 
-            GlStateManager.glLineWidth(4);
-            GlStateManager.disableTexture2D();
+            RenderSystem.lineWidth(4);
+            RenderSystem.disableTexture();
             BufferBuilder builder = Tessellator.getInstance().getBuffer();
 
             builder.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);

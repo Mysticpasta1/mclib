@@ -1,5 +1,6 @@
 package mchorse.mclib.client.gui.mclib;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.mclib.client.gui.framework.elements.GuiModelRenderer;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiSlotElement;
@@ -19,9 +20,8 @@ import mchorse.mclib.utils.wav.WavePlayer;
 import mchorse.mclib.utils.wav.WaveReader;
 import mchorse.mclib.utils.wav.Waveform;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 
 public class GuiDebugPanel extends GuiDashboardPanel<GuiAbstractDashboard>
 {
@@ -179,16 +179,16 @@ public class GuiDebugPanel extends GuiDashboardPanel<GuiAbstractDashboard>
             int w = this.wave.getWidth();
             int h = this.wave.getHeight();
 
-            GlStateManager.enableTexture2D();
+            RenderSystem.enableTexture();
 
-            GlStateManager.color(0, 0, 0, 1);
+            RenderSystem.color4f(0, 0, 0, 1);
             this.wave.draw(this.area.x + 10, this.area.my() - h / 2 - 2, 0, 0, w, h);
 
-            GlStateManager.color(0.25F, 0.25F, 0.25F, 1);
+            RenderSystem.color4f(0.25F, 0.25F, 0.25F, 1);
             this.wave.draw(this.area.x + 10, this.area.my() - h / 2, 0, 0, 200, h);
-            GlStateManager.color(0.5F, 0.5F, 0.5F, 1);
+            RenderSystem.color4f(0.5F, 0.5F, 0.5F, 1);
             this.wave.draw(this.area.x + 10 + 200, this.area.my() - h / 2, 200, 0, 200, h);
-            GlStateManager.color(1, 1, 1, 1);
+            RenderSystem.color4f(1, 1, 1, 1);
             this.wave.draw(this.area.x + 10 + 400, this.area.my() - h / 2, 400, 0, w, h);
         }
     }

@@ -1,10 +1,9 @@
 package mchorse.mclib.client.gui.utils;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.client.config.GuiUtils;
 
 public class Icon
 {
@@ -52,21 +51,21 @@ public class Icon
         x -= ax * this.w;
         y -= ay * this.h;
 
-        GlStateManager.enableAlpha();
-        GlStateManager.enableBlend();
-        Minecraft.getMinecraft().renderEngine.bindTexture(this.location);
+        RenderSystem.enableAlphaTest();
+        RenderSystem.enableBlend();
+        Minecraft.getInstance().getTextureManager().bindTexture(this.location);
         GuiDraw.drawBillboard(x, y, this.x, this.y, this.w, this.h, this.textureW, this.textureH);
-        GlStateManager.disableBlend();
-        GlStateManager.disableAlpha();
+        RenderSystem.disableBlend();
+        RenderSystem.disableAlphaTest();
     }
 
     public void renderArea(int x, int y, int w, int h)
     {
-        GlStateManager.enableAlpha();
-        GlStateManager.enableBlend();
-        Minecraft.getMinecraft().renderEngine.bindTexture(this.location);
+        RenderSystem.enableAlphaTest();
+        RenderSystem.enableBlend();
+        Minecraft.getInstance().getTextureManager().bindTexture(this.location);
         GuiDraw.drawRepeatBillboard(x, y, w, h, this.x, this.y, this.w, this.h, this.textureW, this.textureH);
-        GlStateManager.disableBlend();
-        GlStateManager.disableAlpha();
+        RenderSystem.disableBlend();
+        RenderSystem.disableAlphaTest();
     }
 }

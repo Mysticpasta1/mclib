@@ -13,8 +13,7 @@ import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.utils.ScrollArea;
 import mchorse.mclib.client.gui.utils.ScrollDirection;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 
 /**
  * Abstract GUI list element
@@ -479,7 +478,7 @@ public abstract class GuiListElement<T> extends GuiElement
 
             if (this.exists(index))
             {
-                if (this.multi && GuiScreen.isShiftKeyDown())
+                if (this.multi && Screen.isShiftKeyDown())
                 {
                     this.toggleIndex(index);
                 }

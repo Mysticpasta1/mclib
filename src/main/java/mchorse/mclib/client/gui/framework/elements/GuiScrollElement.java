@@ -1,14 +1,13 @@
 package mchorse.mclib.client.gui.framework.elements;
 
-import mchorse.mclib.client.gui.framework.GuiBase;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
-import mchorse.mclib.client.gui.framework.elements.utils.GuiViewportStack;
 import mchorse.mclib.client.gui.framework.elements.utils.IViewportStack;
 import mchorse.mclib.client.gui.utils.ScrollArea;
 import mchorse.mclib.client.gui.utils.ScrollDirection;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
+
 
 /**
  * Scroll area GUI class
@@ -147,16 +146,16 @@ public class GuiScrollElement extends GuiElement implements IViewport
 
         GuiDraw.scissor(this.scroll.x, this.scroll.y, this.scroll.w, this.scroll.h, context);
 
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
 
         /* Translate the contents using OpenGL (scroll) */
         if (this.scroll.direction == ScrollDirection.VERTICAL)
         {
-            GlStateManager.translate(0, -this.scroll.scroll, 0);
+            RenderSystem.translatef(0, -this.scroll.scroll, 0);
         }
         else
         {
-            GlStateManager.translate(-this.scroll.scroll, 0, 0);
+            RenderSystem.translatef(-this.scroll.scroll, 0, 0);
         }
 
         this.apply(context);
@@ -167,7 +166,7 @@ public class GuiScrollElement extends GuiElement implements IViewport
         this.postDraw(context);
         this.unapply(context);
 
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
 
         this.scroll.drawScrollbar();
 

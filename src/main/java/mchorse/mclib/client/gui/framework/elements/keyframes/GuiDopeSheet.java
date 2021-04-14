@@ -1,5 +1,7 @@
 package mchorse.mclib.client.gui.framework.elements.keyframes;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
 import mchorse.mclib.client.gui.utils.Area;
@@ -7,9 +9,8 @@ import mchorse.mclib.utils.keyframes.Keyframe;
 import mchorse.mclib.utils.keyframes.KeyframeEasing;
 import mchorse.mclib.utils.keyframes.KeyframeInterpolation;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.shader.Framebuffer;
@@ -315,7 +316,7 @@ public class GuiDopeSheet extends GuiKeyframeElement
         int sheetCount = this.sheets.size();
         int h = (this.area.h - TOP_MARGIN) / sheetCount;
         int y = this.area.ey() - h * sheetCount;
-        boolean alt = GuiScreen.isAltKeyDown();
+        boolean alt = Screen.isAltKeyDown();
         boolean finished = false;
         boolean isMultiSelect = this.isMultipleSelected();
 
@@ -530,9 +531,9 @@ public class GuiDopeSheet extends GuiKeyframeElement
 
             int lw = this.font.getStringWidth(sheet.title.get()) + 10;
             GuiDraw.drawHorizontalGradientRect(this.area.ex() - lw - 10, y, this.area.ex(), y + h, sheet.color, 0xaa000000 + sheet.color, 0);
-            this.font.drawStringWithShadow(sheet.title.get(), this.area.ex() - lw + 5, y + (h - this.font.FONT_HEIGHT) / 2 + 1, 0xffffff);
+            this.font.drawStringWithShadow(new MatrixStack(), sheet.title.get(), this.area.ex() - lw + 5, y + (h - this.font.FONT_HEIGHT) / 2 + 1, 0xffffff);
 
-            GlStateManager.disableTexture2D();
+            RenderSystem.disableTexture();
 
             y += h;
         }
@@ -569,7 +570,7 @@ public class GuiDopeSheet extends GuiKeyframeElement
                 x = (int) x - frame.tick;
             }
 
-            this.setTick(x, !GuiScreen.isAltKeyDown());
+            this.setTick(x, !Screen.isAltKeyDown());
         }
 
         return frame;

@@ -2,8 +2,8 @@ package mchorse.mclib.client.gui.utils.resizers;
 
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.utils.Area;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public interface IResizer
 {
@@ -13,10 +13,10 @@ public interface IResizer
 
     public void postApply(Area area);
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void add(GuiElement parent, GuiElement child);
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void remove(GuiElement parent, GuiElement child);
 
     public int getX();

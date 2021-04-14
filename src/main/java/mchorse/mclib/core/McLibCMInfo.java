@@ -1,28 +1,24 @@
 package mchorse.mclib.core;
 
-import net.minecraftforge.fml.common.DummyModContainer;
+import net.minecraftforge.fml.ModContainer;
 
-public class McLibCMInfo extends DummyModContainer
+public class McLibCMInfo
 {
-    @Override
     public String getName()
     {
         return "McLib core mod";
     }
 
-    @Override
     public String getModId()
     {
         return "mclib_core";
     }
 
-    @Override
     public Object getMod()
     {
         return null;
     }
 
-    @Override
     public String getVersion()
     {
         return "%VERSION%";

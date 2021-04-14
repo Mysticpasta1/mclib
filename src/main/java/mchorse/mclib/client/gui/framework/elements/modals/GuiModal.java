@@ -1,13 +1,12 @@
 package mchorse.mclib.client.gui.framework.elements.modals;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.mclib.client.gui.framework.elements.GuiDelegateElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.IGuiElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.GlStateManager;
 
 import java.util.function.Supplier;
 
@@ -95,7 +94,7 @@ public abstract class GuiModal extends GuiElement
     public void draw(GuiContext context)
     {
         Gui.drawRect(this.area.x, this.area.y, this.area.ex(), this.area.ey(), 0xcc000000);
-        GlStateManager.enableAlpha();
+        RenderSystem.enableAlphaTest();
 
         this.y = 0;
         int y = this.area.y + 10;

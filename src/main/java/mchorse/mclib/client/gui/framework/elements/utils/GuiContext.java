@@ -45,7 +45,7 @@ public class GuiContext implements IViewportStack
     {
         this.screen = screen;
         this.tooltip = new GuiTooltip();
-        this.keybinds = new GuiKeybinds(Minecraft.getMinecraft());
+        this.keybinds = new GuiKeybinds(Minecraft.getInstance());
         this.keybinds.setVisible(false);
     }
 

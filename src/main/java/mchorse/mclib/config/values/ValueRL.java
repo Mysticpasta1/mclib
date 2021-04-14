@@ -2,6 +2,7 @@ package mchorse.mclib.config.values;
 
 import com.google.gson.JsonElement;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTexturePicker;
@@ -11,8 +12,13 @@ import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.config.gui.GuiConfigPanel;
 import mchorse.mclib.utils.resources.RLUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBTType;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -22,7 +28,7 @@ import java.util.List;
 
 public class ValueRL extends Value implements IServerValue, IConfigGuiProvider
 {
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public static GuiTexturePicker picker;
 
     private ResourceLocation value;
@@ -88,7 +94,7 @@ public class ValueRL extends Value implements IServerValue, IConfigGuiProvider
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public List<GuiElement> getFields(Minecraft mc, GuiConfigPanel gui)
     {
         GuiElement element = new GuiElement(mc);
@@ -173,9 +179,9 @@ public class ValueRL extends Value implements IServerValue, IConfigGuiProvider
     {
         if (buffer.readBoolean())
         {
-            NBTTagCompound tag = ByteBufUtils.readTag(buffer);
+            CompoundNBT tag = ByteBufUtil.readTag(buffer);
 
-            return RLUtils.create(tag.getTag("RL"));
+            return RLUtils.create((INBTType) tag.get("RL"));
         }
 
         return null;
@@ -196,9 +202,9 @@ public class ValueRL extends Value implements IServerValue, IConfigGuiProvider
 
         if (rl != null)
         {
-            NBTTagCompound tag = new NBTTagCompound();
+            CompoundNBT tag = new CompoundNBT();
 
-            tag.setTag("RL", RLUtils.writeNbt(rl));
+            tag.getCompound("RL");
             ByteBufUtils.writeTag(buffer, tag);
         }
     }

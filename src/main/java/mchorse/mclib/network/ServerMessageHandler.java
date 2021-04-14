@@ -1,5 +1,6 @@
 package mchorse.mclib.network;
 
+import com.ibm.icu.impl.SimpleFormatterImpl;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -16,12 +17,12 @@ import java.util.Objects;
  *
  * @author Ernio (Ernest Sadowski)
  */
-public abstract class ServerMessageHandler<T extends IMessage> extends AbstractMessageHandler<T>
+public abstract class ServerMessageHandler<T extends SimpleFormatterImpl> extends AbstractMessageHandler<T>
 {
     public abstract void run(final ServerPlayerEntity player, final T message);
 
     @Override
-    public IMessage handleServerMessage(final ServerPlayerEntity player, final T message)
+    public SimpleFormatterImpl handleServerMessage(final ServerPlayerEntity player, final T message)
     {
         Objects.requireNonNull(player.getServer()).runAsync(new Runnable()
         {

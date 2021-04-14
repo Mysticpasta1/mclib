@@ -6,6 +6,8 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -15,7 +17,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * It was also refactored so I could use {@code List<String>} instead of
  * {@code String[]}, and it doesn't require server. It's local tab completer!
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class TabCompleter
 {
     protected GuiTextField textField;

@@ -8,8 +8,7 @@ import mchorse.mclib.client.gui.utils.Icon;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.utils.Direction;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFW;
 
 public class GuiDashboardPanels extends GuiPanelBase<GuiDashboardPanel>
 {
@@ -73,16 +72,16 @@ public class GuiDashboardPanels extends GuiPanelBase<GuiDashboardPanel>
 
         switch (size)
         {
-            case 1: return Keyboard.KEY_NUMPAD0;
-            case 2: return Keyboard.KEY_NUMPAD1;
-            case 3: return Keyboard.KEY_NUMPAD2;
-            case 4: return Keyboard.KEY_NUMPAD3;
-            case 5: return Keyboard.KEY_NUMPAD4;
-            case 6: return Keyboard.KEY_NUMPAD5;
-            case 7: return Keyboard.KEY_NUMPAD6;
-            case 8: return Keyboard.KEY_NUMPAD7;
-            case 9: return Keyboard.KEY_NUMPAD8;
-            case 10: return Keyboard.KEY_NUMPAD9;
+            case 1: return GLFW.GLFW_KEY_KP_0;
+            case 2: return GLFW.GLFW_KEY_KP_1;
+            case 3: return GLFW.GLFW_KEY_KP_2;
+            case 4: return GLFW.GLFW_KEY_KP_3;
+            case 5: return GLFW.GLFW_KEY_KP_4;
+            case 6: return GLFW.GLFW_KEY_KP_5;
+            case 7: return GLFW.GLFW_KEY_KP_6;
+            case 8: return GLFW.GLFW_KEY_KP_7;
+            case 9: return GLFW.GLFW_KEY_KP_8;
+            case 10: return GLFW.GLFW_KEY_KP_9;
         }
 
         return -1;

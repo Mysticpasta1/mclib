@@ -1,5 +1,6 @@
 package mchorse.mclib.client;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.mclib.McLib;
 import mchorse.mclib.client.gui.framework.GuiBase;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
@@ -8,22 +9,22 @@ import mchorse.mclib.events.RenderOverlayEvent;
 import mchorse.mclib.utils.Interpolation;
 import mchorse.mclib.utils.Keys;
 import mchorse.mclib.utils.MatrixUtils;
+import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.MouseHelper;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.IWindowEventListener;
+import net.minecraft.client.renderer.MonitorHandler;
+import net.minecraft.client.renderer.ScreenSize;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -33,7 +34,7 @@ import java.util.List;
  * 
  * This class is responsible for rendering a mouse pointer on the screen 
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class InputRenderer
 {
     public static boolean disabledForFrame = false;
@@ -54,10 +55,10 @@ public class InputRenderer
     /**
      * Called by ASM
      */
-    public static void preRenderOverlay()
+    public static void preRenderOverlay(IWindowEventListener windowEventListener, MonitorHandler monitonHandler, ScreenSize size, @Nullable String videoModeName, String titleIn)
     {
-        Minecraft mc = Minecraft.getMinecraft();
-        ScaledResolution resolution = new ScaledResolution(mc);
+        Minecraft mc = Minecraft.getInstance();
+        MainWindow resolution = new MainWindow(windowEventListener, monitonHandler, size, videoModeName, titleIn);
 
         setupOrthoProjection(resolution);
 
@@ -67,25 +68,25 @@ public class InputRenderer
     /**
      * Called by ASM
      */
-    public static void postRenderOverlay()
+    public static void postRenderOverlay(IWindowEventListener windowEventListener, MonitorHandler monitonHandler, ScreenSize size, @Nullable String videoModeName, String titleIn)
     {
-        Minecraft mc = Minecraft.getMinecraft();
-        ScaledResolution resolution = new ScaledResolution(mc);
+        Minecraft mc = Minecraft.getInstance();
+        MainWindow resolution = new MainWindow(windowEventListener, monitonHandler, size, videoModeName, titleIn);
 
         setupOrthoProjection(resolution);
 
         McLib.EVENT_BUS.post(new RenderOverlayEvent.Post(mc, resolution));
     }
 
-    private static void setupOrthoProjection(ScaledResolution resolution)
+    private static void setupOrthoProjection(MainWindow resolution)
     {
-        GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
-        GlStateManager.matrixMode(GL11.GL_PROJECTION);
-        GlStateManager.loadIdentity();
-        GlStateManager.ortho(0, resolution.getScaledWidth_double(), resolution.getScaledHeight_double(), 0, 1000D, 3000D);
-        GlStateManager.matrixMode(GL11.GL_MODELVIEW);
-        GlStateManager.loadIdentity();
-        GlStateManager.translate(0, 0, -2000F);
+        RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, true);
+        RenderSystem.matrixMode(GL11.GL_PROJECTION);
+        RenderSystem.loadIdentity();
+        RenderSystem.ortho(0, resolution.getScaledWidth(), resolution.getScaledHeight(), 0, 1000D, 3000D);
+        RenderSystem.matrixMode(GL11.GL_MODELVIEW);
+        RenderSystem.loadIdentity();
+        RenderSystem.translatef(0, 0, -2000F);
     }
 
     @SubscribeEvent
@@ -114,11 +115,11 @@ public class InputRenderer
      */
     private void renderMouse(int x, int y)
     {
-        GlStateManager.disableLighting();
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(0, 0, 1000);
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        GlStateManager.enableAlpha();
+        RenderSystem.disableLighting();
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef(0, 0, 1000);
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.enableAlphaTest();
 
         if (McLib.enableCursorRendering.get())
         {
@@ -127,11 +128,13 @@ public class InputRenderer
 
         if (McLib.enableMouseButtonRendering.get())
         {
-            boolean left = Mouse.isButtonDown(0);
-            boolean right = Mouse.isButtonDown(1);
-            boolean middle = Mouse.isButtonDown(2);
+            Minecraft mc = Minecraft.getInstance();
 
-            int scroll = Mouse.getDWheel();
+            boolean left = new MouseHelper(mc).isLeftDown();
+            boolean right = new MouseHelper(mc).isRightDown();
+            boolean middle = new MouseHelper(mc).isMiddleDown();
+
+            int scroll = ???;
             long current = System.currentTimeMillis();
             boolean isScrolling = scroll != 0 || current - this.lastDWheelTime < 500;
 
@@ -152,25 +155,25 @@ public class InputRenderer
             if (left || right || middle || isScrolling)
             {
                 /* Outline */
-                Gui.drawRect(x - 1, y, x + 13, y + 16, 0xff000000);
-                Gui.drawRect(x, y - 1, x + 12, y + 17, 0xff000000);
+                f.drawRect(x - 1, y, x + 13, y + 16, 0xff000000);
+                f.drawRect(x, y - 1, x + 12, y + 17, 0xff000000);
                 /* Background */
-                Gui.drawRect(x, y + 1, x + 12, y + 15, 0xffffffff);
-                Gui.drawRect(x + 1, y, x + 11, y + 1, 0xffffffff);
-                Gui.drawRect(x + 1, y + 15, x + 11, y + 16, 0xffffffff);
+                f.drawRect(x, y + 1, x + 12, y + 15, 0xffffffff);
+                f.drawRect(x + 1, y, x + 11, y + 1, 0xffffffff);
+                f.drawRect(x + 1, y + 15, x + 11, y + 16, 0xffffffff);
                 /* Over outline */
-                Gui.drawRect(x, y + 7, x + 12, y + 8, 0xffeeeeee);
+                f.drawRect(x, y + 7, x + 12, y + 8, 0xffeeeeee);
 
                 if (left)
                 {
-                    Gui.drawRect(x + 1, y, x + 6, y + 7, 0xffcccccc);
-                    Gui.drawRect(x, y + 1, x + 1, y + 7, 0xffaaaaaa);
+                    f.drawRect(x + 1, y, x + 6, y + 7, 0xffcccccc);
+                    f.drawRect(x, y + 1, x + 1, y + 7, 0xffaaaaaa);
                 }
 
                 if (right)
                 {
-                    Gui.drawRect(x + 6, y, x + 11, y + 7, 0xffaaaaaa);
-                    Gui.drawRect(x + 11, y + 1, x + 12, y + 7, 0xff888888);
+                    f.drawRect(x + 6, y, x + 11, y + 7, 0xffaaaaaa);
+                    f.drawRect(x + 11, y + 1, x + 12, y + 7, 0xff888888);
                 }
 
                 if (middle || isScrolling)
@@ -182,9 +185,9 @@ public class InputRenderer
                         offset = scroll < 0 ? 1 : -1;
                     }
 
-                    Gui.drawRect(x + 4, y, x + 8, y + 6, 0x20000000);
-                    Gui.drawRect(x + 5, y + 1 + offset, x + 7, y + 5 + offset, 0xff444444);
-                    Gui.drawRect(x + 5, y + 4 + offset, x + 7, y + 5 + offset, 0xff333333);
+                    f.drawRect(x + 4, y, x + 8, y + 6, 0x20000000);
+                    f.drawRect(x + 5, y + 1 + offset, x + 7, y + 5 + offset, 0xff444444);
+                    f.drawRect(x + 5, y + 4 + offset, x + 7, y + 5 + offset, 0xff333333);
                 }
             }
 
@@ -195,8 +198,8 @@ public class InputRenderer
                 int color = McLib.primaryColor.get();
 
                 GuiDraw.drawDropShadow(x, y, x + 4, y + 16, 2, 0x88000000 + color, color);
-                Gui.drawRect(x, y, x + 4, y + 16, 0xff111111);
-                Gui.drawRect(x + 1, y, x + 3, y + 15, 0xff2a2a2a);
+                f.drawRect(x, y, x + 4, y + 16, 0xff111111);
+                f.drawRect(x + 1, y, x + 3, y + 15, 0xff2a2a2a);
 
                 int offset = (int) ((current % 1000 / 50) % 4);
 
@@ -207,15 +210,15 @@ public class InputRenderer
 
                 for (int i = 0; i < 4; i++)
                 {
-                    Gui.drawRect(x, y + offset, x + 4, y + offset + 1, 0x88555555);
+                    f.drawRect(x, y + offset, x + 4, y + offset + 1, 0x88555555);
 
                     y += 4;
                 }
             }
         }
 
-        GlStateManager.disableAlpha();
-        GlStateManager.popMatrix();
+        RenderSystem.disableAlphaTest();
+        RenderSystem.popMatrix();
     }
 
     /**
@@ -262,11 +265,11 @@ public class InputRenderer
         int mx = offset + (int) (qx * (screen.width - offset * 2));
         int my = offset + (int) (qy * (screen.height - 20 - offset * 2));
 
-        FontRenderer font = Minecraft.getMinecraft().fontRenderer;
+        FontRenderer font = Minecraft.getInstance().fontRenderer;
         Iterator<PressedKey> it = this.pressedKeys.iterator();
 
-        GlStateManager.disableLighting();
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.disableLighting();
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         while (it.hasNext())
         {

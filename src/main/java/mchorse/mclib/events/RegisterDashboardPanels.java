@@ -1,7 +1,7 @@
 package mchorse.mclib.events;
 
 import mchorse.mclib.client.gui.mclib.GuiAbstractDashboard;
-import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.eventbus.api.Event;
 
 public class RegisterDashboardPanels extends Event
 {

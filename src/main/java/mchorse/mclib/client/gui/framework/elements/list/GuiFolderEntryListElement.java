@@ -3,15 +3,14 @@ package mchorse.mclib.client.gui.framework.elements.list;
 import java.util.List;
 import java.util.function.Consumer;
 
-import mchorse.mclib.McLib;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.mclib.client.gui.framework.GuiBase;
 import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.utils.files.entries.AbstractEntry;
 import mchorse.mclib.utils.files.entries.FileEntry;
 import mchorse.mclib.utils.files.entries.FolderEntry;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -129,14 +128,14 @@ public class GuiFolderEntryListElement extends GuiListElement<AbstractEntry>
     @Override
     protected void drawElementPart(AbstractEntry element, int i, int x, int y, boolean hover, boolean selected)
     {
-        GlStateManager.enableAlpha();
-        GlStateManager.enableBlend();
-        this.mc.renderEngine.bindTexture(GuiBase.ICONS);
+        RenderSystem.enableAlphaTest();
+        RenderSystem.enableBlend();
+        this.mc.getTextureManager().bindTexture(GuiBase.ICONS);
 
-        GlStateManager.color(1, 1, 1, hover ? 0.8F : 0.6F);
+        RenderSystem.color4f(1, 1, 1, hover ? 0.8F : 0.6F);
 
         (element instanceof FolderEntry ? Icons.FOLDER : Icons.SERVER).render(x + 2, y);
 
-        this.font.drawStringWithShadow(element.title, x + 20, y + 4, hover ? 16777120 : 0xffffff);
+        this.font.drawStringWithShadow(new MatrixStack(), element.title, x + 20, y + 4, hover ? 16777120 : 0xffffff);
     }
 }

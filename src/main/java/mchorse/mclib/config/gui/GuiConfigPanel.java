@@ -1,5 +1,6 @@
 package mchorse.mclib.config.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mchorse.mclib.McLib;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.GuiScrollElement;
@@ -23,14 +24,14 @@ import mchorse.mclib.network.mclib.common.PacketRequestConfigs;
 import mchorse.mclib.utils.Direction;
 import mchorse.mclib.utils.OpHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GuiConfigPanel extends GuiDashboardPanel<GuiAbstractDashboard>
 {
     public GuiIconElement request;
@@ -72,7 +73,7 @@ public class GuiConfigPanel extends GuiDashboardPanel<GuiAbstractDashboard>
     {
         for (Config config : McLib.proxy.configs.modules.values())
         {
-            if (!config.isServerSide())
+            if (!config.isServerDist())
             {
                 this.mods.add(IKey.lang(config.getTitleKey()), config.id);
             }
@@ -84,7 +85,7 @@ public class GuiConfigPanel extends GuiDashboardPanel<GuiAbstractDashboard>
     @Override
     public void open()
     {
-        this.request.setVisible(!Minecraft.getMinecraft().isIntegratedServerRunning() && OpHelper.isPlayerOp());
+        this.request.setVisible(!Minecraft.getInstance().isIntegratedServerRunning() && OpHelper.isPlayerOp());
     }
 
     @Override
@@ -159,7 +160,7 @@ public class GuiConfigPanel extends GuiDashboardPanel<GuiAbstractDashboard>
 
         boolean first = true;
         boolean checkForClient = this.serverConfigs != null;
-        boolean isSingleplayer = Minecraft.getMinecraft().isIntegratedServerRunning();
+        boolean isSingleplayer = Minecraft.getInstance().isIntegratedServerRunning();
 
         for (Value category : this.config.values.values())
         {
@@ -213,7 +214,7 @@ public class GuiConfigPanel extends GuiDashboardPanel<GuiAbstractDashboard>
     public void draw(GuiContext context)
     {
         this.mods.area.draw(0xdd000000, -10, -35, -10, -10);
-        this.font.drawStringWithShadow(this.title.get(), this.area.x + 10, this.area.y + 20 - this.font.FONT_HEIGHT / 2, 0xffffff);
+        this.font.drawStringWithShadow(new MatrixStack(), this.title.get(), (float) this.area.x + 10, (float) this.area.y + 20 - (float) this.font.FONT_HEIGHT / 2 ,0xffffff);
 
         super.draw(context);
     }
