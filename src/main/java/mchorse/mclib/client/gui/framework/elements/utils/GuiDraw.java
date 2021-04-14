@@ -518,12 +518,22 @@ public class GuiDraw extends AbstractGui
 
         for (IReorderingProcessor string : list)
         {
-            font.func_238422_b_(matrixStack, string, x + (width - font.getStringWidth(string.func_241878_f)) * ax, y, color);
+            font.func_238422_b_(matrixStack, string, x + (width - getStringWidth(font, string)) * ax, y, color);
 
             y += lineHeight;
         }
 
         return h;
+    }
+
+    public static float getStringWidth(FontRenderer font, String string)
+    {
+        return font.getCharacterManager().func_238350_a_(string);
+    }
+
+    public static float getStringWidth(FontRenderer font, IReorderingProcessor string)
+    {
+        return font.getCharacterManager().func_243238_a(string);
     }
 
     public static void drawTextBackground(FontRenderer font, String text, int x, int y, int color, int background)

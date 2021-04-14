@@ -15,10 +15,10 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientProxy extends CommonProxy
@@ -33,8 +33,6 @@ public class ClientProxy extends CommonProxy
     @SubscribeEvent
     public static void init(FMLCommonSetupEvent event)
     {
-
-
         Minecraft mc = Minecraft.getInstance();
 
         /* OMG, thank you very much Forge! */
@@ -43,7 +41,7 @@ public class ClientProxy extends CommonProxy
             mc.getFramebuffer().enableStencil();
         }
 
-        ((IReloadableResourceManager) mc.getResourceManager()).addReloadListener((manager) ->
+        ((IReloadableResourceManager) mc.getResourceManager()).addReloadListener((stage, manager, profiler, profiler2, executor, executor2) ->
         {
             LangKey.lastTime = System.currentTimeMillis();
 
@@ -54,22 +52,23 @@ public class ClientProxy extends CommonProxy
             }
 
             return mc.runAsync(() -> {
-                ???
+                // ???
             });
         });
-
-
     }
 
     private static Runnable clearMultiTextures()
     {
-        return () -> {
+        return () ->
+        {
             Minecraft mc = Minecraft.getInstance();
             Map<ResourceLocation, ITextComponent> map = ReflectionUtils.getTextures(mc.getTextureManager());
             List<ResourceLocation> toClear = new ArrayList<ResourceLocation>();
 
             assert map != null;
-            for (ResourceLocation location : map.keySet()) {
+
+            for (ResourceLocation location : map.keySet())
+            {
                 if (location instanceof MultiResourceLocation) {
                     toClear.add(location);
                 }
