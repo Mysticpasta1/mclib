@@ -49,6 +49,7 @@ public class ClientProxy extends CommonProxy
                 mc.enqueue(new ClientProxy().clearMultiTextures());
             }
 
+            return ???;
         });
     }
 

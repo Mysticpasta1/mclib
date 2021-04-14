@@ -2,6 +2,7 @@ package mchorse.mclib;
 
 import mchorse.mclib.client.gui.utils.ValueColors;
 import mchorse.mclib.client.gui.utils.keys.IKey;
+import mchorse.mclib.client.gui.utils.resizers.Flex;
 import mchorse.mclib.commands.CommandCheats;
 import mchorse.mclib.commands.CommandMcLib;
 import mchorse.mclib.commands.utils.L10n;
@@ -18,6 +19,7 @@ import mchorse.mclib.utils.PayloadASM;
 import mchorse.mclib.utils.Reference;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.EventBus;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -36,6 +38,8 @@ import java.util.Map;
 @Mod(Reference.MOD_ID)
 public class McLib
 {
+    public static final IEventBus EVENT_BUS = FMLJavaModLoadingContext.get().getModEventBus();;
+
     public McLib(){
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         FMLJavaModLoadingContext.get().getModEventBus().addListener(CommonProxy::init);

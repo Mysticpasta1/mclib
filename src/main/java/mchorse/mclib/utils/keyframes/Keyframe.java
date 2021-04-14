@@ -5,7 +5,7 @@ import com.google.gson.annotations.Expose;
 import io.netty.buffer.ByteBuf;
 import mchorse.mclib.network.IByteBufSerializable;
 import mchorse.mclib.network.INBTSerializable;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 /**
  * Keyframe class
@@ -135,30 +135,30 @@ public class Keyframe implements IByteBufSerializable, INBTSerializable
     }
 
     @Override
-    public void fromNBT(NBTTagCompound tag)
+    public void fromNBT(CompoundNBT tag)
     {
-        if (tag.hasKey("Tick")) this.tick = tag.getLong("Tick");
-        if (tag.hasKey("Value")) this.value = tag.getDouble("Value");
-        if (tag.hasKey("Interp")) this.interp = KeyframeInterpolation.values()[tag.getInteger("Interp")];
-        if (tag.hasKey("Easing")) this.easing = KeyframeEasing.values()[tag.getInteger("Easing")];
-        if (tag.hasKey("RX")) this.rx = tag.getFloat("RX");
-        if (tag.hasKey("RY")) this.ry = tag.getFloat("RY");
-        if (tag.hasKey("LX")) this.lx = tag.getFloat("LX");
-        if (tag.hasKey("LY")) this.ly = tag.getFloat("LY");
+        if (tag.contains("Tick")) this.tick = tag.getLong("Tick");
+        if (tag.contains("Value")) this.value = tag.getDouble("Value");
+        if (tag.contains("Interp")) this.interp = KeyframeInterpolation.values()[tag.getInt("Interp")];
+        if (tag.contains("Easing")) this.easing = KeyframeEasing.values()[tag.getInt("Easing")];
+        if (tag.contains("RX")) this.rx = tag.getFloat("RX");
+        if (tag.contains("RY")) this.ry = tag.getFloat("RY");
+        if (tag.contains("LX")) this.lx = tag.getFloat("LX");
+        if (tag.contains("LY")) this.ly = tag.getFloat("LY");
     }
 
     @Override
-    public NBTTagCompound toNBT(NBTTagCompound tag)
+    public CompoundNBT toNBT(CompoundNBT tag)
     {
-        tag.setLong("Tick", this.tick);
-        tag.setDouble("Value", this.value);
+        tag.putLong("Tick", this.tick);
+        tag.putDouble("Value", this.value);
 
-        if (this.interp != KeyframeInterpolation.LINEAR) tag.setInteger("Interp", this.interp.ordinal());
-        if (this.easing != KeyframeEasing.IN) tag.setInteger("Easing", this.easing.ordinal());
-        if (this.rx != 5) tag.setFloat("RX", this.rx);
-        if (this.ry != 0) tag.setFloat("RY", this.ry);
-        if (this.lx != 5) tag.setFloat("LX", this.lx);
-        if (this.ly != 0) tag.setFloat("LY", this.ly);
+        if (this.interp != KeyframeInterpolation.LINEAR) tag.putInt("Interp", this.interp.ordinal());
+        if (this.easing != KeyframeEasing.IN) tag.putInt("Easing", this.easing.ordinal());
+        if (this.rx != 5) tag.putFloat("RX", this.rx);
+        if (this.ry != 0) tag.putFloat("RY", this.ry);
+        if (this.lx != 5) tag.putFloat("LX", this.lx);
+        if (this.ly != 0) tag.putFloat("LY", this.ly);
 
         return tag;
     }

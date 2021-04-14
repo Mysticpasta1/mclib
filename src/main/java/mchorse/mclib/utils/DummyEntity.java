@@ -1,10 +1,11 @@
 package mchorse.mclib.utils;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.util.EnumHandSide;
+import net.minecraft.util.HandSide;
 import net.minecraft.world.World;
 
 import java.util.Arrays;
@@ -15,15 +16,15 @@ import java.util.Arrays;
  * This class is used in model editor as a player substitution for the model
  * methods.
  */
-public class DummyEntity extends EntityLivingBase
+public class DummyEntity extends LivingEntity
 {
     private final ItemStack[] held;
     public ItemStack right;
     public ItemStack left;
 
-    public DummyEntity(World worldIn)
+    public DummyEntity(EntityType<LivingEntity> dummyEntity, World worldIn)
     {
-        super(worldIn);
+        super(dummyEntity, worldIn);
 
         this.right = new ItemStack(Items.DIAMOND_SWORD);
         this.left = new ItemStack(Items.GOLDEN_SWORD);
@@ -38,8 +39,8 @@ public class DummyEntity extends EntityLivingBase
 
     public void toggleItems(boolean toggle)
     {
-        int main = EntityEquipmentSlot.MAINHAND.getSlotIndex();
-        int off = EntityEquipmentSlot.OFFHAND.getSlotIndex();
+        int main = EquipmentSlotType.MAINHAND.getSlotIndex();
+        int off = EquipmentSlotType.OFFHAND.getSlotIndex();
 
         if (toggle)
         {
@@ -59,20 +60,20 @@ public class DummyEntity extends EntityLivingBase
     }
 
     @Override
-    public ItemStack getItemStackFromSlot(EntityEquipmentSlot slotIn)
+    public ItemStack getItemStackFromSlot(EquipmentSlotType slotIn)
     {
         return this.held[slotIn.getSlotIndex()];
     }
 
     @Override
-    public void setItemStackToSlot(EntityEquipmentSlot slotIn, ItemStack stack)
+    public void setItemStackToSlot(EquipmentSlotType slotIn, ItemStack stack)
     {
         this.held[slotIn.getSlotIndex()] = stack;
     }
 
     @Override
-    public EnumHandSide getPrimaryHand()
+    public HandSide getPrimaryHand()
     {
-        return EnumHandSide.RIGHT;
+        return HandSide.RIGHT;
     }
 }

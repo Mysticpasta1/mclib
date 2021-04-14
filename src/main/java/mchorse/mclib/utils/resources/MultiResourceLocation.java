@@ -3,8 +3,9 @@ package mchorse.mclib.utils.resources;
 import com.google.common.base.Objects;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.INBTType;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
@@ -23,11 +24,11 @@ public class MultiResourceLocation extends ResourceLocation implements IWritable
 
     private int id = -1;
 
-    public static MultiResourceLocation from(NBTBase nbt)
+    public static MultiResourceLocation from(INBTType nbt)
     {
-        NBTTagList list = nbt instanceof NBTTagList ? (NBTTagList) nbt : null;
+        ListNBT list = nbt instanceof ListNBT ? (ListNBT) nbt : null;
 
-        if (list == null || list.hasNoTags())
+        if (list == null || list.isEmpty())
         {
             return null;
         }
@@ -93,16 +94,14 @@ public class MultiResourceLocation extends ResourceLocation implements IWritable
         this.id = MultiResourceLocationManager.getId(this);
     }
 
-    @Override
     public String getResourceDomain()
     {
-        return this.children.isEmpty() ? "" : this.children.get(0).path.getResourceDomain();
+        return this.children.isEmpty() ? "" : this.children.get(0).path.getNamespace();
     }
 
-    @Override
     public String getResourcePath()
     {
-        return this.children.isEmpty() ? "" : this.children.get(0).path.getResourcePath();
+        return this.children.isEmpty() ? "" : this.children.get(0).path.getPath();
     }
 
     /**
@@ -138,15 +137,13 @@ public class MultiResourceLocation extends ResourceLocation implements IWritable
 
         return this.id;
     }
-
-    @Override
-    public void fromNbt(NBTBase nbt) throws Exception
+    public void fromNbt(INBTType nbt) throws Exception
     {
-        NBTTagList list = (NBTTagList) nbt;
+        ListNBT list = (ListNBT) nbt;
 
-        for (int i = 0; i < list.tagCount(); i++)
+        for (int i = 0; i < list.size(); i++)
         {
-            FilteredResourceLocation location = FilteredResourceLocation.from(list.get(i));
+            FilteredResourceLocation location = FilteredResourceLocation.from((INBTType) list.get(i));
 
             if (location != null)
             {
@@ -172,21 +169,21 @@ public class MultiResourceLocation extends ResourceLocation implements IWritable
     }
 
     @Override
-    public NBTBase writeNbt()
+    public INBTType writeNbt()
     {
-        NBTTagList list = new NBTTagList();
+        ListNBT list = new ListNBT();
 
         for (FilteredResourceLocation child : this.children)
         {
-            NBTBase tag = child.writeNbt();
+            INBTType tag = child.writeNbt();
 
             if (tag != null)
             {
-                list.appendTag(tag);
+                list.add((INBT) tag);
             }
         }
 
-        return list;
+        return (INBTType) list;
     }
 
     @Override

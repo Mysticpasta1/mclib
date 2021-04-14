@@ -5,18 +5,20 @@ import com.google.gson.JsonNull;
 import com.google.gson.JsonPrimitive;
 import mchorse.mclib.McLib;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.IResource;
-import net.minecraft.client.resources.SimpleResource;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.*;
+import net.minecraft.resources.IResource;
+import net.minecraft.resources.SimpleResource;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,8 +36,8 @@ public class RLUtils
     /**
      * Get stream for multi resource location 
      */
-    @SideOnly(Side.CLIENT)
-    public static IResource getStreamForMultiskin(MultiResourceLocation multi) throws IOException
+    @OnlyIn(Dist.CLIENT)
+    public static IResource getStreamForMultiskin(MultiResourceLocation multi, InputStream inputStream) throws IOException
     {
         if (multi.children.isEmpty())
         {
@@ -48,7 +50,7 @@ public class RLUtils
             {
                 MultiskinThread.add(multi);
 
-                return Minecraft.getMinecraft().getResourceManager().getResource(pixel);
+                return Minecraft.getInstance().getResourceManager().getResource(pixel);
             }
             else
             {
@@ -56,7 +58,7 @@ public class RLUtils
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 ImageIO.write(TextureProcessor.postProcess(multi), "png", stream);
 
-                return new SimpleResource("McLib multiskin handler", multi, new ByteArrayInputStream(stream.toByteArray()), null, null);
+                return new SimpleResource("McLib multiskin handler", multi.clone(), inputStream , inputStream);
             }
         }
         catch (IOException e)
@@ -98,7 +100,7 @@ public class RLUtils
         return new TextureLocation(domain, path);
     }
 
-    public static ResourceLocation create(NBTBase base)
+    public static ResourceLocation create(INBTType base)
     {
         ResourceLocation location = MultiResourceLocation.from(base);
 
@@ -107,9 +109,9 @@ public class RLUtils
             return location;
         }
 
-        if (base instanceof NBTTagString)
+        if (base instanceof StringNBT)
         {
-            return create(((NBTTagString) base).getString());
+            return create(((StringNBT) base).getString());
         }
 
         return null;
@@ -132,7 +134,7 @@ public class RLUtils
         return null;
     }
 
-    public static NBTBase writeNbt(ResourceLocation location)
+    public static INBTType writeNbt(ResourceLocation location, StringNBT stringNBT)
     {
         if (location instanceof IWritableLocation)
         {
@@ -140,7 +142,7 @@ public class RLUtils
         }
         else if (location != null)
         {
-            return new NBTTagString(location.toString());
+            return (INBTType) stringNBT;
         }
 
         return null;

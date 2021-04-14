@@ -1,10 +1,10 @@
 package mchorse.mclib.utils.wav;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureUtil;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -18,13 +18,13 @@ import java.util.List;
  *
  * This class allows to
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class Waveform
 {
     public float[] average;
     public float[] maximum;
 
-    private List<WaveformSprite> sprites = new ArrayList<WaveformSprite>();
+    private final List<WaveformSprite> sprites = new ArrayList<WaveformSprite>();
     private int w;
     private int h;
     private int pixelsPerSecond;
@@ -50,7 +50,7 @@ public class Waveform
 
         for (int t = 0; t < count; t++)
         {
-            int texture = GlStateManager.generateTexture();
+            int texture = TextureUtil.generateTextureId();
             int width = Math.min(this.w - offset, maxTextureSize);
 
             BufferedImage image = new BufferedImage(width, this.h, BufferedImage.TYPE_INT_ARGB);
@@ -66,17 +66,17 @@ public class Waveform
 
                 if (avgHeight > 0)
                 {
-                    g.setColor(java.awt.Color.WHITE);
+                    g.setColor(Color.WHITE);
                     g.drawRect(j, this.h / 2 - maxHeight / 2, 1, maxHeight);
-                    g.setColor(java.awt.Color.LIGHT_GRAY);
+                    g.setColor(Color.LIGHT_GRAY);
                     g.drawRect(j, this.h / 2 - avgHeight / 2, 1, avgHeight);
                 }
             }
 
             g.dispose();
 
-            TextureUtil.uploadTextureImage(texture, image);
-            GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
+            TextureUtil.prepareImage(texture, width, this.h);
+            GlStateManager.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
 
             this.sprites.add(new WaveformSprite(texture, width));
 
@@ -118,8 +118,8 @@ public class Waveform
             }
 
             average /= count;
-            average /= 0xffff / 2;
-            maximum /= 0xffff / 2;
+            average /= 65535.0 / 2;
+            maximum /= 65535.0 / 2;
 
             this.average[i] = average;
             this.maximum[i] = maximum;
@@ -199,7 +199,7 @@ public class Waveform
         }
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public static class WaveformSprite
     {
         public final int texture;
