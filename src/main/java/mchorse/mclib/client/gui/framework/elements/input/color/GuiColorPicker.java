@@ -440,14 +440,14 @@ public class GuiColorPicker extends GuiElement
         }
         else
         {
-            Gui.drawRect(x1, y1, x2, y2, this.color.getRGBAColor());
+            GuiDraw.drawRect(x1, y1, x2, y2, this.color.getRGBAColor());
         }
     }
 
     private void drawMarker(int x, int y)
     {
-        Gui.drawRect(x - 4, y - 4, x + 4, y + 4, 0xff000000);
-        Gui.drawRect(x - 3, y - 3, x + 3, y + 3, 0xffffffff);
-        Gui.drawRect(x - 2, y - 2, x + 2, y + 2, 0xffc6c6c6);
+        GuiDraw.drawRect(x - 4, y - 4, x + 4, y + 4, 0xff000000);
+        GuiDraw.drawRect(x - 3, y - 3, x + 3, y + 3, 0xffffffff);
+        GuiDraw.drawRect(x - 2, y - 2, x + 2, y + 2, 0xffc6c6c6);
     }
 }

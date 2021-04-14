@@ -93,7 +93,7 @@ public abstract class GuiModal extends GuiElement
     @Override
     public void draw(GuiContext context)
     {
-        Gui.drawRect(this.area.x, this.area.y, this.area.ex(), this.area.ey(), 0xcc000000);
+        GuiDraw.drawRect(this.area.x, this.area.y, this.area.ex(), this.area.ey(), 0xcc000000);
         RenderSystem.enableAlphaTest();
 
         this.y = 0;

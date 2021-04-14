@@ -184,17 +184,17 @@ public class GuiInventoryElement extends GuiElement
 
         if (McLib.enableBorders.get())
         {
-            Gui.drawRect(this.area.x + 1, this.area.y, this.area.ex() - 1, this.area.ey(), 0xff000000);
-            Gui.drawRect(this.area.x, this.area.y + 1, this.area.ex(), this.area.ey() - 1, 0xff000000);
-            Gui.drawRect(this.area.x + 1, this.area.y + 1, this.area.ex() - 1, this.area.ey() - 1, border);
-            Gui.drawRect(this.area.x + 2, this.area.y + 2, this.area.ex() - 2, fourth, 0xffc6c6c6);
-            Gui.drawRect(this.area.x + 1, fourth, this.area.ex() - 1, this.area.ey() - 1, 0xff222222);
+            GuiDraw.drawRect(this.area.x + 1, this.area.y, this.area.ex() - 1, this.area.ey(), 0xff000000);
+            GuiDraw.drawRect(this.area.x, this.area.y + 1, this.area.ex(), this.area.ey() - 1, 0xff000000);
+            GuiDraw.drawRect(this.area.x + 1, this.area.y + 1, this.area.ex() - 1, this.area.ey() - 1, border);
+            GuiDraw.drawRect(this.area.x + 2, this.area.y + 2, this.area.ex() - 2, fourth, 0xffc6c6c6);
+            GuiDraw.drawRect(this.area.x + 1, fourth, this.area.ex() - 1, this.area.ey() - 1, 0xff222222);
         }
         else
         {
-            Gui.drawRect(this.area.x, this.area.y, this.area.ex(), this.area.ey(), border);
-            Gui.drawRect(this.area.x + 1, this.area.y + 1, this.area.ex() - 1, fourth, 0xffc6c6c6);
-            Gui.drawRect(this.area.x, fourth, this.area.ex(), this.area.ey(), 0xff222222);
+            GuiDraw.drawRect(this.area.x, this.area.y, this.area.ex(), this.area.ey(), border);
+            GuiDraw.drawRect(this.area.x + 1, this.area.y + 1, this.area.ex() - 1, fourth, 0xffc6c6c6);
+            GuiDraw.drawRect(this.area.x, fourth, this.area.ex(), this.area.ey(), 0xff222222);
         }
 
         RenderSystem.enableDepthTest();
@@ -240,13 +240,13 @@ public class GuiInventoryElement extends GuiElement
 
             boolean hover = diffX >= 0 && diffX < 18 && diffY >= 0 && diffY < 18;
 
-            Gui.drawRect(x - 1, y - 1, x + 17, y + 17, area == this.hotbar ? 0xaa000000 : 0x44000000);
+            GuiDraw.drawRect(x - 1, y - 1, x + 17, y + 17, area == this.hotbar ? 0xaa000000 : 0x44000000);
 
             drawItemStack(stack, x, y, null);
 
             if (hover)
             {
-                Gui.drawRect(x - 2, y - 2, x + 18, y + 18, 0xcc000000 + McLib.primaryColor.get());
+                GuiDraw.drawRect(x - 2, y - 2, x + 18, y + 18, 0xcc000000 + McLib.primaryColor.get());
                 index = k;
             }
         }

@@ -457,7 +457,7 @@ public class GuiTrackpadElement extends GuiBaseTextElement
             int color = McLib.primaryColor.get();
             int fx = MathUtils.clamp(context.mouseX, this.area.x + padding, this.area.ex() - padding);
 
-            Gui.drawRect(Math.min(fx, this.initialX), this.area.y + padding, Math.max(fx, this.initialX), this.area.ey() - padding, 0xff000000 + color);
+            GuiDraw.drawRect(Math.min(fx, this.initialX), this.area.y + padding, Math.max(fx, this.initialX), this.area.ey() - padding, 0xff000000 + color);
         }
 
         if (McLib.enableTrackpadIncrements.get())

@@ -18,6 +18,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientProxy extends CommonProxy
@@ -32,6 +33,8 @@ public class ClientProxy extends CommonProxy
     @SubscribeEvent
     public static void init(FMLCommonSetupEvent event)
     {
+
+
         Minecraft mc = Minecraft.getInstance();
 
         /* OMG, thank you very much Forge! */
@@ -46,14 +49,19 @@ public class ClientProxy extends CommonProxy
 
             if (McLib.multiskinClear.get())
             {
-                mc.enqueue(new ClientProxy().clearMultiTextures());
+                new ClientProxy();
+                mc.enqueue(clearMultiTextures());
             }
 
-            return ???;
+            return mc.runAsync(() -> {
+                ???
+            });
         });
+
+
     }
 
-    private Runnable clearMultiTextures()
+    private static Runnable clearMultiTextures()
     {
         return () -> {
             Minecraft mc = Minecraft.getInstance();

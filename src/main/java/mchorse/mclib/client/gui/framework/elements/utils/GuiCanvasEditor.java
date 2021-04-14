@@ -59,7 +59,7 @@ public abstract class GuiCanvasEditor extends GuiCanvas
 
         Area area = this.calculate(-this.w / 2, -this.h / 2, this.w / 2, this.h / 2);
 
-        Gui.drawRect(area.x - 1, area.y - 1, area.ex() + 1, area.ey() + 1, 0xff181818);
+        GuiDraw.drawRect(area.x - 1, area.y - 1, area.ex() + 1, area.ey() + 1, 0xff181818);
         RenderSystem.color4f(1, 1, 1, 1);
 
         if (!this.shouldDrawCanvas(context))

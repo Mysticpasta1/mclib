@@ -649,11 +649,11 @@ public abstract class GuiListElement<T> extends GuiElement
         {
             if (this.isHorizontal())
             {
-                Gui.drawRect(x, y, x + this.scroll.scrollItemSize, y + this.scroll.h, 0x88000000 + McLib.primaryColor.get());
+                GuiDraw.drawRect(x, y, x + this.scroll.scrollItemSize, y + this.scroll.h, 0x88000000 + McLib.primaryColor.get());
             }
             else
             {
-                Gui.drawRect(x, y, x + this.scroll.w, y + this.scroll.scrollItemSize, 0x88000000 + McLib.primaryColor.get());
+                GuiDraw.drawRect(x, y, x + this.scroll.w, y + this.scroll.scrollItemSize, 0x88000000 + McLib.primaryColor.get());
             }
         }
 

@@ -285,7 +285,7 @@ public class InputRenderer
                 int y = my + (int) (Interpolation.EXP_INOUT.interpolate(0, 1, key.getFactor()) * 50 * fy) + (key.i % 2 == 0 ? -1 : 0);
 
                 GuiDraw.drawDropShadow(x, y, x + 10 + key.width, y + 20, 4, 0x44000000, 0);
-                Gui.drawRect(x, y, x + 10 + key.width, y + 20, 0xff000000 + McLib.primaryColor.get());
+                GuiDraw.drawRect(x, y, x + 10 + key.width, y + 20, 0xff000000 + McLib.primaryColor.get());
                 font.drawStringWithShadow(key.getLabel(), x + 5, y + 6, 0xffffff);
             }
         }

@@ -157,7 +157,7 @@ public class GuiPanelBase<T extends GuiElement> extends GuiElement
             {
                 Area area = this.buttons.elements.get(i).area;
 
-                Gui.drawRect(area.x - 2, area.y - 2, area.ex() + 2, area.ey() + 2, 0xaa000000 + McLib.primaryColor.get());
+                GuiDraw.drawRect(area.x - 2, area.y - 2, area.ex() + 2, area.ey() + 2, 0xaa000000 + McLib.primaryColor.get());
             }
         }
     }

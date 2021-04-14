@@ -52,7 +52,7 @@ public class LabelTooltip implements ITooltip
         x = MathUtils.clamp(x, 3, context.screen.width - w - 3);
         y = MathUtils.clamp(y, 3, context.screen.height - h - 3);
 
-        Gui.drawRect(x - 3, y - 3, x + w + 3, y + h + 3, 0xffffffff);
+        GuiDraw.drawRect(x - 3, y - 3, x + w + 3, y + h + 3, 0xffffffff);
 
         for (String line : strings)
         {

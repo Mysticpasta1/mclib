@@ -246,7 +246,7 @@ public class GuiMultiSkinEditor extends GuiCanvasEditor
 
                 if (child == this.picker.currentFRL)
                 {
-                    Gui.drawRect(area.x, area.y, area.ex(), area.ey(), 0x44ff0000);
+                    GuiDraw.drawRect(area.x, area.y, area.ex(), area.ey(), 0x44ff0000);
                     GlStateManager.enableBlend();
                     GlStateManager.enableAlpha();
                 }

@@ -568,7 +568,7 @@ public class GuiTexturePicker extends GuiElement
                 int x = this.text.area.x;
                 int y = this.text.area.ey();
 
-                Gui.drawRect(x, y, x + w + 4, y + 4 + this.font.FONT_HEIGHT, 0x88000000 + McLib.primaryColor.get());
+                GuiDraw.drawRect(x, y, x + w + 4, y + 4 + this.font.FONT_HEIGHT, 0x88000000 + McLib.primaryColor.get());
                 this.font.drawStringWithShadow(this.typed, x + 2, y + 2, 0xffffff);
             }
 

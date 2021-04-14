@@ -39,7 +39,7 @@ public class InterpolationRenderer
         y -= (int) (h * anchorY);
 
         GuiDraw.drawDropShadow(x, y, x + w, y + h + ah, 4, 0x88000000, 0x00000000);
-        Gui.drawRect(x, y, x + w, y + h + ah, 0xffffffff);
+        GuiDraw.drawRect(x, y, x + w, y + h + ah, 0xffffffff);
 
         context.font.drawString(interp.getName(), x + 10, y + 10, 0x000000);
 
@@ -110,6 +110,6 @@ public class InterpolationRenderer
         int px = x + w - 5;
         int py = y + 20 + (int) (padding / 2) + (int) ((1 - interp.interpolate(0, 1, factor)) * (h - 30 - padding));
 
-        Gui.drawRect(px - 2, py - 2, px + 2, py + 2, 0xff000000);
+        GuiDraw.drawRect(px - 2, py - 2, px + 2, py + 2, 0xff000000);
     }
 }

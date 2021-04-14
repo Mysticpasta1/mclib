@@ -466,7 +466,7 @@ public class GuiGraphView extends GuiKeyframeElement
                 continue;
             }
 
-            Gui.drawRect(this.area.x, y, this.area.ex(), y + 1, 0x44ffffff);
+            GuiDraw.drawRect(this.area.x, y, this.area.ex(), y + 1, 0x44ffffff);
             this.font.drawString(String.valueOf(min + j * mult), this.area.x + 4, y + 4, 0xffffff);
         }
     }

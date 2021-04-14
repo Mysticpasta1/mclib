@@ -90,6 +90,6 @@ public class GuiDashboardPanels extends GuiPanelBase<GuiDashboardPanel>
     @Override
     protected void drawBackground(GuiContext context, int x, int y, int w, int h)
     {
-        Gui.drawRect(x, y, x + w, y + h, 0xff111111);
+        GuiDraw.drawRect(x, y, x + w, y + h, 0xff111111);
     }
 }

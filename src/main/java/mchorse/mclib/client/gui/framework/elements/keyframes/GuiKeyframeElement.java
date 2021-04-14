@@ -338,7 +338,7 @@ public abstract class GuiKeyframeElement extends GuiElement
         /* Draw selection box */
         if (this.isGrabbing())
         {
-            Gui.drawRect(this.lastX, this.lastY, context.mouseX, context.mouseY, 0x440088ff);
+            GuiDraw.drawRect(this.lastX, this.lastY, context.mouseX, context.mouseY, 0x440088ff);
         }
 
         RenderSystem.disableBlend();
@@ -358,8 +358,8 @@ public abstract class GuiKeyframeElement extends GuiElement
             int leftBorder = this.toGraphX(0);
             int rightBorder = this.toGraphX(this.duration);
 
-            if (leftBorder > this.area.x) Gui.drawRect(this.area.x, this.area.y, leftBorder, this.area.y + this.area.h, 0x88000000);
-            if (rightBorder < this.area.ex()) Gui.drawRect(rightBorder, this.area.y, this.area.ex() , this.area.y + this.area.h, 0x88000000);
+            if (leftBorder > this.area.x) GuiDraw.drawRect(this.area.x, this.area.y, leftBorder, this.area.y + this.area.h, 0x88000000);
+            if (rightBorder < this.area.ex()) GuiDraw.drawRect(rightBorder, this.area.y, this.area.ex() , this.area.y + this.area.h, 0x88000000);
         }
     }
 
@@ -381,7 +381,7 @@ public abstract class GuiKeyframeElement extends GuiElement
 
             String label = this.converter == null ? String.valueOf(j * mult) : this.converter.format(j * mult);
 
-            Gui.drawRect(x, this.area.y, x + 1, this.area.ey(), 0x44ffffff);
+            GuiDraw.drawRect(x, this.area.y, x + 1, this.area.ey(), 0x44ffffff);
             this.font.drawString(label, x + 4, this.area.y + 4, 0xffffff);
         }
     }

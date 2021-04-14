@@ -99,7 +99,7 @@ public class GuiKeybindElement extends GuiElement
             int y = this.area.my();
             int a = (int) (Math.sin((context.tick + context.partialTicks) / 2D) * 127.5 + 127.5) << 24;
 
-            Gui.drawRect(x - 1, y - 6, x + 1, y + 6, a + 0xffffff);
+            GuiDraw.drawRect(x - 1, y - 6, x + 1, y + 6, a + 0xffffff);
         }
         else
         {

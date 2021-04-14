@@ -43,7 +43,7 @@ public class GuiKeybinds extends GuiScrollElement
     public void draw(GuiContext context)
     {
         int cx = 40;
-        Gui.drawRect(this.area.x, this.area.y, cx, this.area.ey(), 0xdd000000);
+        GuiDraw.drawRect(this.area.x, this.area.y, cx, this.area.ey(), 0xdd000000);
         GuiDraw.drawHorizontalGradientRect(cx, this.area.y, this.area.ex(), this.area.ey(), 0xdd000000, 0);
 
         super.draw(context);
@@ -105,7 +105,7 @@ public class GuiKeybinds extends GuiScrollElement
 
             if (!title.isEmpty())
             {
-                Gui.drawRect(x - 10, y + i - 2, x + context.font.getStringWidth(title) + 2, y + i + context.font.FONT_HEIGHT + 2, color);
+                GuiDraw.drawRect(x - 10, y + i - 2, x + context.font.getStringWidth(title) + 2, y + i + context.font.FONT_HEIGHT + 2, color);
                 context.font.drawString(title, x, y + i, 0xffffff);
                 i += 14;
             }
@@ -115,7 +115,7 @@ public class GuiKeybinds extends GuiScrollElement
                 String combo = keybind.getKeyCombo();
                 int w = context.font.getStringWidth(combo);
 
-                Gui.drawRect(x - 2, y + i - 2, x + w + 2, y + i + context.font.FONT_HEIGHT + 2, color);
+                GuiDraw.drawRect(x - 2, y + i - 2, x + w + 2, y + i + context.font.FONT_HEIGHT + 2, color);
                 context.font.drawString(combo, x, y + i, 0xffffff);
                 context.font.drawStringWithShadow(keybind.label.get(), x + w + 5, y + i, 0xffffff);
                 i += 14;

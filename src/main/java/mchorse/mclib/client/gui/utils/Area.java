@@ -312,7 +312,7 @@ public class Area implements IResizer
     @OnlyIn(Dist.CLIENT)
     public void draw(int color, int lx, int ty, int rx, int by)
     {
-        Gui.drawRect(this.x + lx, this.y + ty, this.ex() - rx, this.ey() - by, color);
+        GuiDraw.drawRect(this.x + lx, this.y + ty, this.ex() - rx, this.ey() - by, color);
     }
 
     /* IResizer implementation */
