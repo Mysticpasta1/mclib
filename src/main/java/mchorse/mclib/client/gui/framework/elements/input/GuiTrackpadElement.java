@@ -1,5 +1,6 @@
 package mchorse.mclib.client.gui.framework.elements.input;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.mclib.McLib;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
@@ -14,12 +15,11 @@ import mchorse.mclib.math.MathBuilder;
 import mchorse.mclib.utils.ColorUtils;
 import mchorse.mclib.utils.MathUtils;
 import mchorse.mclib.utils.Timer;
+import net.java.games.input.Keyboard;
+import net.java.games.input.Mouse;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
+import net.minecraft.client.gui.screen.Screen;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
 import java.math.RoundingMode;
@@ -314,7 +314,7 @@ public class GuiTrackpadElement extends GuiBaseTextElement
 
             if (this.area.isInside(context))
             {
-                if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL))
+                if (Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL))
                 {
                     this.setValueAndNotify(Math.round(this.value));
 
@@ -371,31 +371,31 @@ public class GuiTrackpadElement extends GuiBaseTextElement
 
         if (this.isFocused())
         {
-            if (context.keyCode == Keyboard.KEY_UP)
+            if (context.keyCode == GLFW.GLFW_KEY_UP)
             {
                 this.setValueAndNotify(this.value + this.getValueModifier());
 
                 return true;
             }
-            else if (context.keyCode == Keyboard.KEY_DOWN)
+            else if (context.keyCode == GLFW.GLFW_KEY_DOWN)
             {
                 this.setValueAndNotify(this.value - this.getValueModifier());
 
                 return true;
             }
-            else if (context.keyCode == Keyboard.KEY_TAB)
+            else if (context.keyCode == GLFW.GLFW_KEY_TAB)
             {
-                context.focus(this, -1, GuiScreen.isShiftKeyDown() ? -1 : 1);
+                context.focus(this, -1, Screen.isShiftKeyDown() ? -1 : 1);
 
                 return true;
             }
-            else if (context.keyCode == Keyboard.KEY_ESCAPE)
+            else if (context.keyCode == GLFW.GLFW_KEY_ESCAPE)
             {
                 context.unfocus();
 
                 return true;
             }
-            else if (context.keyCode == Keyboard.KEY_RETURN && GuiScreen.isAltKeyDown())
+            else if (context.keyCode == GLFW.GLFW_KEY_ENTER && Screen.isAltKeyDown())
             {
                 try
                 {
@@ -457,22 +457,22 @@ public class GuiTrackpadElement extends GuiBaseTextElement
             int color = McLib.primaryColor.get();
             int fx = MathUtils.clamp(context.mouseX, this.area.x + padding, this.area.ex() - padding);
 
-            Gui.drawRect(Math.min(fx, this.initialX), this.area.y + padding, Math.max(fx, this.initialX), this.area.ey() - padding, 0xff000000 + color);
+            GuiDraw.drawRect(Math.min(fx, this.initialX), this.area.y + padding, Math.max(fx, this.initialX), this.area.ey() - padding, 0xff000000 + color);
         }
 
         if (McLib.enableTrackpadIncrements.get())
         {
-            GlStateManager.alphaFunc(GL11.GL_GREATER, 0);
+            RenderSystem.alphaFunc(GL11.GL_GREATER, 0);
             this.plusOne.draw(plus ? 0x22ffffff : 0x0affffff, padding);
             this.minusOne.draw(minus ? 0x22ffffff : 0x0affffff, padding);
-            GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
+            RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
 
-            GlStateManager.enableBlend();
+            RenderSystem.enableBlend();
             ColorUtils.bindColor(minus ? 0xffffffff : 0x80ffffff);
             Icons.MOVE_LEFT.render(x + 5, y + (h - 16) / 2);
             ColorUtils.bindColor(plus ? 0xffffffff : 0x80ffffff);
             Icons.MOVE_RIGHT.render(x + w - 13, y + (h - 16) / 2);
-            GlStateManager.disableBlend();
+            RenderSystem.disableBlend();
         }
 
         int width = MathUtils.clamp(this.font.getStringWidth(this.field.getText()), 0, w - 16);
@@ -552,15 +552,15 @@ public class GuiTrackpadElement extends GuiBaseTextElement
     {
         double value = this.normal;
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+        if (Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT))
         {
             value = this.strong;
         }
-        else if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL))
+        else if (Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL))
         {
             value = this.increment;
         }
-        else if (Keyboard.isKeyDown(Keyboard.KEY_LMENU))
+        else if (Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_ALT))
         {
             value = this.weak;
         }

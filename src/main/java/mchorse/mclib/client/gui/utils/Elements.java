@@ -3,12 +3,11 @@ package mchorse.mclib.client.gui.utils;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiLabel;
 import mchorse.mclib.client.gui.utils.keys.IKey;
-import mchorse.mclib.client.gui.utils.resizers.layout.RowResizer;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class Elements
 {
     public static GuiElement row(Minecraft mc, int margin, GuiElement... elements)
@@ -33,7 +32,7 @@ public class Elements
 
     public static GuiLabel label(IKey label)
     {
-        return label(label, Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT);
+        return label(label, Minecraft.getInstance().fontRenderer.FONT_HEIGHT);
     }
 
     public static GuiLabel label(IKey label, int height)
@@ -43,7 +42,7 @@ public class Elements
 
     public static GuiLabel label(IKey label, int height, int color)
     {
-        GuiLabel element = new GuiLabel(Minecraft.getMinecraft(), label, color);
+        GuiLabel element = new GuiLabel(Minecraft.getInstance(), label, color);
 
         element.flex().h(height);
 

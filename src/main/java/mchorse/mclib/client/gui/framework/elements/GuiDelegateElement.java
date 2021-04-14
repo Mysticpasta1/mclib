@@ -3,8 +3,8 @@ package mchorse.mclib.client.gui.framework.elements;
 import mchorse.mclib.client.gui.framework.elements.context.GuiContextMenu;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Delegated {@link IGuiElement}
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GuiDelegateElement<T extends GuiElement> extends GuiElement
 {
     public T delegate;

@@ -1,5 +1,8 @@
 package mchorse.mclib.client.gui.framework.elements.utils;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.mclib.McLib;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.utils.Area;
@@ -8,21 +11,25 @@ import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.utils.ColorUtils;
 import mchorse.mclib.utils.MathUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.IReorderingProcessor;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
+import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 import java.util.Stack;
 
-public class GuiDraw
+public class GuiDraw extends AbstractGui
 {
     private final static Stack<Area> scissors = new Stack<Area>();
+
+    public final static MatrixStack matrixStack = new MatrixStack();
 
     public static void scissor(int x, int y, int w, int h, GuiContext context)
     {
@@ -55,13 +62,13 @@ public class GuiDraw
     private static void scissorArea(int x, int y, int w, int h, int sw, int sh)
     {
         /* Clipping area around scroll area */
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = Minecraft.getInstance();
 
-        float rx = (float) Math.ceil(mc.displayWidth / (double) sw);
-        float ry = (float) Math.ceil(mc.displayHeight / (double) sh);
+        float rx = (float) Math.ceil(mc.getMainWindow().getWidth() / (double) sw);
+        float ry = (float) Math.ceil(mc.getMainWindow().getHeight() / (double) sh);
 
         int xx = (int) (x * rx);
-        int yy = (int) (mc.displayHeight - (y + h) * ry);
+        int yy = (int) (mc.getMainWindow().getHeight() - (y + h) * ry);
         int ww = (int) (w * rx);
         int hh = (int) (h * ry);
 
@@ -118,11 +125,11 @@ public class GuiDraw
         float g2 = (endColor >> 8 & 255) / 255.0F;
         float b2 = (endColor & 255) / 255.0F;
 
-        GlStateManager.disableTexture2D();
-        GlStateManager.enableBlend();
-        GlStateManager.disableAlpha();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        RenderSystem.disableTexture();
+        RenderSystem.enableBlend();
+        RenderSystem.disableAlphaTest();
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        RenderSystem.shadeModel(GL11.GL_SMOOTH);
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -135,10 +142,10 @@ public class GuiDraw
 
         tessellator.draw();
 
-        GlStateManager.shadeModel(GL11.GL_FLAT);
-        GlStateManager.disableBlend();
-        GlStateManager.enableAlpha();
-        GlStateManager.enableTexture2D();
+        RenderSystem.shadeModel(GL11.GL_FLAT);
+        RenderSystem.disableBlend();
+        RenderSystem.enableAlphaTest();
+        RenderSystem.enableTexture();
     }
 
     public static void drawVerticalGradientRect(int left, int top, int right, int bottom, int startColor, int endColor)
@@ -161,11 +168,11 @@ public class GuiDraw
         float g2 = (endColor >> 8 & 255) / 255.0F;
         float b2 = (endColor & 255) / 255.0F;
 
-        GlStateManager.disableTexture2D();
-        GlStateManager.enableBlend();
-        GlStateManager.disableAlpha();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        RenderSystem.disableTexture();
+        RenderSystem.enableBlend();
+        RenderSystem.disableAlphaTest();
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        RenderSystem.shadeModel(GL11.GL_SMOOTH);
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -178,10 +185,10 @@ public class GuiDraw
 
         tessellator.draw();
 
-        GlStateManager.shadeModel(GL11.GL_FLAT);
-        GlStateManager.disableBlend();
-        GlStateManager.enableAlpha();
-        GlStateManager.enableTexture2D();
+        RenderSystem.shadeModel(GL11.GL_FLAT);
+        RenderSystem.disableBlend();
+        RenderSystem.enableAlphaTest();
+        RenderSystem.enableTexture();
     }
 
     public static void drawBillboard(int x, int y, int u, int v, int w, int h, int textureW, int textureH)
@@ -277,11 +284,16 @@ public class GuiDraw
      */
     public static void drawOutline(int left, int top, int right, int bottom, int color, int border)
     {
-        Gui.drawRect(left, top, left + border, bottom, color);
-        Gui.drawRect(right - border, top, right, bottom, color);
-        Gui.drawRect(left + border, top, right - border, top + border, color);
-        Gui.drawRect(left + border, bottom - border, right - border, bottom, color);
+        drawRect(left, top, left + border, bottom, color);
+        drawRect(right - border, top, right, bottom, color);
+        drawRect(left + border, top, right - border, top + border, color);
+        drawRect(left + border, bottom - border, right - border, bottom, color);
     }
+
+    public static void drawRect(int left, int top, int right, int bottom, int color) {
+        AbstractGui.fill(matrixStack, left, top, right, bottom, color);
+    }
+
 
     public static void drawOutlinedIcon(Icon icon, int x, int y, int color)
     {
@@ -293,7 +305,7 @@ public class GuiDraw
      */
     public static void drawOutlinedIcon(Icon icon, int x, int y, int color, float ax, float ay)
     {
-        GlStateManager.color(0, 0, 0, 1);
+        RenderSystem.color4f(0, 0, 0, 1);
         icon.render(x - 1, y, ax, ay);
         icon.render(x + 1, y, ax, ay);
         icon.render(x, y - 1, ax, ay);
@@ -337,11 +349,11 @@ public class GuiDraw
         float g2 = (shadow >> 8 & 255) / 255.0F;
         float b2 = (shadow & 255) / 255.0F;
 
-        GlStateManager.disableTexture2D();
-        GlStateManager.enableBlend();
-        GlStateManager.disableAlpha();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        RenderSystem.disableTexture();
+        RenderSystem.enableBlend();
+        RenderSystem.disableAlphaTest();
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        RenderSystem.shadeModel(GL11.GL_SMOOTH);
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -380,10 +392,10 @@ public class GuiDraw
 
         tessellator.draw();
 
-        GlStateManager.shadeModel(GL11.GL_FLAT);
-        GlStateManager.disableBlend();
-        GlStateManager.enableAlpha();
-        GlStateManager.enableTexture2D();
+        RenderSystem.shadeModel(GL11.GL_FLAT);
+        RenderSystem.disableBlend();
+        RenderSystem.enableAlphaTest();
+        RenderSystem.enableTexture();
     }
 
     public static void drawDropCircleShadow(int x, int y, int radius, int segments, int opaque, int shadow)
@@ -397,11 +409,11 @@ public class GuiDraw
         float g2 = (shadow >> 8 & 255) / 255.0F;
         float b2 = (shadow & 255) / 255.0F;
 
-        GlStateManager.disableTexture2D();
-        GlStateManager.enableBlend();
-        GlStateManager.disableAlpha();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        RenderSystem.disableTexture();
+        RenderSystem.enableBlend();
+        RenderSystem.disableAlphaTest();
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        RenderSystem.shadeModel(GL11.GL_SMOOTH);
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -419,10 +431,10 @@ public class GuiDraw
 
         tessellator.draw();
 
-        GlStateManager.shadeModel(GL11.GL_FLAT);
-        GlStateManager.disableBlend();
-        GlStateManager.enableAlpha();
-        GlStateManager.enableTexture2D();
+        RenderSystem.shadeModel(GL11.GL_FLAT);
+        RenderSystem.disableBlend();
+        RenderSystem.enableAlphaTest();
+        RenderSystem.enableTexture();
     }
 
     public static void drawDropCircleShadow(int x, int y, int radius, int offset, int segments, int opaque, int shadow)
@@ -443,11 +455,11 @@ public class GuiDraw
         float g2 = (shadow >> 8 & 255) / 255.0F;
         float b2 = (shadow & 255) / 255.0F;
 
-        GlStateManager.disableTexture2D();
-        GlStateManager.enableBlend();
-        GlStateManager.disableAlpha();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        RenderSystem.disableTexture();
+        RenderSystem.enableBlend();
+        RenderSystem.disableAlphaTest();
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        RenderSystem.shadeModel(GL11.GL_SMOOTH);
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -481,10 +493,10 @@ public class GuiDraw
 
         tessellator.draw();
 
-        GlStateManager.shadeModel(GL11.GL_FLAT);
-        GlStateManager.disableBlend();
-        GlStateManager.enableAlpha();
-        GlStateManager.enableTexture2D();
+        RenderSystem.shadeModel(GL11.GL_FLAT);
+        RenderSystem.disableBlend();
+        RenderSystem.enableAlphaTest();
+        RenderSystem.enableTexture();
     }
 
     public static int drawMultiText(FontRenderer font, String text, int x, int y, int color, int width)
@@ -499,14 +511,14 @@ public class GuiDraw
 
     public static int drawMultiText(FontRenderer font, String text, int x, int y, int color, int width, int lineHeight, float ax, float ay)
     {
-        List<String> list = font.listFormattedStringToWidth(text, width);
+        List<IReorderingProcessor> list = font.trimStringToWidth(new StringTextComponent(text) , width);
         int h = (lineHeight * (list.size() - 1)) + font.FONT_HEIGHT;
 
         y -= h * ay;
 
-        for (String string : list)
+        for (IReorderingProcessor string : list)
         {
-            font.drawStringWithShadow(string, x + (width - font.getStringWidth(string)) * ax, y, color);
+            font.func_238422_b_(matrixStack, string, x + (width - font.getStringWidth(string.func_241878_f)) * ax, y, color);
 
             y += lineHeight;
         }
@@ -525,10 +537,10 @@ public class GuiDraw
 
         if (a != 0)
         {
-            Gui.drawRect(x - offset, y - offset, x + font.getStringWidth(text) + offset, y + font.FONT_HEIGHT + offset, background);
+            GuiDraw.drawRect(x - offset, y - offset, x + font.getStringWidth(text) + offset, y + font.FONT_HEIGHT + offset, background);
         }
 
-        font.drawStringWithShadow(text, x, y, color);
+        font.drawStringWithShadow(matrixStack, text, x, y, color);
     }
 
     public static void drawCustomBackground(int x, int y, int width, int height)
@@ -536,19 +548,19 @@ public class GuiDraw
         ResourceLocation background = McLib.backgroundImage.get();
         int color = McLib.backgroundColor.get();
 
-        GlStateManager.enableAlpha();
-        GlStateManager.enableBlend();
-        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        RenderSystem.enableAlphaTest();
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
         if (background == null)
         {
-            Gui.drawRect(x, y, x + width, y + height, color);
+            GuiDraw.drawRect(x, y, x + width, y + height, color);
         }
         else
         {
-            Minecraft.getMinecraft().renderEngine.bindTexture(background);
+            Minecraft.getInstance().getTextureManager().bindTexture(background);
             ColorUtils.bindColor(color);
-            GlStateManager.enableAlpha();
+            RenderSystem.enableAlphaTest();
             GuiDraw.drawBillboard(x, y, 0, 0, width, height, width, height);
         }
     }

@@ -6,7 +6,7 @@ import mchorse.mclib.client.gui.framework.elements.input.GuiTextElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.function.Consumer;
 
@@ -71,13 +71,13 @@ public class GuiPromptModal extends GuiModal
             return true;
         }
 
-        if (context.keyCode == Keyboard.KEY_RETURN)
+        if (context.keyCode == GLFW.GLFW_KEY_ENTER)
         {
             this.confirm.clickItself(context);
 
             return true;
         }
-        else if (context.keyCode == Keyboard.KEY_ESCAPE)
+        else if (context.keyCode == GLFW.GLFW_KEY_ESCAPE)
         {
             this.cancel.clickItself(context);
 

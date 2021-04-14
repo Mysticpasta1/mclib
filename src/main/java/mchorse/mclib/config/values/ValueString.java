@@ -3,6 +3,7 @@ package mchorse.mclib.config.values;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTextElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiLabel;
@@ -10,9 +11,9 @@ import mchorse.mclib.client.gui.utils.Elements;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.config.gui.GuiConfigPanel;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Arrays;
 import java.util.List;
@@ -77,7 +78,7 @@ public class ValueString extends Value implements IServerValue, IConfigGuiProvid
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public List<GuiElement> getFields(Minecraft mc, GuiConfigPanel gui)
     {
         GuiElement element = new GuiElement(mc);
@@ -135,7 +136,7 @@ public class ValueString extends Value implements IServerValue, IConfigGuiProvid
     {
         super.fromBytes(buffer);
 
-        this.value = ByteBufUtils.readUTF8String(buffer);
+        this.value = ByteBufUtil.readUTF8String(buffer);
         this.defaultValue = ByteBufUtils.readUTF8String(buffer);
     }
 

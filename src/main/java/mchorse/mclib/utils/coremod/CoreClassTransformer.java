@@ -1,14 +1,12 @@
 package mchorse.mclib.utils.coremod;
 
-import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
-public abstract class CoreClassTransformer implements IClassTransformer
-{
+public abstract class CoreClassTransformer{
     public static boolean obfuscated = false;
 
     public static boolean checkName(String name, String notch, String mcp)

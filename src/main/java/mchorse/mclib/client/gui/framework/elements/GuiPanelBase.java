@@ -9,11 +9,8 @@ import mchorse.mclib.client.gui.utils.Area;
 import mchorse.mclib.client.gui.utils.Icon;
 import mchorse.mclib.client.gui.utils.Keybind;
 import mchorse.mclib.client.gui.utils.keys.IKey;
-import mchorse.mclib.client.gui.utils.resizers.Flex.Measure;
 import mchorse.mclib.utils.Direction;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -160,7 +157,7 @@ public class GuiPanelBase<T extends GuiElement> extends GuiElement
             {
                 Area area = this.buttons.elements.get(i).area;
 
-                Gui.drawRect(area.x - 2, area.y - 2, area.ex() + 2, area.ey() + 2, 0xaa000000 + McLib.primaryColor.get());
+                GuiDraw.drawRect(area.x - 2, area.y - 2, area.ex() + 2, area.ey() + 2, 0xaa000000 + McLib.primaryColor.get());
             }
         }
     }

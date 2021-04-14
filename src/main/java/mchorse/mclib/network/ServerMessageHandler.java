@@ -1,10 +1,14 @@
 package mchorse.mclib.network;
 
+import com.ibm.icu.impl.SimpleFormatterImpl;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+
+import java.util.Objects;
 
 /**
  * This class passes operation from Netty to Minecraft (Server) Thread. This
@@ -13,14 +17,14 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
  *
  * @author Ernio (Ernest Sadowski)
  */
-public abstract class ServerMessageHandler<T extends IMessage> extends AbstractMessageHandler<T>
+public abstract class ServerMessageHandler<T extends SimpleFormatterImpl> extends AbstractMessageHandler<T>
 {
-    public abstract void run(final EntityPlayerMP player, final T message);
+    public abstract void run(final ServerPlayerEntity player, final T message);
 
     @Override
-    public IMessage handleServerMessage(final EntityPlayerMP player, final T message)
+    public SimpleFormatterImpl handleServerMessage(final ServerPlayerEntity player, final T message)
     {
-        player.getServer().addScheduledTask(new Runnable()
+        Objects.requireNonNull(player.getServer()).runAsync(new Runnable()
         {
             @Override
             public void run()
@@ -42,7 +46,7 @@ public abstract class ServerMessageHandler<T extends IMessage> extends AbstractM
      * Safe way to get a tile entity on the server without exposing code 
      * to ACG (Arbitrary Chunk Generation) exploit (thanks to Paul Fulham)
      */
-    protected TileEntity getTE(EntityPlayerMP player, BlockPos pos)
+    protected TileEntity getTE(ServerPlayerEntity player, BlockPos pos)
     {
         World world = player.getEntityWorld();
 

@@ -83,7 +83,7 @@ public class GuiSimpleContextMenu extends GuiContextMenu
 
             if (hover)
             {
-                Gui.drawRect(x, y, x + this.scroll.w, y + this.scroll.scrollItemSize, 0x88000000 + McLib.primaryColor.get());
+                GuiDraw.drawRect(x, y, x + this.scroll.w, y + this.scroll.scrollItemSize, 0x88000000 + McLib.primaryColor.get());
             }
 
             GlStateManager.color(1, 1, 1, 1);

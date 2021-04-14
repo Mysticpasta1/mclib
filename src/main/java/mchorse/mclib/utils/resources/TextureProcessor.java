@@ -4,10 +4,10 @@ import mchorse.mclib.McLib;
 import mchorse.mclib.events.MultiskinProcessedEvent;
 import mchorse.mclib.utils.Color;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.IResource;
-import net.minecraft.client.resources.IResourceManager;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.resources.IResource;
+import net.minecraft.resources.IResourceManager;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -15,7 +15,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class TextureProcessor
 {
     public static Pixels pixels = new Pixels();
@@ -25,7 +25,7 @@ public class TextureProcessor
     {
         BufferedImage image = process(multi);
 
-        Minecraft.getMinecraft().addScheduledTask(() ->
+        Minecraft.getInstance().enqueue(() ->
         {
             McLib.EVENT_BUS.post(new MultiskinProcessedEvent(multi, image));
         });
@@ -35,7 +35,7 @@ public class TextureProcessor
 
     public static BufferedImage process(MultiResourceLocation multi)
     {
-        IResourceManager manager = Minecraft.getMinecraft().getResourceManager();
+        IResourceManager manager = Minecraft.getInstance().getResourceManager();
         List<BufferedImage> images = new ArrayList<BufferedImage>();
 
         int w = 0;

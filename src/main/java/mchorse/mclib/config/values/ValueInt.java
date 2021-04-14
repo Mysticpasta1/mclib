@@ -16,8 +16,8 @@ import mchorse.mclib.config.gui.GuiConfigPanel;
 import mchorse.mclib.utils.ColorUtils;
 import mchorse.mclib.utils.MathUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -149,7 +149,7 @@ public class ValueInt extends Value implements IServerValue, IConfigGuiProvider
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public List<GuiElement> getFields(Minecraft mc, GuiConfigPanel gui)
     {
         GuiElement element = new GuiElement(mc);

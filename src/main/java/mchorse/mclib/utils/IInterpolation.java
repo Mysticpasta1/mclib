@@ -1,8 +1,8 @@
 package mchorse.mclib.utils;
 
 import net.minecraft.client.resources.I18n;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public interface IInterpolation
 {
@@ -10,21 +10,21 @@ public interface IInterpolation
 
     public double interpolate(double a, double b, double x);
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public default String getName()
     {
         return I18n.format(this.getKey());
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public String getKey();
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public default String getTooltip()
     {
         return I18n.format(this.getTooltipKey());
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public String getTooltipKey();
 }

@@ -4,7 +4,7 @@ import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.function.Consumer;
 
@@ -45,9 +45,9 @@ public class GuiConfirmModal extends GuiModal
             return true;
         }
 
-        if (context.keyCode == Keyboard.KEY_RETURN || context.keyCode == Keyboard.KEY_ESCAPE)
+        if (context.keyCode == GLFW.GLFW_KEY_ENTER || context.keyCode == GLFW.GLFW_KEY_ESCAPE)
         {
-            (context.keyCode == Keyboard.KEY_RETURN ? this.confirm : this.cancel).clickItself(context);
+            (context.keyCode == GLFW.GLFW_KEY_ENTER ? this.confirm : this.cancel).clickItself(context);
 
             return true;
         }

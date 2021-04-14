@@ -1,13 +1,13 @@
 package mchorse.mclib.client.gui.utils;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
 import mchorse.mclib.utils.IInterpolation;
 import mchorse.mclib.utils.MathUtils;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import org.lwjgl.opengl.GL11;
@@ -39,7 +39,7 @@ public class InterpolationRenderer
         y -= (int) (h * anchorY);
 
         GuiDraw.drawDropShadow(x, y, x + w, y + h + ah, 4, 0x88000000, 0x00000000);
-        Gui.drawRect(x, y, x + w, y + h + ah, 0xffffffff);
+        GuiDraw.drawRect(x, y, x + w, y + h + ah, 0xffffffff);
 
         context.font.drawString(interp.getName(), x + 10, y + 10, 0x000000);
 
@@ -50,11 +50,11 @@ public class InterpolationRenderer
 
         BufferBuilder builder = Tessellator.getInstance().getBuffer();
 
-        GlStateManager.color(1F, 1F, 1F, 1F);
-        GlStateManager.disableTexture2D();
-        GlStateManager.enableAlpha();
-        GlStateManager.enableBlend();
-        GlStateManager.glLineWidth(2F);
+        RenderSystem.color4f(1F, 1F, 1F, 1F);
+        RenderSystem.disableTexture();
+        RenderSystem.enableAlphaTest();
+        RenderSystem.enableBlend();
+        RenderSystem.lineWidth(2F);
 
         builder.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
 
@@ -79,7 +79,7 @@ public class InterpolationRenderer
 
         Tessellator.getInstance().draw();
 
-        GlStateManager.glLineWidth(3F);
+        RenderSystem.lineWidth(3F);
         builder.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
 
         for (int i = 1; i <= iterations; i++)
@@ -100,16 +100,16 @@ public class InterpolationRenderer
 
         Tessellator.getInstance().draw();
 
-        GlStateManager.enableTexture2D();
+        RenderSystem.enableTexture();
 
-        context.font.drawString("A", x + 14, (int)(y + h - 10 - padding / 2) + 4, 0x000000);
-        context.font.drawString("B", x + w - 19, (int)(y + 20 + padding / 2) - context.font.FONT_HEIGHT - 4, 0x000000);
+        context.font.drawString(new MatrixStack(), "A", x + 14, (int)(y + h - 10 - padding / 2) + 4, 0x000000);
+        context.font.drawString(new MatrixStack(), "B", x + w - 19, (int)(y + 20 + padding / 2) - context.font.FONT_HEIGHT - 4, 0x000000);
 
         float tick = ((context.tick + context.partialTicks) % (duration + 20)) / (float) duration;
         float factor = MathUtils.clamp(tick, 0, 1);
         int px = x + w - 5;
         int py = y + 20 + (int) (padding / 2) + (int) ((1 - interp.interpolate(0, 1, factor)) * (h - 30 - padding));
 
-        Gui.drawRect(px - 2, py - 2, px + 2, py + 2, 0xff000000);
+        GuiDraw.drawRect(px - 2, py - 2, px + 2, py + 2, 0xff000000);
     }
 }

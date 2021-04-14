@@ -4,9 +4,9 @@ import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.utils.resizers.IResizer;
 import mchorse.mclib.utils.MathUtils;
-import net.minecraft.client.gui.Gui;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
 
 /**
  * Utility class for boxes
@@ -62,7 +62,7 @@ public class Area implements IResizer
         return MathUtils.gridRows(count, size, this.w);
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public boolean isInside(GuiContext context)
     {
         return this.isInside(context.mouseX, context.mouseY);
@@ -282,7 +282,7 @@ public class Area implements IResizer
     /**
      * Draw a rect within the bound of this rect
      */
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void draw(int color)
     {
         this.draw(color, 0, 0, 0, 0);
@@ -291,7 +291,7 @@ public class Area implements IResizer
     /**
      * Draw a rect within the bound of this rect
      */
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void draw(int color, int offset)
     {
         this.draw(color, offset, offset, offset, offset);
@@ -300,7 +300,7 @@ public class Area implements IResizer
     /**
      * Draw a rect within the bound of this rect
      */
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void draw(int color, int horizontal, int vertical)
     {
         this.draw(color, horizontal, vertical, horizontal, vertical);
@@ -309,10 +309,10 @@ public class Area implements IResizer
     /**
      * Draw a rect within the bound of this rect
      */
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void draw(int color, int lx, int ty, int rx, int by)
     {
-        Gui.drawRect(this.x + lx, this.y + ty, this.ex() - rx, this.ey() - by, color);
+        GuiDraw.drawRect(this.x + lx, this.y + ty, this.ex() - rx, this.ey() - by, color);
     }
 
     /* IResizer implementation */
@@ -332,12 +332,12 @@ public class Area implements IResizer
     {}
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void add(GuiElement parent, GuiElement child)
     {}
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void remove(GuiElement parent, GuiElement child)
     {}
 

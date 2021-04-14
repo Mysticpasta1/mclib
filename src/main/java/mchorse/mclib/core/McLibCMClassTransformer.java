@@ -7,11 +7,11 @@ import mchorse.mclib.utils.coremod.CoreClassTransformer;
 
 public class McLibCMClassTransformer extends CoreClassTransformer
 {
+
     private SimpleReloadableResourceManagerTransformer resourcePack = new SimpleReloadableResourceManagerTransformer();
     private CPacketCustomPayloadTransformer customPayload = new CPacketCustomPayloadTransformer();
     private EntityRendererTransformer entityRenderer = new EntityRendererTransformer();
 
-    @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass)
     {
         if (checkName(name, "cev", "net.minecraft.client.resources.SimpleReloadableResourceManager"))

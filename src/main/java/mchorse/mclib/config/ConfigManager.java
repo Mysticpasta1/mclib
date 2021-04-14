@@ -18,6 +18,8 @@ import mchorse.mclib.network.mclib.Dispatcher;
 import mchorse.mclib.network.mclib.common.PacketConfig;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
@@ -50,9 +52,9 @@ public class ConfigManager
     /**
      * Send given config to all players on the server
      */
-    public static void synchronizeConfig(Config config, MinecraftServer server, EntityPlayer exception)
+    public static void synchronizeConfig(Config config, MinecraftServer server, PlayerEntity exception)
     {
-        for (EntityPlayerMP target : server.getPlayerList().getPlayers())
+        for (ServerPlayerEntity target : server.getPlayerList().getPlayers())
         {
             if (target == exception)
             {

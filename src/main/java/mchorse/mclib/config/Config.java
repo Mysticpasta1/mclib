@@ -8,9 +8,9 @@ import mchorse.mclib.network.IByteBufSerializable;
 import mchorse.mclib.network.mclib.Dispatcher;
 import mchorse.mclib.network.mclib.common.PacketConfig;
 import mchorse.mclib.utils.JsonUtils;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -29,7 +29,7 @@ public class Config implements IByteBufSerializable
 
     public final Map<String, Value> values = new LinkedHashMap<String, Value>();
 
-    private boolean serverSide;
+    private boolean serverDist;
 
     public Config(String id, File file)
     {
@@ -43,16 +43,16 @@ public class Config implements IByteBufSerializable
         this.file = null;
     }
 
-    public Config serverSide()
+    public Config serverDist()
     {
-        this.serverSide = true;
+        this.serverDist = true;
 
         return this;
     }
 
-    public boolean isServerSide()
+    public boolean isServerDist()
     {
-        return this.serverSide;
+        return this.serverDist;
     }
 
     public boolean hasSyncable()
@@ -70,31 +70,31 @@ public class Config implements IByteBufSerializable
 
     /* Translation string related methods */
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public String getTitleKey()
     {
         return this.id + ".config.title";
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public String getCategoryTitleKey(Value value)
     {
         return this.id + ".config." + value.getPath() + ".title";
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public String getCategoryTooltipKey(Value value)
     {
         return this.id + ".config." + value.getPath() + ".tooltip";
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public String getValueLabelKey(Value value)
     {
         return this.id + ".config." + value.getPath();
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public String getValueCommentKey(Value value)
     {
         return this.id + ".config.comments." + value.getPath();
@@ -144,7 +144,7 @@ public class Config implements IByteBufSerializable
             }
             else
             {
-                /* If file is null, that means that it was sent from server side */
+                /* If file is null, that means that it was sent from server Dist */
                 Dispatcher.sendToServer(new PacketConfig(this));
             }
 
@@ -188,9 +188,9 @@ public class Config implements IByteBufSerializable
         return this.filter(Value::isSyncable);
     }
 
-    public Config filterServerSide()
+    public Config filterServerDist()
     {
-        return this.filter(Predicates.not(Value::isClientSide));
+        return this.filter(Predicates.not(Value::isClientDist));
     }
 
     public Config filter(Predicate<Value> predicate)

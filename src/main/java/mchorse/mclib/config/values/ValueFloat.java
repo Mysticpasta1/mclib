@@ -11,9 +11,8 @@ import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.config.gui.GuiConfigPanel;
 import mchorse.mclib.utils.MathUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.Arrays;
 import java.util.List;
 
@@ -100,7 +99,7 @@ public class ValueFloat extends Value implements IServerValue, IConfigGuiProvide
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public List<GuiElement> getFields(Minecraft mc, GuiConfigPanel gui)
     {
         GuiElement element = new GuiElement(mc);

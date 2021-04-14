@@ -95,7 +95,7 @@ public class GuiToggleElement extends GuiClickElement<GuiToggleElement> implemen
         {
             int y = this.area.my(this.font.FONT_HEIGHT - 1);
 
-            Gui.drawRect(this.area.x, y - 3, this.area.x + 11, y + 8, 0xff000000 + McLib.primaryColor.get());
+            GuiDraw.drawRect(this.area.x, y - 3, this.area.x + 11, y + 8, 0xff000000 + McLib.primaryColor.get());
 
             if (McLib.enableBorders.get())
             {
@@ -111,7 +111,7 @@ public class GuiToggleElement extends GuiClickElement<GuiToggleElement> implemen
 
             if (!this.isEnabled())
             {
-                Gui.drawRect(this.area.x, y - 3, this.area.x + 11, y + 8, 0x88000000);
+                GuiDraw.drawRect(this.area.x, y - 3, this.area.x + 11, y + 8, 0x88000000);
                 GuiDraw.drawOutlinedIcon(Icons.LOCKED, this.area.x + 5, y + 2, 0xffffffff, 0.5F, 0.5F);
             }
         }
@@ -132,8 +132,8 @@ public class GuiToggleElement extends GuiClickElement<GuiToggleElement> implemen
             }
 
             /* Draw toggle background */
-            Gui.drawRect(x, y - h / 2, x + w, y - h / 2 + h, 0xff000000);
-            Gui.drawRect(x + 1, y - h / 2 + 1, x + w - 1, y - h / 2 + h - 1, 0xff000000 + (this.state ? color : (this.hover ? 0x3a3a3a : 0x444444)));
+            GuiDraw.drawRect(x, y - h / 2, x + w, y - h / 2 + h, 0xff000000);
+            GuiDraw.drawRect(x + 1, y - h / 2 + 1, x + w - 1, y - h / 2 + h - 1, 0xff000000 + (this.state ? color : (this.hover ? 0x3a3a3a : 0x444444)));
 
             if (this.state)
             {
@@ -146,20 +146,20 @@ public class GuiToggleElement extends GuiClickElement<GuiToggleElement> implemen
 
             if (!this.isEnabled())
             {
-                Gui.drawRect(x, y - h / 2, x + w, y - h / 2 + h, 0x88000000);
+                GuiDraw.drawRect(x, y - h / 2, x + w, y - h / 2 + h, 0x88000000);
             }
 
             x += this.state ? w - 2 : 2;
 
             /* Draw toggle switch */
-            Gui.drawRect(x - 4, y - 8, x + 4, y + 8, 0xff000000);
-            Gui.drawRect(x - 3, y - 7, x + 3, y + 7, 0xffffffff);
-            Gui.drawRect(x - 2, y - 6, x + 3, y + 7, 0xff888888);
-            Gui.drawRect(x - 2, y - 6, x + 2, y + 6, 0xffbbbbbb);
+            GuiDraw.drawRect(x - 4, y - 8, x + 4, y + 8, 0xff000000);
+            GuiDraw.drawRect(x - 3, y - 7, x + 3, y + 7, 0xffffffff);
+            GuiDraw.drawRect(x - 2, y - 6, x + 3, y + 7, 0xff888888);
+            GuiDraw.drawRect(x - 2, y - 6, x + 2, y + 6, 0xffbbbbbb);
 
             if (!this.isEnabled())
             {
-                Gui.drawRect(x - 4, y - 8, x + 4, y + 8, 0x88000000);
+                GuiDraw.drawRect(x - 4, y - 8, x + 4, y + 8, 0x88000000);
 
                 GuiDraw.drawOutlinedIcon(Icons.LOCKED, this.area.ex() - w / 2 - 2, y, 0xffffffff, 0.5F, 0.5F);
             }

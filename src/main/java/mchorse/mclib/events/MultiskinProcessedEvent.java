@@ -1,13 +1,13 @@
 package mchorse.mclib.events;
 
 import mchorse.mclib.utils.resources.MultiResourceLocation;
-import net.minecraftforge.fml.common.eventhandler.Event;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.eventbus.api.Event;
 
 import java.awt.image.BufferedImage;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class MultiskinProcessedEvent extends Event
 {
     public MultiResourceLocation location;

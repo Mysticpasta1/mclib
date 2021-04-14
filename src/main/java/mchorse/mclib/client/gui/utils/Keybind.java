@@ -2,6 +2,11 @@ package mchorse.mclib.client.gui.utils;
 
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.utils.Keys;
+import net.java.games.input.AbstractController;
+import net.java.games.input.Component;
+import net.java.games.input.Controller;
+import net.java.games.input.Keyboard;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.input.Keyboard;
 
 import java.util.Arrays;
@@ -106,17 +111,17 @@ public class Keybind
 
     protected boolean isKeyDown(int key)
     {
-        if (key == Keyboard.KEY_LSHIFT || key == Keyboard.KEY_RSHIFT)
+        if (key == GLFW.GLFW_KEY_LEFT_SHIFT || key == GLFW.GLFW_KEY_RIGHT_SHIFT)
         {
-            return Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
+            return Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT) || Keyboard.isKeyDown(GLFW.GLFW_KEY_RIGHT_SHIFT);
         }
-        else if (key == Keyboard.KEY_LCONTROL || key == Keyboard.KEY_RCONTROL)
+        else if (key == GLFW.GLFW_KEY_LEFT_CONTROL || key == GLFW.GLFW_KEY_RIGHT_CONTROL)
         {
-            return Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL);
+            return Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL) || Keyboard.isKeyDown(GLFW.GLFW_KEY_RIGHT_CONTROL);
         }
-        else if (key == Keyboard.KEY_LMENU || key == Keyboard.KEY_RMENU)
+        else if (key == GLFW.GLFW_KEY_LEFT_ALT || key == GLFW.GLFW_KEY_RIGHT_ALT)
         {
-            return Keyboard.isKeyDown(Keyboard.KEY_LMENU) || Keyboard.isKeyDown(Keyboard.KEY_RMENU);
+            return Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_ALT) || Keyboard.isKeyDown(GLFW.GLFW_KEY_RIGHT_ALT);
         }
 
         return Keyboard.isKeyDown(key);

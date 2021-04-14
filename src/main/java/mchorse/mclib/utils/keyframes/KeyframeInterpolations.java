@@ -2,8 +2,8 @@ package mchorse.mclib.utils.keyframes;
 
 import mchorse.mclib.utils.IInterpolation;
 import mchorse.mclib.utils.Interpolations;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class KeyframeInterpolations
 {
@@ -22,14 +22,14 @@ public class KeyframeInterpolations
         }
 
         @Override
-        @SideOnly(Side.CLIENT)
+        @OnlyIn(Dist.CLIENT)
         public String getKey()
         {
             return "mclib.interpolations.const";
         }
 
         @Override
-        @SideOnly(Side.CLIENT)
+        @OnlyIn(Dist.CLIENT)
         public String getTooltipKey()
         {
             return "mclib.interpolations.tooltips.const";
@@ -51,14 +51,14 @@ public class KeyframeInterpolations
         }
 
         @Override
-        @SideOnly(Side.CLIENT)
+        @OnlyIn(Dist.CLIENT)
         public String getKey()
         {
             return "mclib.interpolations.hermite";
         }
 
         @Override
-        @SideOnly(Side.CLIENT)
+        @OnlyIn(Dist.CLIENT)
         public String getTooltipKey()
         {
             return "mclib.interpolations.tooltips.hermite";
@@ -80,14 +80,14 @@ public class KeyframeInterpolations
         }
 
         @Override
-        @SideOnly(Side.CLIENT)
+        @OnlyIn(Dist.CLIENT)
         public String getKey()
         {
             return "mclib.interpolations.bezier";
         }
 
         @Override
-        @SideOnly(Side.CLIENT)
+        @OnlyIn(Dist.CLIENT)
         public String getTooltipKey()
         {
             return "mclib.interpolations.tooltips.bezier";

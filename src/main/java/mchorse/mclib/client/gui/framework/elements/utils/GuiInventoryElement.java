@@ -1,21 +1,21 @@
 package mchorse.mclib.client.gui.framework.elements.utils;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.mclib.McLib;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiSlotElement;
 import mchorse.mclib.client.gui.utils.Area;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.List;
@@ -43,33 +43,33 @@ public class GuiInventoryElement extends GuiElement
      */
     public static void drawItemStack(ItemStack stack, int x, int y, int z, String altText)
     {
-        RenderItem itemRender = Minecraft.getMinecraft().getRenderItem();
+        ItemRenderer itemRender = Minecraft.getInstance().getItemRenderer();
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(0.0F, 0.0F, 32.0F);
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef(0.0F, 0.0F, 32.0F);
         itemRender.zLevel = z;
 
         FontRenderer font = null;
         if (!stack.isEmpty()) font = stack.getItem().getFontRenderer(stack);
-        if (font == null) font = Minecraft.getMinecraft().fontRenderer;
+        if (font == null) font = Minecraft.getInstance().fontRenderer;
 
         itemRender.renderItemAndEffectIntoGUI(stack, x, y);
         itemRender.renderItemOverlayIntoGUI(font, stack, x, y, altText);
         itemRender.zLevel = 0.0F;
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     /**
      * Draw item tooltip
      */
-    public static void drawItemTooltip(ItemStack stack, EntityPlayerSP player, FontRenderer providedFont, int x, int y)
+    public static void drawItemTooltip(ItemStack stack, ServerPlayerEntity player, FontRenderer providedFont, int x, int y)
     {
         if (stack.isEmpty())
         {
             return;
         }
 
-        List<String> list = stack.getTooltip(player, Minecraft.getMinecraft().gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL);
+        List<ITextComponent> list = stack.getTooltip(player, Minecraft.getInstance().gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL);
         FontRenderer font = stack.getItem().getFontRenderer(stack);
 
         for (int i = 0; i < list.size(); ++i)
@@ -84,11 +84,11 @@ public class GuiInventoryElement extends GuiElement
             }
         }   
 
-        GuiScreen screen = Minecraft.getMinecraft().currentScreen;
+        Screen screen = Minecraft.getInstance().currentScreen;
 
-        net.minecraftforge.fml.client.config.GuiUtils.preItemToolTip(stack);
-        net.minecraftforge.fml.client.config.GuiUtils.drawHoveringText(list, x, y, screen.width, screen.height, -1, font == null ? providedFont : font);
-        net.minecraftforge.fml.client.config.GuiUtils.postItemToolTip();
+        net.minecraftforge.fml.client.gui.GuiUtils.preItemToolTip(stack);
+        net.minecraftforge.fml.client.gui.GuiUtils.drawHoveringText(list, x, y, screen.width, screen.height, -1, font == null ? providedFont : font);
+        net.minecraftforge.fml.client.gui.GuiUtils.postItemToolTip();
     }
 
     public GuiInventoryElement(Minecraft mc, Consumer<ItemStack> callback)
@@ -163,7 +163,8 @@ public class GuiInventoryElement extends GuiElement
 
             if (this.callback != null)
             {
-                this.callback.accept(Minecraft.getMinecraft().player.inventory.mainInventory.get(index));
+                assert Minecraft.getInstance().player != null;
+                this.callback.accept(Minecraft.getInstance().player.inventory.mainInventory.get(index));
 
                 return true;
             }
@@ -183,24 +184,25 @@ public class GuiInventoryElement extends GuiElement
 
         if (McLib.enableBorders.get())
         {
-            Gui.drawRect(this.area.x + 1, this.area.y, this.area.ex() - 1, this.area.ey(), 0xff000000);
-            Gui.drawRect(this.area.x, this.area.y + 1, this.area.ex(), this.area.ey() - 1, 0xff000000);
-            Gui.drawRect(this.area.x + 1, this.area.y + 1, this.area.ex() - 1, this.area.ey() - 1, border);
-            Gui.drawRect(this.area.x + 2, this.area.y + 2, this.area.ex() - 2, fourth, 0xffc6c6c6);
-            Gui.drawRect(this.area.x + 1, fourth, this.area.ex() - 1, this.area.ey() - 1, 0xff222222);
+            GuiDraw.drawRect(this.area.x + 1, this.area.y, this.area.ex() - 1, this.area.ey(), 0xff000000);
+            GuiDraw.drawRect(this.area.x, this.area.y + 1, this.area.ex(), this.area.ey() - 1, 0xff000000);
+            GuiDraw.drawRect(this.area.x + 1, this.area.y + 1, this.area.ex() - 1, this.area.ey() - 1, border);
+            GuiDraw.drawRect(this.area.x + 2, this.area.y + 2, this.area.ex() - 2, fourth, 0xffc6c6c6);
+            GuiDraw.drawRect(this.area.x + 1, fourth, this.area.ex() - 1, this.area.ey() - 1, 0xff222222);
         }
         else
         {
-            Gui.drawRect(this.area.x, this.area.y, this.area.ex(), this.area.ey(), border);
-            Gui.drawRect(this.area.x + 1, this.area.y + 1, this.area.ex() - 1, fourth, 0xffc6c6c6);
-            Gui.drawRect(this.area.x, fourth, this.area.ex(), this.area.ey(), 0xff222222);
+            GuiDraw.drawRect(this.area.x, this.area.y, this.area.ex(), this.area.ey(), border);
+            GuiDraw.drawRect(this.area.x + 1, this.area.y + 1, this.area.ex() - 1, fourth, 0xffc6c6c6);
+            GuiDraw.drawRect(this.area.x, fourth, this.area.ex(), this.area.ey(), 0xff222222);
         }
 
-        GlStateManager.enableDepth();
-        RenderHelper.enableGUIStandardItemLighting();
+        RenderSystem.enableDepthTest();
+        RenderHelper.enableStandardItemLighting();
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
 
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
+        PlayerEntity player = Minecraft.getInstance().player;
+        assert player != null;
         NonNullList<ItemStack> inventory = player.inventory.mainInventory;
 
         int index = this.drawGrid(context, this.inventory, inventory, -1, 9, inventory.size());
@@ -212,7 +214,7 @@ public class GuiInventoryElement extends GuiElement
             this.active = inventory.get(index);
         }
 
-        GlStateManager.disableDepth();
+        RenderSystem.disableDepthTest();
         RenderHelper.disableStandardItemLighting();
 
         GuiDraw.drawLockedArea(this, McLib.enableBorders.get() ? 1 : 0);
@@ -238,13 +240,13 @@ public class GuiInventoryElement extends GuiElement
 
             boolean hover = diffX >= 0 && diffX < 18 && diffY >= 0 && diffY < 18;
 
-            Gui.drawRect(x - 1, y - 1, x + 17, y + 17, area == this.hotbar ? 0xaa000000 : 0x44000000);
+            GuiDraw.drawRect(x - 1, y - 1, x + 17, y + 17, area == this.hotbar ? 0xaa000000 : 0x44000000);
 
             drawItemStack(stack, x, y, null);
 
             if (hover)
             {
-                Gui.drawRect(x - 2, y - 2, x + 18, y + 18, 0xcc000000 + McLib.primaryColor.get());
+                GuiDraw.drawRect(x - 2, y - 2, x + 18, y + 18, 0xcc000000 + McLib.primaryColor.get());
                 index = k;
             }
         }

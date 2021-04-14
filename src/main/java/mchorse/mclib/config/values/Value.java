@@ -7,8 +7,8 @@ import io.netty.buffer.ByteBuf;
 import mchorse.mclib.config.Config;
 import mchorse.mclib.config.ConfigManager;
 import mchorse.mclib.network.IByteBufSerializable;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -363,13 +363,13 @@ public class Value implements IByteBufSerializable
 
     /* Client side stuff */
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public String getLabelKey()
     {
         return this.config.getValueLabelKey(this);
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public String getCommentKey()
     {
         return this.config.getValueCommentKey(this);

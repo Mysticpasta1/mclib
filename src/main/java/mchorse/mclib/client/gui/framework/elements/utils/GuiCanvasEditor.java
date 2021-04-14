@@ -1,11 +1,10 @@
 package mchorse.mclib.client.gui.framework.elements.utils;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.utils.Area;
 import mchorse.mclib.client.gui.utils.Icons;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.opengl.GL11;
 
 public abstract class GuiCanvasEditor extends GuiCanvas
@@ -60,8 +59,8 @@ public abstract class GuiCanvasEditor extends GuiCanvas
 
         Area area = this.calculate(-this.w / 2, -this.h / 2, this.w / 2, this.h / 2);
 
-        Gui.drawRect(area.x - 1, area.y - 1, area.ex() + 1, area.ey() + 1, 0xff181818);
-        GlStateManager.color(1, 1, 1, 1);
+        GuiDraw.drawRect(area.x - 1, area.y - 1, area.ex() + 1, area.ey() + 1, 0xff181818);
+        RenderSystem.color4f(1, 1, 1, 1);
 
         if (!this.shouldDrawCanvas(context))
         {
@@ -79,14 +78,14 @@ public abstract class GuiCanvasEditor extends GuiCanvas
         processed.clamp(area);
         Icons.CHECKBOARD.renderArea(area.x, area.y, area.w, area.h);
 
-        GlStateManager.alphaFunc(GL11.GL_GREATER, 0);
-        GlStateManager.enableBlend();
-        GlStateManager.enableAlpha();
+        RenderSystem.alphaFunc(GL11.GL_GREATER, 0);
+        RenderSystem.enableBlend();
+        RenderSystem.enableAlphaTest();
 
         this.drawCanvasFrame(context);
 
-        GlStateManager.color(1F, 1F, 1F);
-        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
+        RenderSystem.color3f(1F, 1F, 1F);
+        RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
         GuiDraw.unscissor(context);
     }
 

@@ -1,5 +1,6 @@
 package mchorse.mclib.client.gui.framework.elements.keyframes;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
@@ -9,10 +10,8 @@ import mchorse.mclib.utils.keyframes.Keyframe;
 import mchorse.mclib.utils.keyframes.KeyframeEasing;
 import mchorse.mclib.utils.keyframes.KeyframeInterpolation;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -202,10 +201,10 @@ public abstract class GuiKeyframeElement extends GuiElement
         {
             if (context.mouseButton == 0)
             {
-                boolean shift = GuiScreen.isShiftKeyDown();
+                boolean shift = Screen.isShiftKeyDown();
 
                 /* Duplicate the keyframe */
-                if (GuiScreen.isAltKeyDown() && !shift && this.which == Selection.KEYFRAME)
+                if (Screen.isAltKeyDown() && !shift && this.which == Selection.KEYFRAME)
                 {
                     this.duplicateKeyframe(context, mouseX, mouseY);
 
@@ -329,21 +328,21 @@ public abstract class GuiKeyframeElement extends GuiElement
         this.drawCursor(context);
 
         /* Draw graph of the keyframe channel */
-        GlStateManager.glLineWidth(Minecraft.getMinecraft().gameSettings.guiScale * 1.5F);
-        GlStateManager.disableTexture2D();
-        GlStateManager.enableBlend();
-        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.lineWidth(Minecraft.getInstance().gameSettings.guiScale * 1.5F);
+        RenderSystem.disableTexture();
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(RenderSystem.SourceFactor.SRC_ALPHA, RenderSystem.DestFactor.ONE_MINUS_SRC_ALPHA);
 
         this.drawGraph(context, context.mouseX, context.mouseY);
 
         /* Draw selection box */
         if (this.isGrabbing())
         {
-            Gui.drawRect(this.lastX, this.lastY, context.mouseX, context.mouseY, 0x440088ff);
+            GuiDraw.drawRect(this.lastX, this.lastY, context.mouseX, context.mouseY, 0x440088ff);
         }
 
-        GlStateManager.disableBlend();
-        GlStateManager.enableTexture2D();
+        RenderSystem.disableBlend();
+        RenderSystem.enableTexture();
 
         GuiDraw.unscissor(context);
 
@@ -359,8 +358,8 @@ public abstract class GuiKeyframeElement extends GuiElement
             int leftBorder = this.toGraphX(0);
             int rightBorder = this.toGraphX(this.duration);
 
-            if (leftBorder > this.area.x) Gui.drawRect(this.area.x, this.area.y, leftBorder, this.area.y + this.area.h, 0x88000000);
-            if (rightBorder < this.area.ex()) Gui.drawRect(rightBorder, this.area.y, this.area.ex() , this.area.y + this.area.h, 0x88000000);
+            if (leftBorder > this.area.x) GuiDraw.drawRect(this.area.x, this.area.y, leftBorder, this.area.y + this.area.h, 0x88000000);
+            if (rightBorder < this.area.ex()) GuiDraw.drawRect(rightBorder, this.area.y, this.area.ex() , this.area.y + this.area.h, 0x88000000);
         }
     }
 
@@ -382,7 +381,7 @@ public abstract class GuiKeyframeElement extends GuiElement
 
             String label = this.converter == null ? String.valueOf(j * mult) : this.converter.format(j * mult);
 
-            Gui.drawRect(x, this.area.y, x + 1, this.area.ey(), 0x44ffffff);
+            GuiDraw.drawRect(x, this.area.y, x + 1, this.area.ey(), 0x44ffffff);
             this.font.drawString(label, x + 4, this.area.y + 4, 0xffffff);
         }
     }

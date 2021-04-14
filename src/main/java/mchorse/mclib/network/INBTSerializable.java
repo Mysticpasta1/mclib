@@ -1,15 +1,15 @@
 package mchorse.mclib.network;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 public interface INBTSerializable
 {
-    public void fromNBT(NBTTagCompound tag);
+    public void fromNBT(CompoundNBT tag);
 
-    public NBTTagCompound toNBT(NBTTagCompound tag);
+    public CompoundNBT toNBT(CompoundNBT tag);
 
-    public default NBTTagCompound toNBT()
+    public default CompoundNBT toNBT()
     {
-        return this.toNBT(new NBTTagCompound());
+        return this.toNBT(new CompoundNBT());
     }
 }

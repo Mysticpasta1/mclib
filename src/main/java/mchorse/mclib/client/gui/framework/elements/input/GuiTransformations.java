@@ -8,15 +8,16 @@ import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.command.arguments.NBTTagArgument;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagDouble;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.common.util.Constants;
 
-import javax.vecmath.Vector3d;
+import java.util.List;
 
 /**
  * Transformation editor GUI
@@ -198,14 +199,14 @@ public class GuiTransformations extends GuiElement
     public GuiContextMenu createContextMenu(GuiContext context)
     {
         GuiSimpleContextMenu menu = new GuiSimpleContextMenu(context.mc);
-        NBTTagList transforms = null;
+        ListNBT transforms = null;
 
         try
         {
-            NBTTagCompound tag = JsonToNBT.getTagFromJson("{Transforms:"+ GuiScreen.getClipboardString()+"}");
-            NBTTagList list = tag.getTagList("Transforms", Constants.NBT.TAG_DOUBLE);
+            CompoundNBT tag = JsonToNBT.getTagFromJson("{Transforms:"+ Screen.getClipboardString()+"}");
+            ListNBT list = tag.getList("Transforms", Constants.NBT.TAG_DOUBLE);
 
-            if (list.tagCount() >= 9)
+            if (list.size() >= 9)
             {
                 transforms = list;
             }
@@ -217,7 +218,7 @@ public class GuiTransformations extends GuiElement
 
         if (transforms != null)
         {
-            final NBTTagList innerList = transforms;
+            final ListNBT innerList = transforms;
 
             menu.action(Icons.PASTE, IKey.lang("mclib.gui.transforms.context.paste"), () -> this.pasteAll(innerList));
             menu.action(Icons.ALL_DIRECTIONS, IKey.lang("mclib.gui.transforms.context.paste_translation"), () -> this.pasteTranslation(innerList));
@@ -232,29 +233,29 @@ public class GuiTransformations extends GuiElement
 
     private void copyTransformations()
     {
-        NBTTagList list = new NBTTagList();
+        ListNBT list = new ListNBT();
 
-        list.appendTag(new NBTTagDouble(this.tx.value));
-        list.appendTag(new NBTTagDouble(this.ty.value));
-        list.appendTag(new NBTTagDouble(this.tz.value));
-        list.appendTag(new NBTTagDouble(this.sx.value));
-        list.appendTag(new NBTTagDouble(this.sy.value));
-        list.appendTag(new NBTTagDouble(this.sz.value));
-        list.appendTag(new NBTTagDouble(this.rx.value));
-        list.appendTag(new NBTTagDouble(this.ry.value));
-        list.appendTag(new NBTTagDouble(this.rz.value));
+        list.add(new NBTTagArgument(this.tx.value));
+        list.add(new NBTTagArgument(this.ty.value));
+        list.add(new NBTTagArgument(this.tz.value));
+        list.add(new NBTTagArgument(this.sx.value));
+        list.add(new NBTTagArgument(this.sy.value));
+        list.add(new NBTTagArgument(this.sz.value));
+        list.add(new NBTTagArgument(this.rx.value));
+        list.add(new NBTTagArgument(this.ry.value));
+        list.add(new NBTTagArgument(this.rz.value));
 
-        GuiScreen.setClipboardString(list.toString());
+        Screen.setClipboardString(list.toString());
     }
 
-    public void pasteAll(NBTTagList list)
+    public void pasteAll(ListNBT list)
     {
         this.pasteTranslation(list);
         this.pasteScale(list);
         this.pasteRotation(list);
     }
 
-    public void pasteTranslation(NBTTagList list)
+    public void pasteTranslation(ListNBT list)
     {
         Vector3d translation = this.getVector(list, 0);
 
@@ -263,7 +264,7 @@ public class GuiTransformations extends GuiElement
         this.tz.setValueAndNotify(translation.z);
     }
 
-    public void pasteScale(NBTTagList list)
+    public void pasteScale(ListNBT list)
     {
         Vector3d scale = this.getVector(list, 3);
 
@@ -272,7 +273,7 @@ public class GuiTransformations extends GuiElement
         this.sx.setValueAndNotify(scale.x);
     }
 
-    public void pasteRotation(NBTTagList list)
+    public void pasteRotation(ListNBT list)
     {
         Vector3d rotation = this.getVector(list, 6);
 
@@ -281,13 +282,13 @@ public class GuiTransformations extends GuiElement
         this.rz.setValueAndNotify(rotation.z);
     }
 
-    private Vector3d getVector(NBTTagList list, int offset)
+    private Vector3d getVector(ListNBT list, int offset)
     {
         Vector3d result = new Vector3d();
 
-        result.x = list.getDoubleAt(offset);
-        result.y = list.getDoubleAt(offset + 1);
-        result.z = list.getDoubleAt(offset + 2);
+        result.x = list.getDouble(offset);
+        result.y = list.getDouble(offset + 1);
+        result.z = list.getDouble(offset + 2);
 
         return result;
     }

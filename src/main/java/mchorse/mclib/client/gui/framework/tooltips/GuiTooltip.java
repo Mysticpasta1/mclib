@@ -3,11 +3,6 @@ package mchorse.mclib.client.gui.framework.tooltips;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.utils.Area;
-import mchorse.mclib.utils.Direction;
-import mchorse.mclib.utils.MathUtils;
-import net.minecraft.client.gui.Gui;
-
-import java.util.List;
 
 public class GuiTooltip
 {

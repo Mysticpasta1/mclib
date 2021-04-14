@@ -6,55 +6,57 @@ import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.utils.IViewportStack;
 import mchorse.mclib.client.gui.utils.Area;
 import mchorse.mclib.client.gui.utils.keys.IKey;
+import net.java.games.input.Keyboard;
+import net.java.games.input.Mouse;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import org.lwjgl.glfw.GLFW;
 
 import java.io.IOException;
 
 /**
  * Base class for GUI screens using this framework
  */
-@SideOnly(Side.CLIENT)
-public class GuiBase extends GuiScreen
+@OnlyIn(Dist.CLIENT)
+public class GuiBase extends Screen
 {
     private static GuiContext current;
 
     public GuiElement root;
     public GuiContext context = new GuiContext(this);
     public Area viewport = new Area();
+    private Minecraft mc = Minecraft.getInstance();
 
     public static GuiContext getCurrent()
     {
         return current;
     }
 
-    public GuiBase()
+    public GuiBase(ITextComponent textComponent)
     {
+        super(textComponent);
         current = this.context;
 
-        this.context.mc = Minecraft.getMinecraft();
+        this.context.mc = Minecraft.getInstance();
         this.context.font = this.context.mc.fontRenderer;
 
         this.root = new GuiRootElement(this.context.mc);
         this.root.markContainer().flex().relative(this.viewport).wh(1F, 1F);
-        this.root.keys().register(IKey.lang("mclib.gui.keys.list"), Keyboard.KEY_F9, () -> this.context.keybinds.toggleVisible());
+        this.root.keys().register(IKey.lang("mclib.gui.keys.list"), GLFW.GLFW_KEY_F9, () -> this.context.keybinds.toggleVisible());
 
         this.context.keybinds.flex().relative(this.viewport).wh(0.5F, 1F);
 
         Keyboard.enableRepeatEvents(false);
     }
 
-    @Override
     public void updateScreen()
     {
         this.context.tick += 1;
     }
 
-    @Override
     public void initGui()
     {
         current = this.context;
@@ -75,13 +77,11 @@ public class GuiBase extends GuiScreen
     protected void viewportSet()
     {}
 
-    @Override
     public void onGuiClosed()
     {
         current = null;
     }
 
-    @Override
     public void handleMouseInput() throws IOException
     {
         int x = Mouse.getEventX() * this.width / this.mc.displayWidth;
@@ -99,7 +99,6 @@ public class GuiBase extends GuiScreen
         this.mouseScrolled(x, y, scroll);
     }
 
-    @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
     {
         this.context.setMouse(mouseX, mouseY, mouseButton);
@@ -124,7 +123,6 @@ public class GuiBase extends GuiScreen
         }
     }
 
-    @Override
     protected void mouseReleased(int mouseX, int mouseY, int state)
     {
         this.context.setMouse(mouseX, mouseY, state);
@@ -137,7 +135,6 @@ public class GuiBase extends GuiScreen
         }
     }
 
-    @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException
     {
         this.context.setKey(typedChar, keyCode);
@@ -168,9 +165,10 @@ public class GuiBase extends GuiScreen
     /**
      * This method is called when this screen is about to get closed
      */
-    protected void closeScreen()
+    @Override
+    public void closeScreen()
     {
-        this.mc.displayGuiScreen((GuiScreen) null);
+        this.mc.displayGuiScreen((Screen) null);
 
         if (this.mc.currentScreen == null)
         {
@@ -185,11 +183,10 @@ public class GuiBase extends GuiScreen
         this.closeScreen();
     }
 
-    @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         this.context.setMouse(mouseX, mouseY);
-        this.context.partialTicks = Minecraft.getMinecraft().getRenderPartialTicks();
+        this.context.partialTicks = Minecraft.getInstance().getRenderPartialTicks();
 
         if (this.root.isVisible())
         {

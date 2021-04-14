@@ -1,5 +1,6 @@
 package mchorse.mclib.client.gui.framework.elements.input;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.mclib.McLib;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiButtonElement;
@@ -22,16 +23,13 @@ import mchorse.mclib.utils.resources.FilteredResourceLocation;
 import mchorse.mclib.utils.resources.MultiResourceLocation;
 import mchorse.mclib.utils.resources.RLUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBTType;
 import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Collections;
@@ -154,7 +152,7 @@ public class GuiTexturePicker extends GuiElement
 
         try
         {
-            NBTTagCompound compound = JsonToNBT.getTagFromJson(GuiScreen.getClipboardString());
+            CompoundNBT compound = JsonToNBT.getTagFromJson(Screen.getClipboardString());
 
             location = RLUtils.create(compound.getTag("RL"));
         }
@@ -166,19 +164,19 @@ public class GuiTexturePicker extends GuiElement
 
     private void copyRL()
     {
-        NBTBase location = RLUtils.writeNbt(this.multiRL != null ? this.multiRL : this.current);
+        INBTType location = RLUtils.writeNbt(this.multiRL != null ? this.multiRL : this.current);
 
         if (location == null)
         {
-            GuiScreen.setClipboardString("");
+            Screen.setClipboardString("");
         }
         else
         {
-            NBTTagCompound tag = new NBTTagCompound();
+            CompoundNBT tag = new CompoundNBT();
 
             tag.setTag("RL", location);
 
-            GuiScreen.setClipboardString(tag.toString());
+            Screen.setClipboardString(tag.toString());
         }
     }
 
@@ -292,7 +290,7 @@ public class GuiTexturePicker extends GuiElement
 
         if (this.tree != null)
         {
-            FolderEntry folder = this.tree.getByPath(rl == null ? "" : rl.getResourceDomain() + "/" + rl.getResourcePath());
+            FolderEntry folder = this.tree.getByPath(rl == null ? "" : rl.getNamespace() + "/" + rl.getPath());
 
             if (folder != this.tree.root || this.picker.getList().isEmpty())
             {
@@ -318,7 +316,7 @@ public class GuiTexturePicker extends GuiElement
              * use it */
             if (rl != null)
             {
-                this.mc.renderEngine.bindTexture(rl);
+                this.mc.getTextureManager().bindTexture(rl);
             }
         }
         catch (Exception e)
@@ -439,7 +437,7 @@ public class GuiTexturePicker extends GuiElement
 
         int keyCode = context.keyCode;
 
-        if (keyCode == Keyboard.KEY_RETURN)
+        if (keyCode == GLFW.GLFW_KEY_ENTER)
         {
             List<AbstractEntry> selected = this.picker.getCurrent();
             AbstractEntry entry = selected.isEmpty() ? null : selected.get(0);
@@ -457,15 +455,15 @@ public class GuiTexturePicker extends GuiElement
 
             return true;
         }
-        else if (keyCode == Keyboard.KEY_UP)
+        else if (keyCode == GLFW.GLFW_KEY_UP)
         {
-            return this.moveCurrent(-1, GuiScreen.isShiftKeyDown());
+            return this.moveCurrent(-1, Screen.isShiftKeyDown());
         }
-        else if (keyCode == Keyboard.KEY_DOWN)
+        else if (keyCode == GLFW.GLFW_KEY_DOWN)
         {
-            return this.moveCurrent(1, GuiScreen.isShiftKeyDown());
+            return this.moveCurrent(1, Screen.isShiftKeyDown());
         }
-        else if (keyCode == Keyboard.KEY_ESCAPE)
+        else if (keyCode == GLFW.GLFW_KEY_ESCAPE)
         {
             this.close();
 
@@ -494,7 +492,7 @@ public class GuiTexturePicker extends GuiElement
 
     protected boolean pickByTyping(char typedChar)
     {
-        if (!ChatAllowedCharacters.isAllowedCharacter(typedChar))
+        if (!mc.isAllowedCharacter(typedChar))
         {
             return false;
         }
@@ -570,7 +568,7 @@ public class GuiTexturePicker extends GuiElement
                 int x = this.text.area.x;
                 int y = this.text.area.ey();
 
-                Gui.drawRect(x, y, x + w + 4, y + 4 + this.font.FONT_HEIGHT, 0x88000000 + McLib.primaryColor.get());
+                GuiDraw.drawRect(x, y, x + w + 4, y + 4 + this.font.FONT_HEIGHT, 0x88000000 + McLib.primaryColor.get());
                 this.font.drawStringWithShadow(this.typed, x + 2, y + 2, 0xffffff);
             }
 
@@ -579,8 +577,8 @@ public class GuiTexturePicker extends GuiElement
             /* Draw preview */
             if (loc != null)
             {
-                GlStateManager.color(1, 1, 1, 1);
-                this.mc.renderEngine.bindTexture(loc);
+                RenderSystem.color4f(1, 1, 1, 1);
+                this.mc.getTextureManager().bindTexture(loc);
 
                 int w = GL11.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_WIDTH);
                 int h = GL11.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_HEIGHT);
@@ -609,8 +607,8 @@ public class GuiTexturePicker extends GuiElement
 
                 Icons.CHECKBOARD.renderArea(x, y, fw, fh);
 
-                GlStateManager.enableAlpha();
-                this.mc.renderEngine.bindTexture(loc);
+                RenderSystem.enableAlphaTest();
+                this.mc.getTextureManager().bindTexture(loc);
                 GuiDraw.drawBillboard(x, y, 0, 0, fw, fh, fw, fh);
             }
         }

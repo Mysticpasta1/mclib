@@ -1,10 +1,13 @@
 package mchorse.mclib.client.gui.mclib;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiIconElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTextElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTrackpadElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiCanvas;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
 import mchorse.mclib.client.gui.utils.GuiUtils;
 import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.keys.IKey;
@@ -13,12 +16,11 @@ import mchorse.mclib.math.MathBuilder;
 import mchorse.mclib.math.Variable;
 import mchorse.mclib.utils.Direction;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.MouseHelper;
+import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 public class GuiGraphPanel extends GuiDashboardPanel<GuiDashboard>
@@ -26,6 +28,7 @@ public class GuiGraphPanel extends GuiDashboardPanel<GuiDashboard>
     public GuiGraphCanvas canvas;
     public GuiTextElement expression;
     public GuiIconElement help;
+    public MatrixStack matrixStack = new MatrixStack();
 
     public GuiGraphPanel(Minecraft mc, GuiDashboard dashboard)
     {
@@ -132,7 +135,7 @@ public class GuiGraphPanel extends GuiDashboardPanel<GuiDashboard>
                     continue;
                 }
 
-                Gui.drawRect(this.area.x, y, this.area.ex(), y + 1, 0x44ffffff);
+                GuiDraw.drawRect(this.area.x, y, this.area.ex(), y + 1, 0x44ffffff);
                 this.font.drawString(String.valueOf(min + j * mult), this.area.x + 4, y + 4, 0xffffff);
             }
         }
@@ -159,7 +162,7 @@ public class GuiGraphPanel extends GuiDashboardPanel<GuiDashboard>
                     break;
                 }
 
-                Gui.drawRect(x, this.area.y, x + 1, this.area.ey(), 0x44ffffff);
+                GuiDraw.fill(x, this.area.y, x + 1, this.area.ey(), 0x44ffffff);
                 this.font.drawString(String.valueOf(min + j * mult), x + 4, this.area.y + 4, 0xffffff);
             }
 
@@ -168,7 +171,7 @@ public class GuiGraphPanel extends GuiDashboardPanel<GuiDashboard>
                 return;
             }
 
-            if (Mouse.isButtonDown(0) && !context.isFocused())
+            if (new MouseHelper(mc).isLeftDown() || new MouseHelper(mc).isRightDown() || new MouseHelper(mc).isMiddleDown() && !context.isFocused())
             {
                 int mouseX = context.mouseX;
                 double x = this.scaleX.from(mouseX);
@@ -189,7 +192,7 @@ public class GuiGraphPanel extends GuiDashboardPanel<GuiDashboard>
 
                 if (!isNaN)
                 {
-                    Gui.drawRect(mouseX, Math.min(y1, y2), mouseX + 1, Math.max(y1, y2), 0xff57f52a);
+                    AbstractGui.fill(, mouseX, Math.min(y1, y2), mouseX + 1, Math.max(y1, y2), 0xff57f52a);
                 }
 
                 int y3 = y1 < y2 ? y1 : y1 - 12;
@@ -197,12 +200,12 @@ public class GuiGraphPanel extends GuiDashboardPanel<GuiDashboard>
 
                 mouseX += 1;
 
-                Gui.drawRect(mouseX, y3, mouseX + w + 4, y3 + 12, 0xffffffff);
+                AbstractGui.fill(, mouseX, y3, mouseX + w + 4, y3 + 12, 0xffffffff);
                 this.font.drawString(coordinate, mouseX + 2, y3 + 2, 0x000000);
             }
 
-            GlStateManager.glLineWidth(4);
-            GlStateManager.disableTexture2D();
+            RenderSystem.lineWidth(4);
+            RenderSystem.disableTexture();
             BufferBuilder builder = Tessellator.getInstance().getBuffer();
 
             builder.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);

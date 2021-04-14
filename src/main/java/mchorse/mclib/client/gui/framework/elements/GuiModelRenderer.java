@@ -1,23 +1,33 @@
 package mchorse.mclib.client.gui.framework.elements;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.mclib.McLib;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
 import mchorse.mclib.utils.DummyEntity;
 import mchorse.mclib.utils.MathUtils;
+import mchorse.mclib.utils.MatrixUtils;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderSystem;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.math.vector.Matrix3f;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.Project;
 
@@ -36,10 +46,10 @@ public abstract class GuiModelRenderer extends GuiElement
 {
     private static boolean rendering;
     private static Vector3d vec = new Vector3d();
-    private static Matrix3d mat = new Matrix3d();
+    private static MatrixStack mat = new MatrixStack();
 
-    protected EntityLivingBase entity;
-    protected IBlockState block = Blocks.GRASS.getDefaultState();
+    protected LivingEntity entity;
+    protected BlockState block = Blocks.GRASS.getDefaultState();
 
     protected int timer;
     protected boolean dragging;
@@ -101,7 +111,7 @@ public abstract class GuiModelRenderer extends GuiElement
         this.scale = scale;
     }
 
-    public EntityLivingBase getEntity()
+    public LivingEntity getEntity()
     {
         return this.entity;
     }
@@ -125,11 +135,11 @@ public abstract class GuiModelRenderer extends GuiElement
         if (this.area.isInside(context) && (context.mouseButton == 0 || context.mouseButton == 2))
         {
             this.dragging = true;
-            this.position = GuiScreen.isShiftKeyDown() || context.mouseButton == 2;
+            this.position = Screen.isShiftKeyDown() || context.mouseButton == 2;
             this.lastX = context.mouseX;
             this.lastY = context.mouseY;
 
-            if (GuiScreen.isCtrlKeyDown())
+            if (Screen.isCtrlKeyDown())
             {
                 this.tryPicking = true;
                 this.dragging = false;
@@ -228,42 +238,42 @@ public abstract class GuiModelRenderer extends GuiElement
 
         /* Enable rendering states */
         RenderHelper.enableStandardItemLighting();
-        GlStateManager.enableAlpha();
-        GlStateManager.enableRescaleNormal();
-        GlStateManager.enableDepth();
-        GlStateManager.disableCull();
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.enableAlphaTest();
+        RenderSystem.enableRescaleNormal();
+        RenderSystem.enableDepthTest();
+        RenderSystem.disableCull();
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         /* Setup transformations */
-        GlStateManager.pushMatrix();
-        GlStateManager.loadIdentity();
-        GlStateManager.rotate(this.pitch, 1.0F, 0.0F, 0.0F);
-        GlStateManager.rotate(this.yaw, 0.0F, 1.0F, 0.0F);
-        GlStateManager.translate(-this.temp.x, -this.temp.y, -this.temp.z);
+        RenderSystem.pushMatrix();
+        RenderSystem.loadIdentity();
+        RenderSystem.rotatef(this.pitch, 1.0F, 0.0F, 0.0F);
+        RenderSystem.rotatef(this.yaw, 0.0F, 1.0F, 0.0F);
+        RenderSystem.translatef(-this.temp.x, -this.temp.y, -this.temp.z);
 
         /* Drawing begins */
         this.drawGround();
         this.drawUserModel(context);
 
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
 
         /* Disable rendering states */
-        GlStateManager.enableCull();
-        GlStateManager.disableDepth();
-        GlStateManager.disableRescaleNormal();
-        GlStateManager.disableAlpha();
+        RenderSystem.enableCull();
+        RenderSystem.disableDepthTest();
+        RenderSystem.disableRescaleNormal();
+        RenderSystem.disableAlphaTest();
         RenderHelper.disableStandardItemLighting();
 
-        GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-        GlStateManager.disableTexture2D();
-        GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
+        RenderSystem.activeTexture(OpenGlHelper.lightmapTexUnit);
+        RenderSystem.disableTexture();
+        RenderSystem.activeTexture(OpenGlHelper.defaultTexUnit);
 
         /* Return back to orthographic projection */
-        GlStateManager.viewport(0, 0, this.mc.displayWidth, this.mc.displayHeight);
-        GlStateManager.matrixMode(GL11.GL_PROJECTION);
-        GlStateManager.loadIdentity();
-        GlStateManager.ortho(0.0D, context.screen.width, context.screen.height, 0.0D, 1000.0D, 3000000.0D);
-        GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+        RenderSystem.viewport(0, 0, this.mc.displayWidth, this.mc.displayHeight);
+        RenderSystem.matrixMode(GL11.GL_PROJECTION);
+        RenderSystem.loadIdentity();
+        RenderSystem.ortho(0.0D, context.screen.width, context.screen.height, 0.0D, 1000.0D, 3000000.0D);
+        RenderSystem.matrixMode(GL11.GL_MODELVIEW);
     }
 
     protected void setupPosition(GuiContext context)
@@ -318,11 +328,11 @@ public abstract class GuiModelRenderer extends GuiElement
         this.temp.z += vec.z;
     }
 
-    private void rotateVector(Vector3d vec)
+    private void rotateVector(Vector3d vec, Matrix3f matrix3f)
     {
-        mat.rotX(this.pitch / 180 * (float) Math.PI);
+        MatrixUtils.rotX(matrix3f, this.pitch / 180 * (float) Math.PI);
         mat.transform(vec);
-        mat.rotY((180 - this.yaw) / 180 * (float) Math.PI);
+        MatrixUtils.rotY(matrix3f,(180 - this.yaw) / 180 * (float) Math.PI);
         mat.transform(vec);
     }
 
@@ -331,7 +341,7 @@ public abstract class GuiModelRenderer extends GuiElement
         /* Changing projection mode to perspective. In order for this to
          * work, depth buffer must also be cleared. Thanks to Gegy for
          * pointing this out (depth buffer)! */
-        GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
+        RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT);
 
         float rx = (float) Math.ceil(mc.displayWidth / (double) context.screen.width);
         float ry = (float) Math.ceil(mc.displayHeight / (double) context.screen.height);
@@ -341,11 +351,11 @@ public abstract class GuiModelRenderer extends GuiElement
         int vw = (int) (this.area.w * rx);
         int vh = (int) (this.area.h * ry);
 
-        GlStateManager.viewport(vx, vy, vw, vh);
-        GlStateManager.matrixMode(GL11.GL_PROJECTION);
-        GlStateManager.loadIdentity();
+        RenderSystem.viewport(vx, vy, vw, vh);
+        RenderSystem.matrixMode(GL11.GL_PROJECTION);
+        RenderSystem.loadIdentity();
         Project.gluPerspective(70, (float) vw / (float) vh, 0.05F, 1000);
-        GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+        RenderSystem.matrixMode(GL11.GL_MODELVIEW);
     }
 
     /**
@@ -421,10 +431,10 @@ public abstract class GuiModelRenderer extends GuiElement
             BufferBuilder buffer = tessellator.getBuffer();
 
             GL11.glLineWidth(3);
-            GlStateManager.disableTexture2D();
-            GlStateManager.enableAlpha();
-            GlStateManager.enableBlend();
-            GlStateManager.disableLighting();
+            RenderSystem.disableTexture();
+            RenderSystem.enableAlphaTest();
+            RenderSystem.enableBlend();
+            RenderSystem.disableLighting();
             buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
 
             for (int x = 0; x <= 10; x ++)
@@ -457,22 +467,22 @@ public abstract class GuiModelRenderer extends GuiElement
 
             tessellator.draw();
 
-            GlStateManager.enableLighting();
-            GlStateManager.enableTexture2D();
+            RenderSystem.enableLighting();
+            RenderSystem.enableTexture();
         }
         else
         {
             BlockRendererDispatcher renderer = this.mc.getBlockRendererDispatcher();
 
-            this.mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+            this.mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(0, -0.5F, 0);
-            GlStateManager.rotate(-90.0F, 0.0F, 1.0F, 0.0F);
-            GlStateManager.translate(-0.5F, -0.5F, 0.5F);
+            RenderSystem.pushMatrix();
+            RenderSystem.translatef(0, -0.5F, 0);
+            RenderSystem.rotatef(-90.0F, 0.0F, 1.0F, 0.0F);
+            RenderSystem.translatef(-0.5F, -0.5F, 0.5F);
             renderer.renderBlockBrightness(this.block, 1.0F);
-            GlStateManager.translate(0.0F, 0.0F, 1.0F);
-            GlStateManager.popMatrix();
+            RenderSystem.translatef(0.0F, 0.0F, 1.0F);
+            RenderSystem.popMatrix();
         }
     }
 }

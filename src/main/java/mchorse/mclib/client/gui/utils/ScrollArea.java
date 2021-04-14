@@ -6,8 +6,6 @@ import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
 import mchorse.mclib.utils.ColorUtils;
 import mchorse.mclib.utils.MathUtils;
 import net.minecraft.client.gui.Gui;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Scrollable area
@@ -299,7 +297,7 @@ public class ScrollArea extends Area
 
         if (McLib.scrollbarFlat.get())
         {
-            Gui.drawRect(x, y, rx, ry, -6250336);
+            GuiDraw.drawRect(x, y, rx, ry, -6250336);
         }
         else
         {
@@ -307,9 +305,9 @@ public class ScrollArea extends Area
 
             GuiDraw.drawDropShadow(x, y, rx, ry, 5, color, ColorUtils.setAlpha(color, 0F));
 
-            Gui.drawRect(x, y, rx, ry, 0xffeeeeee);
-            Gui.drawRect(x + 1, y + 1, rx, ry, 0xff666666);
-            Gui.drawRect(x + 1, y + 1, rx - 1, ry - 1, 0xffaaaaaa);
+            GuiDraw.drawRect(x, y, rx, ry, 0xffeeeeee);
+            GuiDraw.drawRect(x + 1, y + 1, rx, ry, 0xff666666);
+            GuiDraw.drawRect(x + 1, y + 1, rx - 1, ry - 1, 0xffaaaaaa);
         }
     }
 }
