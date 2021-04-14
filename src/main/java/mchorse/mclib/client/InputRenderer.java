@@ -1,5 +1,6 @@
 package mchorse.mclib.client;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.mclib.McLib;
 import mchorse.mclib.client.gui.framework.GuiBase;
@@ -9,10 +10,12 @@ import mchorse.mclib.events.RenderOverlayEvent;
 import mchorse.mclib.utils.Interpolation;
 import mchorse.mclib.utils.Keys;
 import mchorse.mclib.utils.MatrixUtils;
+import net.java.games.input.Keyboard;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHelper;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.IWindowEventListener;
 import net.minecraft.client.renderer.MonitorHandler;
 import net.minecraft.client.renderer.ScreenSize;
@@ -134,7 +137,7 @@ public class InputRenderer
             boolean right = new MouseHelper(mc).isRightDown();
             boolean middle = new MouseHelper(mc).isMiddleDown();
 
-            int scroll = ???;
+            int scroll = 0; //???
             long current = System.currentTimeMillis();
             boolean isScrolling = scroll != 0 || current - this.lastDWheelTime < 500;
 
@@ -155,25 +158,25 @@ public class InputRenderer
             if (left || right || middle || isScrolling)
             {
                 /* Outline */
-                f.drawRect(x - 1, y, x + 13, y + 16, 0xff000000);
-                f.drawRect(x, y - 1, x + 12, y + 17, 0xff000000);
+                GuiDraw.drawRect(x - 1, y, x + 13, y + 16, 0xff000000);
+                GuiDraw.drawRect(x, y - 1, x + 12, y + 17, 0xff000000);
                 /* Background */
-                f.drawRect(x, y + 1, x + 12, y + 15, 0xffffffff);
-                f.drawRect(x + 1, y, x + 11, y + 1, 0xffffffff);
-                f.drawRect(x + 1, y + 15, x + 11, y + 16, 0xffffffff);
+                GuiDraw.drawRect(x, y + 1, x + 12, y + 15, 0xffffffff);
+                GuiDraw.drawRect(x + 1, y, x + 11, y + 1, 0xffffffff);
+                GuiDraw.drawRect(x + 1, y + 15, x + 11, y + 16, 0xffffffff);
                 /* Over outline */
-                f.drawRect(x, y + 7, x + 12, y + 8, 0xffeeeeee);
+                GuiDraw.drawRect(x, y + 7, x + 12, y + 8, 0xffeeeeee);
 
                 if (left)
                 {
-                    f.drawRect(x + 1, y, x + 6, y + 7, 0xffcccccc);
-                    f.drawRect(x, y + 1, x + 1, y + 7, 0xffaaaaaa);
+                    GuiDraw.drawRect(x + 1, y, x + 6, y + 7, 0xffcccccc);
+                    GuiDraw.drawRect(x, y + 1, x + 1, y + 7, 0xffaaaaaa);
                 }
 
                 if (right)
                 {
-                    f.drawRect(x + 6, y, x + 11, y + 7, 0xffaaaaaa);
-                    f.drawRect(x + 11, y + 1, x + 12, y + 7, 0xff888888);
+                    GuiDraw.drawRect(x + 6, y, x + 11, y + 7, 0xffaaaaaa);
+                    GuiDraw.drawRect(x + 11, y + 1, x + 12, y + 7, 0xff888888);
                 }
 
                 if (middle || isScrolling)
@@ -185,9 +188,9 @@ public class InputRenderer
                         offset = scroll < 0 ? 1 : -1;
                     }
 
-                    f.drawRect(x + 4, y, x + 8, y + 6, 0x20000000);
-                    f.drawRect(x + 5, y + 1 + offset, x + 7, y + 5 + offset, 0xff444444);
-                    f.drawRect(x + 5, y + 4 + offset, x + 7, y + 5 + offset, 0xff333333);
+                    GuiDraw.drawRect(x + 4, y, x + 8, y + 6, 0x20000000);
+                    GuiDraw.drawRect(x + 5, y + 1 + offset, x + 7, y + 5 + offset, 0xff444444);
+                    GuiDraw.drawRect(x + 5, y + 4 + offset, x + 7, y + 5 + offset, 0xff333333);
                 }
             }
 
@@ -198,8 +201,8 @@ public class InputRenderer
                 int color = McLib.primaryColor.get();
 
                 GuiDraw.drawDropShadow(x, y, x + 4, y + 16, 2, 0x88000000 + color, color);
-                f.drawRect(x, y, x + 4, y + 16, 0xff111111);
-                f.drawRect(x + 1, y, x + 3, y + 15, 0xff2a2a2a);
+                GuiDraw.drawRect(x, y, x + 4, y + 16, 0xff111111);
+                GuiDraw.drawRect(x + 1, y, x + 3, y + 15, 0xff2a2a2a);
 
                 int offset = (int) ((current % 1000 / 50) % 4);
 
@@ -210,7 +213,7 @@ public class InputRenderer
 
                 for (int i = 0; i < 4; i++)
                 {
-                    f.drawRect(x, y + offset, x + 4, y + offset + 1, 0x88555555);
+                    GuiDraw.drawRect(x, y + offset, x + 4, y + offset + 1, 0x88555555);
 
                     y += 4;
                 }
@@ -224,7 +227,7 @@ public class InputRenderer
     /**
      * Render pressed key strokes
      */
-    private void renderKeys(GuiScreen screen, int mouseX, int mouseY)
+    private void renderKeys(Screen screen, int mouseX, int mouseY)
     {
         float lqx = Math.round(mouseX / (float) screen.width);
         float lqy = Math.round(mouseY / (float) screen.height);
@@ -286,7 +289,7 @@ public class InputRenderer
 
                 GuiDraw.drawDropShadow(x, y, x + 10 + key.width, y + 20, 4, 0x44000000, 0);
                 GuiDraw.drawRect(x, y, x + 10 + key.width, y + 20, 0xff000000 + McLib.primaryColor.get());
-                font.drawStringWithShadow(key.getLabel(), x + 5, y + 6, 0xffffff);
+                font.drawStringWithShadow(new MatrixStack(), key.getLabel(), x + 5, y + 6, 0xffffff);
             }
         }
 
@@ -356,7 +359,7 @@ public class InputRenderer
     /**
      * Information about pressed key strokes
      */
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public static class PressedKey
     {
         public static int INDEX = 0;
@@ -377,7 +380,7 @@ public class InputRenderer
             this.x = x;
 
             this.name = Keys.getKeyName(key);
-            this.width = Minecraft.getMinecraft().fontRenderer.getStringWidth(this.name);
+            this.width = Minecraft.getInstance().fontRenderer.getStringWidth(this.name);
             this.i = INDEX ++;
         }
 
@@ -411,7 +414,7 @@ public class InputRenderer
             int lastWidth = this.width;
 
             this.times ++;
-            this.width = Minecraft.getMinecraft().fontRenderer.getStringWidth(this.getLabel());
+            this.width = Minecraft.getInstance().fontRenderer.getStringWidth(this.getLabel());
 
             return this.width - lastWidth;
         }

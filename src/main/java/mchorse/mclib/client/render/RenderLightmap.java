@@ -1,20 +1,14 @@
 package mchorse.mclib.client.render;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.Minecraft;;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.LivingRenderer;
-import net.minecraft.client.renderer.entity.RenderLivingBase;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Render brightness
