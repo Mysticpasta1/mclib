@@ -1,5 +1,6 @@
 package mchorse.mclib.client.gui.framework.elements.input;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mchorse.mclib.McLib;
 import mchorse.mclib.client.gui.framework.elements.GuiScrollElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
@@ -7,7 +8,6 @@ import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
 import mchorse.mclib.client.gui.utils.Keybind;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -106,7 +106,7 @@ public class GuiKeybinds extends GuiScrollElement
             if (!title.isEmpty())
             {
                 GuiDraw.drawRect(x - 10, y + i - 2, x + context.font.getStringWidth(title) + 2, y + i + context.font.FONT_HEIGHT + 2, color);
-                context.font.drawString(title, x, y + i, 0xffffff);
+                context.font.drawString(new MatrixStack(), title, x, y + i, 0xffffff);
                 i += 14;
             }
 
@@ -116,8 +116,8 @@ public class GuiKeybinds extends GuiScrollElement
                 int w = context.font.getStringWidth(combo);
 
                 GuiDraw.drawRect(x - 2, y + i - 2, x + w + 2, y + i + context.font.FONT_HEIGHT + 2, color);
-                context.font.drawString(combo, x, y + i, 0xffffff);
-                context.font.drawStringWithShadow(keybind.label.get(), x + w + 5, y + i, 0xffffff);
+                context.font.drawString(new MatrixStack(), combo, x, y + i, 0xffffff);
+                context.font.drawStringWithShadow(new MatrixStack(), keybind.label.get(), x + w + 5, y + i, 0xffffff);
                 i += 14;
             }
 

@@ -7,21 +7,19 @@ import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.config.values.ValueString;
 import mchorse.mclib.utils.Patterns;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiPageButtonList.GuiResponder;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Keyboard;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.function.Consumer;
-import java.util.regex.Pattern;
 
 /**
  * GUI text element
  * 
  * This element is a wrapper for the text field class
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GuiTextElement extends GuiBaseTextElement implements GuiResponder
 {
     public static final Predicate<String> FILENAME_PREDICATE = (s) -> Patterns.FILENAME.matcher(s).find();
@@ -136,13 +134,13 @@ public class GuiTextElement extends GuiBaseTextElement implements GuiResponder
     {
         if (this.isFocused())
         {
-            if (context.keyCode == Keyboard.KEY_TAB)
+            if (context.keyCode == GLFW.GLFW_KEY_TAB)
             {
-                context.focus(this, -1, GuiScreen.isShiftKeyDown() ? -1 : 1);
+                context.focus(this, -1, Screen.hasShiftDown() ? -1 : 1);
 
                 return true;
             }
-            else if (context.keyCode == Keyboard.KEY_ESCAPE)
+            else if (context.keyCode == GLFW.GLFW_KEY_ESCAPE)
             {
                 context.unfocus();
 

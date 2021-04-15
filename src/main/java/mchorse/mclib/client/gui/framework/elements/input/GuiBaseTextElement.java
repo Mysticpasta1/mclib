@@ -3,6 +3,7 @@ package mchorse.mclib.client.gui.framework.elements.input;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.IFocusedGuiElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiTextField;
 import org.lwjgl.input.Keyboard;

@@ -1,5 +1,6 @@
 package mchorse.mclib.client.gui.framework.elements.buttons;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mchorse.mclib.McLib;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
@@ -48,7 +49,7 @@ public class GuiButtonElement extends GuiClickElement<GuiButtonElement>
         int x = this.area.mx(this.font.getStringWidth(label));
         int y = this.area.my(this.font.FONT_HEIGHT - 1);
 
-        this.font.drawStringWithShadow(label, x, y, this.hover ? 16777120 : 0xffffff);
+        this.font.drawStringWithShadow(new MatrixStack(), label, x, y, this.hover ? 16777120 : 0xffffff);
 
         GuiDraw.drawLockedArea(this);
     }

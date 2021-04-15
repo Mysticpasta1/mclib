@@ -385,7 +385,7 @@ public class GuiTrackpadElement extends GuiBaseTextElement
             }
             else if (context.keyCode == GLFW.GLFW_KEY_TAB)
             {
-                context.focus(this, -1, Screen.isShiftKeyDown() ? -1 : 1);
+                context.focus(this, -1, Screen.hasShiftDown() ? -1 : 1);
 
                 return true;
             }
@@ -395,7 +395,7 @@ public class GuiTrackpadElement extends GuiBaseTextElement
 
                 return true;
             }
-            else if (context.keyCode == GLFW.GLFW_KEY_ENTER && Screen.isAltKeyDown())
+            else if (context.keyCode == GLFW.GLFW_KEY_ENTER && Screen.hasAltDown())
             {
                 try
                 {
@@ -485,7 +485,7 @@ public class GuiTrackpadElement extends GuiBaseTextElement
 
         if (dragging)
         {
-            double factor = Math.ceil(this.mc.displayWidth / (double) context.screen.width);
+            double factor = Math.ceil(this.mc.getMainWindow().getWidth() / (double) context.screen.width);
             int mouseX = context.globalX(context.mouseX);
 
             /* Mouse doesn't change immediately the next frame after Mouse.setCursorPosition(),
@@ -498,7 +498,7 @@ public class GuiTrackpadElement extends GuiBaseTextElement
 
                 if (mouseX <= border)
                 {
-                    Mouse.setCursorPosition(this.mc.displayWidth - (int) (factor * borderPadding), Mouse.getY());
+                    Mouse.setCursorPosition(this.mc.getMainWindow().getWidth() - (int) (factor * borderPadding), Mouse.getY());
 
                     this.shiftX -= context.screen.width - borderPadding * 2;
                     this.changed.mark();

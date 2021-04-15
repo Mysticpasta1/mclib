@@ -1,10 +1,12 @@
 package mchorse.mclib.client.gui.framework.elements.modals;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.mclib.client.gui.framework.elements.GuiDelegateElement;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.IGuiElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
 
@@ -101,7 +103,7 @@ public abstract class GuiModal extends GuiElement
 
         for (String line : this.font.listFormattedStringToWidth(this.label.get(), this.area.w - 20))
         {
-            this.font.drawStringWithShadow(line, this.area.x + 10, y + this.y, 0xffffff);
+            this.font.drawStringWithShadow(new MatrixStack(), line, this.area.x + 10, y + this.y, 0xffffff);
             this.y += 11;
         }
 

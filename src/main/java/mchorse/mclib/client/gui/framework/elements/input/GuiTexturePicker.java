@@ -457,11 +457,11 @@ public class GuiTexturePicker extends GuiElement
         }
         else if (keyCode == GLFW.GLFW_KEY_UP)
         {
-            return this.moveCurrent(-1, Screen.isShiftKeyDown());
+            return this.moveCurrent(-1, Screen.hasShiftDown());
         }
         else if (keyCode == GLFW.GLFW_KEY_DOWN)
         {
-            return this.moveCurrent(1, Screen.isShiftKeyDown());
+            return this.moveCurrent(1, Screen.hasShiftDown());
         }
         else if (keyCode == GLFW.GLFW_KEY_ESCAPE)
         {
@@ -542,8 +542,8 @@ public class GuiTexturePicker extends GuiElement
 
         if (this.multiList.isVisible())
         {
-            drawRect(this.area.x, this.area.y, this.area.x + 120, this.area.ey(), 0xff181818);
-            drawRect(this.area.x, this.area.y, this.area.x + 120, this.area.y + 30, 0x44000000);
+            GuiDraw.drawRect(this.area.x, this.area.y, this.area.x + 120, this.area.ey(), 0xff181818);
+            GuiDraw.drawRect(this.area.x, this.area.y, this.area.x + 120, this.area.y + 30, 0x44000000);
             drawGradientRect(this.area.x, this.area.ey() - 20, this.buttons.area.ex(), this.area.ey(), 0x00, 0x88000000);
         }
 

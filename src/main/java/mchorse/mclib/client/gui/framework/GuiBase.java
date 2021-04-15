@@ -84,8 +84,8 @@ public class GuiBase extends Screen
 
     public void handleMouseInput() throws IOException
     {
-        int x = Mouse.getEventX() * this.width / this.mc.displayWidth;
-        int y = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
+        int x = Mouse.getEventX() * this.width / this.mc.getMainWindow().getWidth();
+        int y = this.height - Mouse.getEventY() * this.height / this.mc.getMainWindow().getHeight() - 1;
 
         super.handleMouseInput();
 

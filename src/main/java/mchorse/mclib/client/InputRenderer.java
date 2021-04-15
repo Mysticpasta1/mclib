@@ -10,7 +10,6 @@ import mchorse.mclib.events.RenderOverlayEvent;
 import mchorse.mclib.utils.Interpolation;
 import mchorse.mclib.utils.Keys;
 import mchorse.mclib.utils.MatrixUtils;
-import net.java.games.input.Keyboard;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHelper;
@@ -26,7 +25,6 @@ import net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
-
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;

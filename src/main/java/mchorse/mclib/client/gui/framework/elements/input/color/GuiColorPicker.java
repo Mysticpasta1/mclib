@@ -1,5 +1,8 @@
 package mchorse.mclib.client.gui.framework.elements.input.color;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.mclib.McLib;
 import mchorse.mclib.client.gui.framework.GuiBase;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
@@ -15,9 +18,7 @@ import mchorse.mclib.utils.Color;
 import mchorse.mclib.utils.ColorUtils;
 import mchorse.mclib.utils.MathUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import org.lwjgl.opengl.GL11;
@@ -58,11 +59,11 @@ public class GuiColorPicker extends GuiElement
 
     public static void drawAlphaPreviewQuad(int x1, int y1, int x2, int y2, Color color)
     {
-        GlStateManager.disableTexture2D();
-        GlStateManager.enableBlend();
-        GlStateManager.enableAlpha();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        RenderSystem.disableTexture();
+        RenderSystem.enableBlend();
+        RenderSystem.enableAlphaTest();
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        RenderSystem.shadeModel(GL11.GL_SMOOTH);
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder vertexbuffer = tessellator.getBuffer();
@@ -75,10 +76,10 @@ public class GuiColorPicker extends GuiElement
         vertexbuffer.pos(x2, y2, 0).color(color.r, color.g, color.b, color.a).endVertex();
         tessellator.draw();
 
-        GlStateManager.shadeModel(GL11.GL_FLAT);
-        GlStateManager.disableBlend();
-        GlStateManager.disableAlpha();
-        GlStateManager.enableTexture2D();
+        RenderSystem.shadeModel(GL11.GL_FLAT);
+        RenderSystem.disableBlend();
+        RenderSystem.disableAlphaTest();
+        RenderSystem.enableTexture();
     }
 
     public GuiColorPicker(Minecraft mc, Consumer<Integer> callback)
@@ -109,7 +110,7 @@ public class GuiColorPicker extends GuiElement
                 return null;
             }
 
-            return new GuiSimpleContextMenu(Minecraft.getMinecraft())
+            return new GuiSimpleContextMenu(Minecraft.getInstance())
                 .action(Icons.FAVORITE, IKey.lang("mclib.gui.color.context.favorites.add"), () -> this.addToFavorites(this.recent.colors.get(index)));
         });
 
@@ -129,7 +130,7 @@ public class GuiColorPicker extends GuiElement
                 return null;
             }
 
-            return new GuiSimpleContextMenu(Minecraft.getMinecraft())
+            return new GuiSimpleContextMenu(Minecraft.getInstance())
                 .action(Icons.REMOVE, IKey.lang("mclib.gui.color.context.favorites.remove"), () -> this.removeFromFavorites(index));
         });
 
@@ -420,12 +421,12 @@ public class GuiColorPicker extends GuiElement
 
         if (!this.favorite.colors.isEmpty())
         {
-            this.font.drawString(FAVORITE.get(), this.favorite.area.x, this.favorite.area.y - 10, 0x888888);
+            this.font.drawString(new MatrixStack(), FAVORITE.get(), this.favorite.area.x, this.favorite.area.y - 10, 0x888888);
         }
 
         if (!this.recent.colors.isEmpty())
         {
-            this.font.drawString(RECENT.get(), this.recent.area.x, this.recent.area.y - 10, 0x888888);
+            this.font.drawString(new MatrixStack(), RECENT.get(), this.recent.area.x, this.recent.area.y - 10, 0x888888);
         }
 
         super.draw(context);

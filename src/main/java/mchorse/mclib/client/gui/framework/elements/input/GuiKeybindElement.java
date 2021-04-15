@@ -8,8 +8,7 @@ import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.config.values.ValueInt;
 import mchorse.mclib.utils.Keys;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.function.Consumer;
 
@@ -106,7 +105,7 @@ public class GuiKeybindElement extends GuiElement
             this.area.draw(0xff000000);
 
             /* Avoid a crash due to index out of bounds */
-            int keybind = this.keybind < 0 || this.keybind >= Keyboard.KEYBOARD_SIZE ? 0 : this.keybind;
+            int keybind = this.keybind < 0 || this.keybind >= GLFW.GLFW_KEY_LAST ? 0 : this.keybind;
 
             this.drawCenteredString(this.font, Keys.getKeyName(keybind), this.area.mx(), this.area.my() - this.font.FONT_HEIGHT / 2, 0xffffff);
         }

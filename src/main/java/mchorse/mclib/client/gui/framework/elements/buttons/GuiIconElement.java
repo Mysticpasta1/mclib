@@ -1,11 +1,9 @@
 package mchorse.mclib.client.gui.framework.elements.buttons;
 
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
-import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
 import mchorse.mclib.client.gui.utils.Icon;
 import mchorse.mclib.utils.ColorUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 
 import java.util.function.Consumer;
 

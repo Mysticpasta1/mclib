@@ -162,8 +162,8 @@ public class GuiGraphPanel extends GuiDashboardPanel<GuiDashboard>
                     break;
                 }
 
-                GuiDraw.fill(x, this.area.y, x + 1, this.area.ey(), 0x44ffffff);
-                this.font.drawString(String.valueOf(min + j * mult), x + 4, this.area.y + 4, 0xffffff);
+                GuiDraw.fill(new MatrixStack(), x, this.area.y, x + 1, this.area.ey(), 0x44ffffff);
+                this.font.drawString(new MatrixStack(), String.valueOf(min + j * mult), x + 4, this.area.y + 4, 0xffffff);
             }
 
             if (this.expression == null)
@@ -200,8 +200,8 @@ public class GuiGraphPanel extends GuiDashboardPanel<GuiDashboard>
 
                 mouseX += 1;
 
-                AbstractGui.fill(, mouseX, y3, mouseX + w + 4, y3 + 12, 0xffffffff);
-                this.font.drawString(coordinate, mouseX + 2, y3 + 2, 0x000000);
+                AbstractGui.fill(new MatrixStack(), mouseX, y3, mouseX + w + 4, y3 + 12, 0xffffffff);
+                this.font.drawString(new MatrixStack(), coordinate, mouseX + 2, y3 + 2, 0x000000);
             }
 
             RenderSystem.lineWidth(4);
@@ -234,7 +234,7 @@ public class GuiGraphPanel extends GuiDashboardPanel<GuiDashboard>
             }
 
             Tessellator.getInstance().draw();
-            GlStateManager.glLineWidth(1);
+            RenderSystem.lineWidth(1);
         }
     }
 }

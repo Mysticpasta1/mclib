@@ -6,13 +6,13 @@ import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiSlotElement;
 import mchorse.mclib.client.gui.utils.Area;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
@@ -62,7 +62,7 @@ public class GuiInventoryElement extends GuiElement
     /**
      * Draw item tooltip
      */
-    public static void drawItemTooltip(ItemStack stack, ServerPlayerEntity player, FontRenderer providedFont, int x, int y)
+    public static void drawItemTooltip(ItemStack stack, ClientPlayerEntity player, FontRenderer providedFont, int x, int y)
     {
         if (stack.isEmpty())
         {

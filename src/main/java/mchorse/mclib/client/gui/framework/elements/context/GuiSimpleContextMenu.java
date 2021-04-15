@@ -1,16 +1,16 @@
 package mchorse.mclib.client.gui.framework.elements.context;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.mclib.McLib;
-import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.framework.elements.list.GuiListElement;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
 import mchorse.mclib.client.gui.utils.Icon;
 import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.keys.IKey;
-import mchorse.mclib.client.gui.utils.resizers.constraint.BoundsResizer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.GlStateManager;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -86,9 +86,9 @@ public class GuiSimpleContextMenu extends GuiContextMenu
                 GuiDraw.drawRect(x, y, x + this.scroll.w, y + this.scroll.scrollItemSize, 0x88000000 + McLib.primaryColor.get());
             }
 
-            GlStateManager.color(1, 1, 1, 1);
+            RenderSystem.color4f(1, 1, 1, 1);
             element.icon.render(x + 2, y + h / 2, 0, 0.5F);
-            this.font.drawString(element.label.get(), x + 22, y + (h - this.font.FONT_HEIGHT) / 2 + 1, 0xffffff);
+            this.font.drawString(new MatrixStack(), element.label.get(), x + 22, y + (h - this.font.FONT_HEIGHT) / 2 + 1, 0xffffff);
         }
     }
 

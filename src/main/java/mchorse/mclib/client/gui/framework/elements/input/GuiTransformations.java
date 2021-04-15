@@ -1,5 +1,6 @@
 package mchorse.mclib.client.gui.framework.elements.input;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
 import mchorse.mclib.client.gui.framework.elements.context.GuiContextMenu;
@@ -286,9 +287,11 @@ public class GuiTransformations extends GuiElement
     {
         Vector3d result = new Vector3d();
 
-        result.x = list.getDouble(offset);
-        result.y = list.getDouble(offset + 1);
-        result.z = list.getDouble(offset + 2);
+        double x = result.getX();
+        x = list.getDouble(offset);
+        double y = result.getY();
+        y = list.getDouble(offset + 1);
+        result.getZ() = list.getDouble(offset + 2);
 
         return result;
     }
@@ -303,9 +306,10 @@ public class GuiTransformations extends GuiElement
     @Override
     public void draw(GuiContext context)
     {
-        this.font.drawStringWithShadow(I18n.format("mclib.gui.transforms.translate"), this.tx.area.x, this.tx.area.y - 12, 0xffffff);
-        this.font.drawStringWithShadow(I18n.format("mclib.gui.transforms.scale"), this.sx.area.x, this.sx.area.y - 12, 0xffffff);
-        this.font.drawStringWithShadow(I18n.format("mclib.gui.transforms.rotate"), this.rx.area.x, this.rx.area.y - 12, 0xffffff);
+        MatrixStack matrixStack = new MatrixStack();
+        this.font.drawStringWithShadow(matrixStack, I18n.format("mclib.gui.transforms.translate"), this.tx.area.x, this.tx.area.y - 12, 0xffffff);
+        this.font.drawStringWithShadow(matrixStack, I18n.format("mclib.gui.transforms.scale"), this.sx.area.x, this.sx.area.y - 12, 0xffffff);
+        this.font.drawStringWithShadow(matrixStack, I18n.format("mclib.gui.transforms.rotate"), this.rx.area.x, this.rx.area.y - 12, 0xffffff);
 
         super.draw(context);
     }

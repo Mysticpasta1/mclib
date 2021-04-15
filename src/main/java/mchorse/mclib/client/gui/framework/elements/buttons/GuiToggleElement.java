@@ -1,5 +1,6 @@
 package mchorse.mclib.client.gui.framework.elements.buttons;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mchorse.mclib.McLib;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
@@ -9,12 +10,12 @@ import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.config.values.ValueBoolean;
 import mchorse.mclib.utils.ColorUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 
 import java.util.function.Consumer;
 
 public class GuiToggleElement extends GuiClickElement<GuiToggleElement> implements ITextColoring
 {
+    private MatrixStack matrixStack = new MatrixStack();
     public IKey label;
     public int color = 0xffffff;
     private boolean state;
@@ -104,10 +105,10 @@ public class GuiToggleElement extends GuiClickElement<GuiToggleElement> implemen
 
             if (this.state)
             {
-                this.font.drawStringWithShadow("x", this.area.x + 3, y - 2, 0xffffff);
+                this.font.drawStringWithShadow(matrixStack,"x", this.area.x + 3, y - 2, 0xffffff);
             }
 
-            this.font.drawStringWithShadow(this.label.get(), this.area.x + 14, y, this.color);
+            this.font.drawStringWithShadow(matrixStack, this.label.get(), this.area.x + 14, y, this.color);
 
             if (!this.isEnabled())
             {
@@ -117,7 +118,7 @@ public class GuiToggleElement extends GuiClickElement<GuiToggleElement> implemen
         }
         else
         {
-            this.font.drawStringWithShadow(this.label.get(), this.area.x, this.area.my(this.font.FONT_HEIGHT - 1), this.color);
+            this.font.drawStringWithShadow(matrixStack, this.label.get(), this.area.x, this.area.my(this.font.FONT_HEIGHT - 1), this.color);
 
             /* Draw toggle switch */
             int w = 16;

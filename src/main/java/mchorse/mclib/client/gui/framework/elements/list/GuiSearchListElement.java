@@ -1,5 +1,6 @@
 package mchorse.mclib.client.gui.framework.elements.list;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTextElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
@@ -53,7 +54,7 @@ public abstract class GuiSearchListElement<T> extends GuiElement
 
         if (!this.search.field.isFocused() && this.search.field.getText().isEmpty())
         {
-            this.font.drawStringWithShadow(this.label.get(), this.search.area.x + 5, this.search.area.y + 6, 0x888888);
+            this.font.drawStringWithShadow(new MatrixStack(), this.label.get(), this.search.area.x + 5, this.search.area.y + 6, 0x888888);
         }
     }
 }

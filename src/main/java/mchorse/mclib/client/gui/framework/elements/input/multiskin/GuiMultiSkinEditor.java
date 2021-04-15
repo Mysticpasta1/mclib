@@ -1,5 +1,6 @@
 package mchorse.mclib.client.gui.framework.elements.input.multiskin;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.mclib.client.gui.framework.elements.buttons.GuiToggleElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiColorElement;
 import mchorse.mclib.client.gui.framework.elements.input.GuiTexturePicker;
@@ -16,9 +17,7 @@ import mchorse.mclib.utils.Direction;
 import mchorse.mclib.utils.resources.FilteredResourceLocation;
 import mchorse.mclib.utils.shaders.Shader;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.gui.screen.Screen;
 import org.apache.commons.io.IOUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
@@ -128,7 +127,7 @@ public class GuiMultiSkinEditor extends GuiCanvasEditor
 
         for (FilteredResourceLocation child : this.picker.multiRL.children)
         {
-            this.mc.renderEngine.bindTexture(child.path);
+            this.mc.getTextureManager().bindTexture(child.path);
             w = Math.max(w, child.getWidth(GL11.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_WIDTH)));
             h = Math.max(h, child.getHeight(GL11.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_HEIGHT)));
         }
@@ -144,7 +143,7 @@ public class GuiMultiSkinEditor extends GuiCanvasEditor
 
         for (FilteredResourceLocation child : this.picker.multiRL.children)
         {
-            this.mc.renderEngine.bindTexture(child.path);
+            this.mc.getTextureManager().bindTexture(child.path);
             w = Math.max(w, child.getWidth(GL11.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_WIDTH)));
             h = Math.max(h, child.getHeight(GL11.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_HEIGHT)));
         }
@@ -200,8 +199,8 @@ public class GuiMultiSkinEditor extends GuiCanvasEditor
             double dx = (context.mouseX - this.lastX) / this.scaleX.getZoom();
             double dy = (context.mouseY - this.lastY) / this.scaleY.getZoom();
 
-            if (GuiScreen.isShiftKeyDown()) dx = 0;
-            if (GuiScreen.isCtrlKeyDown()) dy = 0;
+            if (Screen.hasShiftDown()) dx = 0;
+            if (Screen.hasControlDown()) dy = 0;
 
             this.location.shiftX = (int) (dx) + (int) this.lastT;
             this.location.shiftY = (int) (dy) + (int) this.lastV;
@@ -222,7 +221,7 @@ public class GuiMultiSkinEditor extends GuiCanvasEditor
     {
         for (FilteredResourceLocation child : this.picker.multiRL.children)
         {
-            this.mc.renderEngine.bindTexture(child.path);
+            this.mc.getTextureManager().bindTexture(child.path);
 
             int ow = GL11.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_WIDTH);
             int oh = GL11.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_HEIGHT);
@@ -247,8 +246,8 @@ public class GuiMultiSkinEditor extends GuiCanvasEditor
                 if (child == this.picker.currentFRL)
                 {
                     GuiDraw.drawRect(area.x, area.y, area.ex(), area.ey(), 0x44ff0000);
-                    GlStateManager.enableBlend();
-                    GlStateManager.enableAlpha();
+                    RenderSystem.enableBlend();
+                    RenderSystem.enableAlphaTest();
                 }
 
                 ColorUtils.bindColor(child.color);
@@ -263,9 +262,9 @@ public class GuiMultiSkinEditor extends GuiCanvasEditor
                     GL20.glUniform4f(uColor, ColorUtils.COLOR.r, ColorUtils.COLOR.g, ColorUtils.COLOR.b, ColorUtils.COLOR.a);
                 }
 
-                GlStateManager.setActiveTexture(GL13.GL_TEXTURE5);
-                this.mc.renderEngine.bindTexture(Icons.ICONS);
-                GlStateManager.setActiveTexture(GL13.GL_TEXTURE0);
+                RenderSystem.activeTexture(GL13.GL_TEXTURE5);
+                this.mc.getTextureManager().bindTexture(Icons.ICONS);
+                RenderSystem.activeTexture(GL13.GL_TEXTURE0);
 
                 GuiDraw.drawBillboard(area.x, area.y, 0, 0, area.w, area.h, area.w, area.h);
 

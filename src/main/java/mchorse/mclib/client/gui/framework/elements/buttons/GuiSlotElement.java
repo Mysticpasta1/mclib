@@ -1,5 +1,6 @@
 package mchorse.mclib.client.gui.framework.elements.buttons;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.mclib.McLib;
 import mchorse.mclib.client.gui.framework.elements.context.GuiContextMenu;
 import mchorse.mclib.client.gui.framework.elements.context.GuiSimpleContextMenu;
@@ -12,9 +13,6 @@ import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.network.mclib.Dispatcher;
 import mchorse.mclib.network.mclib.common.PacketDropItem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -108,37 +106,37 @@ public class GuiSlotElement extends GuiClickElement<GuiSlotElement>
 
         if (this.stack.isEmpty() && this.slot != 0)
         {
-            GlStateManager.enableAlpha();
-            GlStateManager.color(1, 1, 1, 1);
+            RenderSystem.enableAlphaTest();
+            RenderSystem.color4f(1, 1, 1, 1);
 
             if (this.slot == 1)
             {
-                Minecraft.getMinecraft().renderEngine.bindTexture(SHIELD);
+                Minecraft.getInstance().getTextureManager().bindTexture(SHIELD);
             }
             else if (this.slot == 2)
             {
-                Minecraft.getMinecraft().renderEngine.bindTexture(BOOTS);
+                Minecraft.getInstance().getTextureManager().bindTexture(BOOTS);
             }
             else if (this.slot == 3)
             {
-                Minecraft.getMinecraft().renderEngine.bindTexture(LEGGINGS);
+                Minecraft.getInstance().getTextureManager().bindTexture(LEGGINGS);
             }
             else if (this.slot == 4)
             {
-                Minecraft.getMinecraft().renderEngine.bindTexture(CHESTPLATE);
+                Minecraft.getInstance().getTextureManager().bindTexture(CHESTPLATE);
             }
             else if (this.slot == 5)
             {
-                Minecraft.getMinecraft().renderEngine.bindTexture(HELMET);
+                Minecraft.getInstance().getTextureManager().bindTexture(HELMET);
             }
 
             Gui.drawModalRectWithCustomSizedTexture(x, y, 0, 0, 16, 16, 16, 16);
         }
         else
         {
-            RenderHelper.enableGUIStandardItemLighting();
+            RenderHelper.enableStandardItemLighting();
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
-            GlStateManager.enableDepth();
+            RenderSystem.enableDepthTest();
 
             GuiInventoryElement.drawItemStack(this.stack, x, y, null);
 
@@ -147,7 +145,7 @@ public class GuiSlotElement extends GuiClickElement<GuiSlotElement>
                 context.tooltip.set(context, this);
             }
 
-            GlStateManager.disableDepth();
+            RenderSystem.disableDepthTest();
             RenderHelper.disableStandardItemLighting();
         }
 

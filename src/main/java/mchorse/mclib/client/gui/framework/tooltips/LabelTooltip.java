@@ -1,6 +1,8 @@
 package mchorse.mclib.client.gui.framework.tooltips;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
 import mchorse.mclib.client.gui.utils.Area;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.utils.Direction;
@@ -56,7 +58,7 @@ public class LabelTooltip implements ITooltip
 
         for (String line : strings)
         {
-            context.font.drawString(line, x, y, 0x000000);
+            context.font.drawString(new MatrixStack(), line, x, y, 0x000000);
             y += context.font.FONT_HEIGHT + 3;
         }
     }

@@ -34,7 +34,7 @@ public class KeyboardHandler
         {
             Minecraft.getInstance().displayGuiScreen(screen);
 
-            if (GuiScreen.isCtrlKeyDown())
+            if (Screen.hasControlDown())
             {
                 screen.panels.setPanel(screen.config);
             }
