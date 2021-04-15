@@ -5,8 +5,7 @@ import mchorse.mclib.client.gui.framework.elements.IFocusedGuiElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiTextField;
-import org.lwjgl.input.Keyboard;
+import net.minecraft.client.util.InputMappings;
 
 public abstract class GuiBaseTextElement extends GuiElement implements IFocusedGuiElement
 {
@@ -43,14 +42,14 @@ public abstract class GuiBaseTextElement extends GuiElement implements IFocusedG
     public void focus(GuiContext context)
     {
         this.field.setFocused(true);
-        Keyboard.enableRepeatEvents(true);
+        InputMappings.enableRepeatEvents(true);
     }
 
     @Override
     public void unfocus(GuiContext context)
     {
         this.field.setFocused(false);
-        Keyboard.enableRepeatEvents(false);
+        InputMappings.enableRepeatEvents(false);
     }
 
     @Override

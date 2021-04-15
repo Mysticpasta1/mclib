@@ -19,6 +19,7 @@ import net.java.games.input.Keyboard;
 import net.java.games.input.Mouse;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.InputMappings;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
@@ -314,7 +315,7 @@ public class GuiTrackpadElement extends GuiBaseTextElement
 
             if (this.area.isInside(context))
             {
-                if (Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL))
+                if (InputMappings.isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL))
                 {
                     this.setValueAndNotify(Math.round(this.value));
 

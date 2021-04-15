@@ -14,10 +14,12 @@ import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHelper;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.fonts.TextInputUtil;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.IWindowEventListener;
 import net.minecraft.client.renderer.MonitorHandler;
 import net.minecraft.client.renderer.ScreenSize;
+import net.minecraft.client.util.InputMappings;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.GuiScreenEvent;
@@ -300,9 +302,9 @@ public class InputRenderer
     {
         boolean inputFocused = GuiBase.getCurrent() == null || GuiBase.getCurrent().activeElement == null;
 
-        if (Keyboard.getEventKeyState() && inputFocused)
+        if (InputMappings.getEventKeyState() && inputFocused)
         {
-            int key = Keyboard.getEventKey() == 0 ? Keyboard.getEventCharacter() + 256 : Keyboard.getEventKey();
+            int key = InputMappings.getEventKey() == 0 ? InputMappings.getEventCharacter() + 256 : InputMappings.getEventKey();
 
             if (key >= 256 || key < 0)
             {
@@ -389,7 +391,7 @@ public class InputRenderer
 
         public boolean expired()
         {
-            if (Keyboard.isKeyDown(this.key))
+            if (InputMappings.isKeyDown(this.key))
             {
                 this.time = System.currentTimeMillis();
             }

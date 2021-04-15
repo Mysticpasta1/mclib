@@ -9,6 +9,7 @@ import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.fonts.TextInputUtil;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.command.arguments.NBTTagArgument;
@@ -204,7 +205,7 @@ public class GuiTransformations extends GuiElement
 
         try
         {
-            CompoundNBT tag = JsonToNBT.getTagFromJson("{Transforms:"+ Screen.getClipboardString()+"}");
+            CompoundNBT tag = JsonToNBT.getTagFromJson("{Transforms:"+ TextInputUtil.getClipboardText(mc)+"}");
             ListNBT list = tag.getList("Transforms", Constants.NBT.TAG_DOUBLE);
 
             if (list.size() >= 9)
@@ -246,7 +247,7 @@ public class GuiTransformations extends GuiElement
         list.add(new NBTTagArgument(this.ry.value));
         list.add(new NBTTagArgument(this.rz.value));
 
-        Screen.setClipboardString(list.toString());
+        TextInputUtil.setClipboardText(mc, list.toString());
     }
 
     public void pasteAll(ListNBT list)

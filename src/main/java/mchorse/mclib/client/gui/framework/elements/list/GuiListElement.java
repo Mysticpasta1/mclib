@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mchorse.mclib.McLib;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
@@ -478,7 +479,7 @@ public abstract class GuiListElement<T> extends GuiElement
 
             if (this.exists(index))
             {
-                if (this.multi && Screen.isShiftKeyDown())
+                if (this.multi && Screen.hasShiftDown())
                 {
                     this.toggleIndex(index);
                 }
@@ -665,7 +666,7 @@ public abstract class GuiListElement<T> extends GuiElement
      */
     protected void drawElementPart(T element, int i, int x, int y, boolean hover, boolean selected)
     {
-        this.font.drawStringWithShadow(this.elementToString(element), x + 4, y + this.scroll.scrollItemSize / 2 - this.font.FONT_HEIGHT / 2, hover ? 16777120 : 0xffffff);
+        this.font.drawStringWithShadow(new MatrixStack(), this.elementToString(element), x + 4, y + this.scroll.scrollItemSize / 2 - this.font.FONT_HEIGHT / 2, hover ? 16777120 : 0xffffff);
     }
 
     /**

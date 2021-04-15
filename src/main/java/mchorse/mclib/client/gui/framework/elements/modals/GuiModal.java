@@ -9,6 +9,8 @@ import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.IReorderingProcessor;
+import net.minecraft.util.text.ITextProperties;
 
 import java.util.function.Supplier;
 
@@ -101,7 +103,7 @@ public abstract class GuiModal extends GuiElement
         this.y = 0;
         int y = this.area.y + 10;
 
-        for (String line : this.font.listFormattedStringToWidth(this.label.get(), this.area.w - 20))
+        for (IReorderingProcessor line : this.font.trimStringToWidth(this.label.get(), this.area.w - 20))
         {
             this.font.drawStringWithShadow(new MatrixStack(), line, this.area.x + 10, y + this.y, 0xffffff);
             this.y += 11;

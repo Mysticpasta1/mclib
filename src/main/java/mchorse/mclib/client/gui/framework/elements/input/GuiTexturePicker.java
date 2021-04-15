@@ -23,6 +23,7 @@ import mchorse.mclib.utils.resources.FilteredResourceLocation;
 import mchorse.mclib.utils.resources.MultiResourceLocation;
 import mchorse.mclib.utils.resources.RLUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.fonts.TextInputUtil;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.CompoundNBT;
@@ -152,7 +153,7 @@ public class GuiTexturePicker extends GuiElement
 
         try
         {
-            CompoundNBT compound = JsonToNBT.getTagFromJson(Screen.getClipboardString());
+            CompoundNBT compound = JsonToNBT.getTagFromJson(TextInputUtil.getClipboardText(mc));
 
             location = RLUtils.create(compound.getTag("RL"));
         }
@@ -168,7 +169,7 @@ public class GuiTexturePicker extends GuiElement
 
         if (location == null)
         {
-            Screen.setClipboardString("");
+            TextInputUtil.setClipboardText(mc, "");
         }
         else
         {
@@ -176,7 +177,7 @@ public class GuiTexturePicker extends GuiElement
 
             tag.setTag("RL", location);
 
-            Screen.setClipboardString(tag.toString());
+            TextInputUtil.setClipboardText(mc, tag.toString());
         }
     }
 
