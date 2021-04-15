@@ -2,12 +2,9 @@ package mchorse.mclib.client.gui.utils;
 
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.utils.Keys;
-import net.java.games.input.AbstractController;
-import net.java.games.input.Component;
-import net.java.games.input.Controller;
 import net.java.games.input.Keyboard;
+import net.minecraft.client.util.InputMappings;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.input.Keyboard;
 
 import java.util.Arrays;
 import java.util.function.Supplier;
@@ -83,7 +80,7 @@ public class Keybind
         return label;
     }
 
-    public boolean check(int keyCode, boolean inside)
+    public boolean check(int keyCode, boolean inside, long key2)
     {
         if (keyCode != this.mainKey)
         {
@@ -94,7 +91,7 @@ public class Keybind
         {
             for (int key : this.heldKeys)
             {
-                if (!this.isKeyDown(key))
+                if (!this.isKeyDown(key2, key))
                 {
                     return false;
                 }
@@ -109,22 +106,22 @@ public class Keybind
         return true;
     }
 
-    protected boolean isKeyDown(int key)
+    protected boolean isKeyDown(long key1, int key)
     {
         if (key == GLFW.GLFW_KEY_LEFT_SHIFT || key == GLFW.GLFW_KEY_RIGHT_SHIFT)
         {
-            return Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT) || Keyboard.isKeyDown(GLFW.GLFW_KEY_RIGHT_SHIFT);
+            return InputMappings.isKeyDown(key1, GLFW.GLFW_KEY_LEFT_SHIFT) || InputMappings.isKeyDown(key1, GLFW.GLFW_KEY_RIGHT_SHIFT);
         }
         else if (key == GLFW.GLFW_KEY_LEFT_CONTROL || key == GLFW.GLFW_KEY_RIGHT_CONTROL)
         {
-            return Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL) || Keyboard.isKeyDown(GLFW.GLFW_KEY_RIGHT_CONTROL);
+            return InputMappings.isKeyDown(key1, GLFW.GLFW_KEY_LEFT_CONTROL) || InputMappings.isKeyDown(key1, GLFW.GLFW_KEY_RIGHT_CONTROL);
         }
         else if (key == GLFW.GLFW_KEY_LEFT_ALT || key == GLFW.GLFW_KEY_RIGHT_ALT)
         {
-            return Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_ALT) || Keyboard.isKeyDown(GLFW.GLFW_KEY_RIGHT_ALT);
+            return InputMappings.isKeyDown(key1, GLFW.GLFW_KEY_LEFT_ALT) || InputMappings.isKeyDown(key1, GLFW.GLFW_KEY_RIGHT_ALT);
         }
 
-        return Keyboard.isKeyDown(key);
+        return InputMappings.isKeyDown(key1, key);
     }
 
     public boolean isActive()

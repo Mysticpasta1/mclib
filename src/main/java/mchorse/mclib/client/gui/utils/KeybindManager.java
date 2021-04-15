@@ -43,11 +43,11 @@ public class KeybindManager
         }
     }
 
-    public boolean check(int keyCode, boolean inside)
+    public boolean check(int keyCode, boolean inside, long key)
     {
         for (Keybind keybind : this.keybinds)
         {
-            if (keybind.isActive() && keybind.check(keyCode, inside) && keybind.callback != null)
+            if (keybind.isActive() && keybind.check(keyCode, inside, key) && keybind.callback != null)
             {
                 keybind.callback.run();
 

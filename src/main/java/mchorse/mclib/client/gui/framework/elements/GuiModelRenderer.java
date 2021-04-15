@@ -10,30 +10,19 @@ import mchorse.mclib.utils.MathUtils;
 import mchorse.mclib.utils.MatrixUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.RenderSystem;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.init.Blocks;
 import net.minecraft.util.math.vector.Matrix3f;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.glu.Project;
 
-import javax.vecmath.Matrix3d;
-import javax.vecmath.Vector3d;
-import javax.vecmath.Vector3f;
 import java.nio.ByteBuffer;
 import java.util.function.Consumer;
 
@@ -135,11 +124,11 @@ public abstract class GuiModelRenderer extends GuiElement
         if (this.area.isInside(context) && (context.mouseButton == 0 || context.mouseButton == 2))
         {
             this.dragging = true;
-            this.position = Screen.isShiftKeyDown() || context.mouseButton == 2;
+            this.position = Screen.hasShiftDown() || context.mouseButton == 2;
             this.lastX = context.mouseX;
             this.lastY = context.mouseY;
 
-            if (Screen.isCtrlKeyDown())
+            if (Screen.hasControlDown())
             {
                 this.tryPicking = true;
                 this.dragging = false;
@@ -249,7 +238,7 @@ public abstract class GuiModelRenderer extends GuiElement
         RenderSystem.loadIdentity();
         RenderSystem.rotatef(this.pitch, 1.0F, 0.0F, 0.0F);
         RenderSystem.rotatef(this.yaw, 0.0F, 1.0F, 0.0F);
-        RenderSystem.translatef(-this.temp.x, -this.temp.y, -this.temp.z);
+        RenderSystem.translatef(-this.temp.getX(), -this.temp.getY(), -this.temp.getZ());
 
         /* Drawing begins */
         this.drawGround();
@@ -269,7 +258,7 @@ public abstract class GuiModelRenderer extends GuiElement
         RenderSystem.activeTexture(OpenGlHelper.defaultTexUnit);
 
         /* Return back to orthographic projection */
-        RenderSystem.viewport(0, 0, this.mc.displayWidth, this.mc.displayHeight);
+        RenderSystem.viewport(0, 0, this.mc.getMainWindow().getWidth(), this.mc.getMainWindow().getHeight());
         RenderSystem.matrixMode(GL11.GL_PROJECTION);
         RenderSystem.loadIdentity();
         RenderSystem.ortho(0.0D, context.screen.width, context.screen.height, 0.0D, 1000.0D, 3000000.0D);
@@ -285,9 +274,9 @@ public abstract class GuiModelRenderer extends GuiElement
         {
             if (this.position)
             {
-                float x = this.pos.x;
-                float y = this.pos.y;
-                float z = this.pos.z;
+                float x = this.pos.getX();
+                float y = this.pos.getY();
+                float z = this.pos.getZ();
 
                 double xx = -(this.lastX - mouseX) / 60F;
                 double yy = -(this.lastY - mouseY) / 60F;
@@ -323,9 +312,12 @@ public abstract class GuiModelRenderer extends GuiElement
         vec.set(0, 0, -this.scale);
         this.rotateVector(vec);
 
-        this.temp.x += vec.x;
-        this.temp.y += vec.y;
-        this.temp.z += vec.z;
+        float x = this.temp.getX();
+        x += vec.x;
+        float y = this.temp.getY();
+        y += vec.y;
+        float z = this.temp.getZ();
+        z += vec.z;
     }
 
     private void rotateVector(Vector3d vec, Matrix3f matrix3f)
@@ -343,11 +335,11 @@ public abstract class GuiModelRenderer extends GuiElement
          * pointing this out (depth buffer)! */
         RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT);
 
-        float rx = (float) Math.ceil(mc.displayWidth / (double) context.screen.width);
-        float ry = (float) Math.ceil(mc.displayHeight / (double) context.screen.height);
+        float rx = (float) Math.ceil(mc.getMainWindow().getWidth() / (double) context.screen.width);
+        float ry = (float) Math.ceil(mc.getMainWindow().getHeight() / (double) context.screen.height);
 
         int vx = (int) (this.area.x * rx);
-        int vy = (int) (this.mc.displayHeight - (this.area.y + this.area.h) * ry);
+        int vy = (int) (this.mc.getMainWindow().getHeight() - (this.area.y + this.area.h) * ry);
         int vw = (int) (this.area.w * rx);
         int vh = (int) (this.area.h * ry);
 
@@ -374,11 +366,11 @@ public abstract class GuiModelRenderer extends GuiElement
             return;
         }
 
-        float rx = (float) Math.ceil(mc.displayWidth / (double) context.screen.width);
-        float ry = (float) Math.ceil(mc.displayHeight / (double) context.screen.height);
+        float rx = (float) Math.ceil(mc.getMainWindow().getWidth() / (double) context.screen.width);
+        float ry = (float) Math.ceil(mc.getMainWindow().getHeight() / (double) context.screen.height);
 
         int x = (int) (context.mouseX * rx);
-        int y = (int) (this.mc.displayHeight - (context.mouseY) * ry);
+        int y = (int) (this.mc.getMainWindow().getHeight() - (context.mouseY) * ry);
 
         GL11.glClearStencil(0);
         GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);

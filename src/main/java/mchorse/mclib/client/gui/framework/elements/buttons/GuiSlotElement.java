@@ -130,7 +130,7 @@ public class GuiSlotElement extends GuiClickElement<GuiSlotElement>
                 Minecraft.getInstance().getTextureManager().bindTexture(HELMET);
             }
 
-            Gui.drawModalRectWithCustomSizedTexture(x, y, 0, 0, 16, 16, 16, 16);
+            GuiDraw.drawModalRectWithCustomSizedTexture(x, y, 0, 0, 16, 16, 16, 16);
         }
         else
         {

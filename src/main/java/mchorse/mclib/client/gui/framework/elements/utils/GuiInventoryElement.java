@@ -1,5 +1,6 @@
 package mchorse.mclib.client.gui.framework.elements.utils;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.mclib.McLib;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
@@ -15,8 +16,10 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -76,7 +79,7 @@ public class GuiInventoryElement extends GuiElement
         {
             if (i == 0)
             {
-                list.set(i, stack.getRarity().rarityColor + list.get(i));
+                list.set(i, stack.getRarity().color + list.get(i));
             }
             else
             {
@@ -86,9 +89,9 @@ public class GuiInventoryElement extends GuiElement
 
         Screen screen = Minecraft.getInstance().currentScreen;
 
-        net.minecraftforge.fml.client.gui.GuiUtils.preItemToolTip(stack);
-        net.minecraftforge.fml.client.gui.GuiUtils.drawHoveringText(list, x, y, screen.width, screen.height, -1, font == null ? providedFont : font);
-        net.minecraftforge.fml.client.gui.GuiUtils.postItemToolTip();
+        GuiUtils.preItemToolTip(stack);
+        GuiUtils.drawHoveringText(new MatrixStack(), list, x, y, screen.width, screen.height, -1, font == null ? providedFont : font);
+        GuiUtils.postItemToolTip();
     }
 
     public GuiInventoryElement(Minecraft mc, Consumer<ItemStack> callback)

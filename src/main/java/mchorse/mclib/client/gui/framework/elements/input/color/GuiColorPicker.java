@@ -421,12 +421,12 @@ public class GuiColorPicker extends GuiElement
 
         if (!this.favorite.colors.isEmpty())
         {
-            this.font.drawString(new MatrixStack(), FAVORITE.get(), this.favorite.area.x, this.favorite.area.y - 10, 0x888888);
+            this.font.drawString(new MatrixStack(), FAVORITE.get().getString(), this.favorite.area.x, this.favorite.area.y - 10, 0x888888);
         }
 
         if (!this.recent.colors.isEmpty())
         {
-            this.font.drawString(new MatrixStack(), RECENT.get(), this.recent.area.x, this.recent.area.y - 10, 0x888888);
+            this.font.drawString(new MatrixStack(), RECENT.get().getString(), this.recent.area.x, this.recent.area.y - 10, 0x888888);
         }
 
         super.draw(context);
