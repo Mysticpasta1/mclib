@@ -18,6 +18,7 @@ import mchorse.mclib.utils.keyframes.Keyframe;
 import mchorse.mclib.utils.keyframes.KeyframeEasing;
 import mchorse.mclib.utils.keyframes.KeyframeInterpolation;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.fonts.TextInputUtil;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.JsonToNBT;
@@ -113,7 +114,7 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
         }
 
         KeyframeInterpolation interp = keyframe.interp;
-        int factor = Screen.isShiftKeyDown() ? -1 : 1;
+        int factor = Screen.hasShiftDown() ? -1 : 1;
         int index = MathUtils.cycler(interp.ordinal() + factor, 0, KeyframeInterpolation.values().length - 1);
 
         this.pickInterpolation(KeyframeInterpolation.values()[index]);
@@ -123,7 +124,7 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
 
     protected void toggleEasing()
     {
-        this.easing.clickItself(GuiBase.getCurrent(), Screen.isShiftKeyDown() ? 1 : 0);
+        this.easing.clickItself(GuiBase.getCurrent(), Screen.hasShiftDown() ? 1 : 0);
     }
 
     public void setConverter(IAxisConverter converter)
@@ -221,7 +222,7 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
     {
         try
         {
-            CompoundNBT tag = JsonToNBT.getTagFromJson(Screen.getClipboardString());
+            CompoundNBT tag = JsonToNBT.getTagFromJson(TextInputUtil.getClipboardText(mc));
             Map<String, List<Keyframe>> temp = new HashMap<String, List<Keyframe>>();
 
             for (String key : tag.keySet())
@@ -286,7 +287,7 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
             }
         }
 
-        Screen.setClipboardString(keyframes.toString());
+        TextInputUtil.setClipboardText(mc, keyframes.toString());
     }
 
     /**
@@ -331,7 +332,7 @@ public abstract class GuiKeyframesEditor<T extends GuiKeyframeElement> extends G
         long firstX = keyframes.get(0).tick;
         List<Keyframe> toSelect = new ArrayList<Keyframe>();
 
-        if (Screen.isCtrlKeyDown())
+        if (Screen.hasControlDown())
         {
             offset = firstX;
         }

@@ -72,7 +72,7 @@ public class GuiPanelBase<T extends GuiElement> extends GuiElement
     {
         GuiIconElement button = new GuiIconElement(this.mc, icon, (b) -> this.setPanel(panel));
 
-        if (tooltip != null && !tooltip.get().isEmpty())
+        if (tooltip != null && !tooltip.get().getString().isEmpty())
         {
             button.tooltip(tooltip, this.direction.opposite());
         }

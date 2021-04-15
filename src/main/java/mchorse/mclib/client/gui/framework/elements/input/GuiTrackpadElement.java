@@ -553,15 +553,15 @@ public class GuiTrackpadElement extends GuiBaseTextElement
     {
         double value = this.normal;
 
-        if (Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT))
+        if (InputMappings.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT))
         {
             value = this.strong;
         }
-        else if (Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL))
+        else if (InputMappings.isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL))
         {
             value = this.increment;
         }
-        else if (Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_ALT))
+        else if (InputMappings.isKeyDown(GLFW.GLFW_KEY_LEFT_ALT))
         {
             value = this.weak;
         }

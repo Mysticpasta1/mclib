@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiElement extends Gui implements IGuiElement
+public class GuiElement implements IGuiElement
 {
     /**
      * Area of this element (i.e. position and size) 

@@ -1,5 +1,7 @@
 package mchorse.mclib.client.gui.utils.keys;
 
+import net.minecraft.util.text.ITextProperties;
+
 public interface IKey
 {
     public static final IKey EMPTY = new StringKey("");
@@ -24,7 +26,7 @@ public interface IKey
         return new CompoundKey(keys);
     }
 
-    public String get();
+    public ITextProperties get();
 
     public void set(String string);
 }

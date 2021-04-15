@@ -2,10 +2,10 @@ package mchorse.mclib.network.mclib.common;
 
 import io.netty.buffer.ByteBuf;
 import mchorse.mclib.config.Config;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import mchorse.mclib.network.IByteBufSerializable;
+import mchorse.mclib.utils.ByteBuffUtil;
 
-public class PacketConfig implements IMessage
+public class PacketConfig implements IByteBufSerializable
 {
     public Config config;
     public boolean overwrite;
@@ -27,7 +27,7 @@ public class PacketConfig implements IMessage
     @Override
     public void fromBytes(ByteBuf buf)
     {
-        this.config = new Config(ByteBufUtils.readUTF8String(buf));
+        this.config = new Config(ByteBuffUtil.readUTF8String(buf));
         this.config.fromBytes(buf);
         this.overwrite = buf.readBoolean();
     }
@@ -35,7 +35,7 @@ public class PacketConfig implements IMessage
     @Override
     public void toBytes(ByteBuf buf)
     {
-        ByteBufUtils.writeUTF8String(buf, this.config.id);
+        ByteBuffUtil.writeUTF8String(buf, this.config.id);
 
         this.config.toBytes(buf);
         buf.writeBoolean(this.overwrite);

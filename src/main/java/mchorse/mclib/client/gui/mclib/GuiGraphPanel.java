@@ -136,7 +136,7 @@ public class GuiGraphPanel extends GuiDashboardPanel<GuiDashboard>
                 }
 
                 GuiDraw.drawRect(this.area.x, y, this.area.ex(), y + 1, 0x44ffffff);
-                this.font.drawString(String.valueOf(min + j * mult), this.area.x + 4, y + 4, 0xffffff);
+                this.font.drawString(new MatrixStack(), String.valueOf(min + j * mult), this.area.x + 4, y + 4, 0xffffff);
             }
         }
 
@@ -192,7 +192,7 @@ public class GuiGraphPanel extends GuiDashboardPanel<GuiDashboard>
 
                 if (!isNaN)
                 {
-                    AbstractGui.fill(, mouseX, Math.min(y1, y2), mouseX + 1, Math.max(y1, y2), 0xff57f52a);
+                    AbstractGui.fill(new MatrixStack(), mouseX, Math.min(y1, y2), mouseX + 1, Math.max(y1, y2), 0xff57f52a);
                 }
 
                 int y3 = y1 < y2 ? y1 : y1 - 12;

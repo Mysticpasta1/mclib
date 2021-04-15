@@ -10,7 +10,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  *
  * @author Ernio (Ernest Sadowski)
  */
-public abstract class AbstractMessageHandler<T extends IMessage> implements IMessageHandler<T, SimpleFormatterImpl>
+public abstract class AbstractMessageHandler<T extends IByteBufSerializable> implements IMessageHandler<T, IByteBufSerializable>
 {
     /**
      * Handle a message received on the client side
@@ -19,7 +19,7 @@ public abstract class AbstractMessageHandler<T extends IMessage> implements IMes
      *         necessary
      */
     @OnlyIn(Dist.CLIENT)
-    public abstract IMessage handleClientMessage(final T message);
+    public abstract IByteBufSerializable handleClientMessage(final T message);
 
     /**
      * Handle a message received on the server side
@@ -27,10 +27,10 @@ public abstract class AbstractMessageHandler<T extends IMessage> implements IMes
      * @return a message to send back to the Client, or null if no reply is
      *         necessary
      */
-    public abstract IMessage handleServerMessage(final ServerPlayerEntity player, final T message);
+    public abstract IByteBufSerializable handleServerMessage(final ServerPlayerEntity player, final T message);
 
     @Override
-    public IMessage onMessage(T message, MessageContext ctx)
+    public IByteBufSerializable onMessage(T message, MessageContext ctx)
     {
         if (ctx.side.isClient())
         {

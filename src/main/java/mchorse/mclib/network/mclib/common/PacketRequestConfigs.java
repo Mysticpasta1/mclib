@@ -1,9 +1,9 @@
 package mchorse.mclib.network.mclib.common;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import mchorse.mclib.network.IByteBufSerializable;
 
-public class PacketRequestConfigs implements IMessage
+public class PacketRequestConfigs implements IByteBufSerializable
 {
     public PacketRequestConfigs()
     {}

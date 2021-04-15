@@ -1,5 +1,6 @@
 package mchorse.mclib.client.gui.framework.elements.input;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.mclib.McLib;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
@@ -155,7 +156,7 @@ public class GuiTexturePicker extends GuiElement
         {
             CompoundNBT compound = JsonToNBT.getTagFromJson(TextInputUtil.getClipboardText(mc));
 
-            location = RLUtils.create(compound.getTag("RL"));
+            location = RLUtils.create((INBTType) compound.getCompound("RL"));
         }
         catch (Exception e)
         {}
@@ -570,7 +571,7 @@ public class GuiTexturePicker extends GuiElement
                 int y = this.text.area.ey();
 
                 GuiDraw.drawRect(x, y, x + w + 4, y + 4 + this.font.FONT_HEIGHT, 0x88000000 + McLib.primaryColor.get());
-                this.font.drawStringWithShadow(this.typed, x + 2, y + 2, 0xffffff);
+                this.font.drawStringWithShadow(new MatrixStack(), this.typed, x + 2, y + 2, 0xffffff);
             }
 
             ResourceLocation loc = this.current;

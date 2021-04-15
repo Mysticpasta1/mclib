@@ -1,12 +1,9 @@
 package mchorse.mclib.network;
 
-import com.ibm.icu.impl.SimpleFormatterImpl;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 import java.util.Objects;
 
@@ -17,12 +14,12 @@ import java.util.Objects;
  *
  * @author Ernio (Ernest Sadowski)
  */
-public abstract class ServerMessageHandler<T extends SimpleFormatterImpl> extends AbstractMessageHandler<T>
+public abstract class ServerMessageHandler<T extends IByteBufSerializable> extends AbstractMessageHandler<T>
 {
     public abstract void run(final ServerPlayerEntity player, final T message);
 
     @Override
-    public SimpleFormatterImpl handleServerMessage(final ServerPlayerEntity player, final T message)
+    public IByteBufSerializable handleServerMessage(final ServerPlayerEntity player, final T message)
     {
         Objects.requireNonNull(player.getServer()).runAsync(new Runnable()
         {
@@ -37,7 +34,7 @@ public abstract class ServerMessageHandler<T extends SimpleFormatterImpl> extend
     }
 
     @Override
-    public final IMessage handleClientMessage(final T message)
+    public final IByteBufSerializable handleClientMessage(final T message)
     {
         return null;
     }

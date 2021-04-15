@@ -292,7 +292,8 @@ public class GuiTransformations extends GuiElement
         x = list.getDouble(offset);
         double y = result.getY();
         y = list.getDouble(offset + 1);
-        result.getZ() = list.getDouble(offset + 2);
+        double z = result.getZ();
+        z = list.getDouble(offset + 2);
 
         return result;
     }

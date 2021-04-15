@@ -1,15 +1,16 @@
 package mchorse.mclib.network;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityTracker;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
+
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  * Network dispatcher
@@ -18,15 +19,15 @@ import net.minecraftforge.fml.relauncher.Side;
  */
 public abstract class AbstractDispatcher
 {
-    private final SimpleNetworkWrapper dispatcher;
+    private final SimpleChannel dispatcher;
     private byte nextPacketID;
 
-    public AbstractDispatcher(String modID)
+    public AbstractDispatcher(ResourceLocation resourceLocation, String networkProtocolVersion, Predicate<String> clientAcceptedVersions, Predicate<String> serverAcceptedVersions)
     {
-        this.dispatcher = NetworkRegistry.INSTANCE.newSimpleChannel(modID);
+        this.dispatcher = NetworkRegistry.newSimpleChannel(resourceLocation, () -> networkProtocolVersion, clientAcceptedVersions, serverAcceptedVersions);
     }
 
-    public SimpleNetworkWrapper get()
+    public SimpleChannel get()
     {
         return this.dispatcher;
     }
@@ -39,20 +40,20 @@ public abstract class AbstractDispatcher
     /**
      * Send message to players who are tracking given entity
      */
-    public void sendToTracked(Entity entity, IMessage message)
+    public void sendToTracked(Entity entity, IByteBufSerializable message)
     {
-        EntityTracker tracker = ((WorldServer) entity.world).getEntityTracker();
+        EntityTracker tracker = ((ServerWorld) entity.world).getEntityTracker();
 
-        for (EntityPlayer player : tracker.getTrackingPlayers(entity))
+        for (PlayerEntity player : tracker.getTrackingPlayers(entity))
         {
-            this.dispatcher.sendTo(message, (EntityPlayerMP) player);
+            this.dispatcher.sendTo(message, (ServerPlayerEntity) player);
         }
     }
 
     /**
      * Send message to given player
      */
-    public void sendTo(IMessage message, EntityPlayerMP player)
+    public void sendTo(IByteBufSerializable message, ServerPlayerEntity player)
     {
         this.dispatcher.sendTo(message, player);
     }
@@ -60,7 +61,7 @@ public abstract class AbstractDispatcher
     /**
      * Send message to the server
      */
-    public void sendToServer(IMessage message)
+    public void sendToServer(IByteBufSerializable message)
     {
         this.dispatcher.sendToServer(message);
     }
@@ -68,7 +69,7 @@ public abstract class AbstractDispatcher
     /**
      * Register given message with given message handler on a given side
      */
-    public <REQ extends IMessage, REPLY extends IMessage> void register(Class<REQ> message, Class<? extends IMessageHandler<REQ, REPLY>> handler, Side side)
+    public <REQ extends IByteBufSerializable, REPLY extends IByteBufSerializable> void register(Class<REQ> message, Class<? extends IMessageHandler<REQ, REPLY>> handler, Dist side)
     {
         this.dispatcher.registerMessage(handler, message, this.nextPacketID++, side);
     }

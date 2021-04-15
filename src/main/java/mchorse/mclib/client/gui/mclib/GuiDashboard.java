@@ -5,24 +5,25 @@ import mchorse.mclib.client.gui.utils.Icons;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import mchorse.mclib.config.gui.GuiConfigPanel;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.text.ITextComponent;
 
 public class GuiDashboard extends GuiAbstractDashboard
 {
     public static GuiDashboard dashboard;
 
-    public static GuiDashboard get()
+    public static GuiDashboard get(ITextComponent component)
     {
         if (dashboard == null)
         {
-            dashboard = new GuiDashboard(Minecraft.getInstance());
+            dashboard = new GuiDashboard(Minecraft.getInstance(), component);
         }
 
         return dashboard;
     }
 
-    public GuiDashboard(Minecraft mc)
+    public GuiDashboard(Minecraft mc, ITextComponent component)
     {
-        super(mc);
+        super(mc, component);
 
         this.panels.registerPanel(new GuiGraphPanel(mc, this), IKey.lang("mclib.gui.graph.tooltip"), Icons.GRAPH);
     }

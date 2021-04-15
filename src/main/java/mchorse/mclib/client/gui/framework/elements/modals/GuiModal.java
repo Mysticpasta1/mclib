@@ -105,7 +105,7 @@ public abstract class GuiModal extends GuiElement
 
         for (IReorderingProcessor line : this.font.trimStringToWidth(this.label.get(), this.area.w - 20))
         {
-            this.font.drawStringWithShadow(new MatrixStack(), line, this.area.x + 10, y + this.y, 0xffffff);
+            this.font.drawStringWithShadow(new MatrixStack(), line.toString(), this.area.x + 10, y + this.y, 0xffffff);
             this.y += 11;
         }
 

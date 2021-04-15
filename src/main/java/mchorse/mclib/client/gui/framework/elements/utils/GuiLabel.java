@@ -3,6 +3,7 @@ package mchorse.mclib.client.gui.framework.elements.utils;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.utils.keys.IKey;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.text.ITextProperties;
 
 import java.util.function.Supplier;
 
@@ -81,11 +82,11 @@ public class GuiLabel extends GuiElement implements ITextColoring
     @Override
     public void draw(GuiContext context)
     {
-        String label = this.label.get();
-        int x = this.area.x(this.anchorX, this.font.getStringWidth(label));
+        ITextProperties label = this.label.get();
+        int x = this.area.x(this.anchorX, this.font.getStringWidth(label.getString()));
         int y = this.area.y(this.anchorY, this.font.FONT_HEIGHT);
 
-        GuiDraw.drawTextBackground(this.font, label, x, y, this.color, this.getColor());
+        GuiDraw.drawTextBackground(this.font, label.getString(), x, y, this.color, this.getColor());
 
         super.draw(context);
     }

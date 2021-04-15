@@ -1,12 +1,15 @@
 package mchorse.mclib.network.mclib.common;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
+import mchorse.mclib.network.IByteBufSerializable;
+import mchorse.mclib.utils.ByteBuffUtil;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.IItemProvider;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
-public class PacketDropItem implements IMessage
+public class PacketDropItem implements IByteBufSerializable
 {
     public ItemStack stack = ItemStack.EMPTY;
 
@@ -21,11 +24,11 @@ public class PacketDropItem implements IMessage
     @Override
     public void fromBytes(ByteBuf buf)
     {
-        NBTTagCompound tagCompound = ByteBufUtils.readTag(buf);
+        CompoundNBT tagCompound = ByteBuffUtil.readNBT(buf);
 
         if (tagCompound != null)
         {
-            this.stack = new ItemStack(tagCompound);
+            this.stack = new ItemStack((IItemProvider) tagCompound);
         }
     }
 
@@ -34,7 +37,7 @@ public class PacketDropItem implements IMessage
     {
         if (!this.stack.isEmpty())
         {
-            ByteBufUtils.writeTag(buf, this.stack.writeToNBT(new NBTTagCompound()));
+            ByteBuffUtil.writeNBT(buf, this.stack.write(new CompoundNBT()));
         }
     }
 }

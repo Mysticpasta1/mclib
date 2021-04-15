@@ -7,16 +7,16 @@ import mchorse.mclib.config.gui.GuiConfigPanel;
 import mchorse.mclib.network.ClientMessageHandler;
 import mchorse.mclib.network.mclib.common.PacketConfig;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ClientHandlerConfig extends ClientMessageHandler<PacketConfig>
 {
     @Override
-    @SideOnly(Side.CLIENT)
-    public void run(EntityPlayerSP player, PacketConfig message)
+    @OnlyIn(Dist.CLIENT)
+    public void run(PlayerEntity player, PacketConfig message)
     {
         if (message.overwrite)
         {
@@ -26,7 +26,7 @@ public class ClientHandlerConfig extends ClientMessageHandler<PacketConfig>
         }
         else
         {
-            GuiScreen screen = Minecraft.getMinecraft().currentScreen;
+            Screen screen = Minecraft.getInstance().currentScreen;
 
             if (screen instanceof GuiDashboard)
             {

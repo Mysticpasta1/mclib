@@ -316,7 +316,7 @@ public class GuiDopeSheet extends GuiKeyframeElement
         int sheetCount = this.sheets.size();
         int h = (this.area.h - TOP_MARGIN) / sheetCount;
         int y = this.area.ey() - h * sheetCount;
-        boolean alt = Screen.isAltKeyDown();
+        boolean alt = Screen.hasAltDown();
         boolean finished = false;
         boolean isMultiSelect = this.isMultipleSelected();
 
@@ -570,7 +570,7 @@ public class GuiDopeSheet extends GuiKeyframeElement
                 x = (int) x - frame.tick;
             }
 
-            this.setTick(x, !Screen.isAltKeyDown());
+            this.setTick(x, !Screen.hasAltDown());
         }
 
         return frame;

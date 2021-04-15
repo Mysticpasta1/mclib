@@ -10,6 +10,7 @@ import net.java.games.input.Keyboard;
 import net.java.games.input.Mouse;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.InputMappings;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -49,7 +50,7 @@ public class GuiBase extends Screen
 
         this.context.keybinds.flex().relative(this.viewport).wh(0.5F, 1F);
 
-        Keyboard.enableRepeatEvents(false);
+        InputMappings.enableRepeatEvents(false);
     }
 
     public void updateScreen()
@@ -175,7 +176,7 @@ public class GuiBase extends Screen
             this.mc.setIngameFocus();
         }
 
-        Keyboard.enableRepeatEvents(false);
+        InputMappings.enableRepeatEvents(false);
     }
 
     public void closeThisScreen()

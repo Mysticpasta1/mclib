@@ -1,8 +1,10 @@
 package mchorse.mclib.client.gui.framework.elements.keyframes;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
+import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
 import mchorse.mclib.client.gui.utils.Area;
 import mchorse.mclib.client.gui.utils.Scale;
 import mchorse.mclib.client.gui.utils.ScrollDirection;
@@ -383,8 +385,8 @@ public class GuiGraphView extends GuiKeyframeElement
     @Override
     protected void zoom(int scroll)
     {
-        boolean x = Screen.isShiftKeyDown();
-        boolean y = Screen.isCtrlKeyDown();
+        boolean x = Screen.hasShiftDown();
+        boolean y = Screen.hasControlDown();
         boolean none = !x && !y;
 
         /* Scaling X */
@@ -467,7 +469,7 @@ public class GuiGraphView extends GuiKeyframeElement
             }
 
             GuiDraw.drawRect(this.area.x, y, this.area.ex(), y + 1, 0x44ffffff);
-            this.font.drawString(String.valueOf(min + j * mult), this.area.x + 4, y + 4, 0xffffff);
+            this.font.drawString(new MatrixStack(), String.valueOf(min + j * mult), this.area.x + 4, y + 4, 0xffffff);
         }
     }
 
@@ -641,8 +643,8 @@ public class GuiGraphView extends GuiKeyframeElement
                 y = this.fromGraphY(yy + dy);
             }
 
-            if (Screen.isShiftKeyDown()) x = this.lastT;
-            if (Screen.isCtrlKeyDown()) y = this.lastV;
+            if (Screen.hasShiftDown()) x = this.lastT;
+            if (Screen.hasControlDown()) y = this.lastV;
 
             if (this.which == Selection.LEFT_HANDLE)
             {
@@ -655,8 +657,8 @@ public class GuiGraphView extends GuiKeyframeElement
                 y = y - frame.value;
             }
 
-            this.setTick(x, !Screen.isAltKeyDown());
-            this.setValue(y, !Screen.isAltKeyDown());
+            this.setTick(x, !Screen.hasAltDown());
+            this.setValue(y, !Screen.hasAltDown());
         }
 
         return frame;

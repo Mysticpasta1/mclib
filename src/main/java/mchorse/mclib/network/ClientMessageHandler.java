@@ -1,11 +1,10 @@
 package mchorse.mclib.network;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * This class passes operation from Netty to Minecraft (Client) Thread. Also
@@ -14,29 +13,22 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  *
  * @author Ernio (Ernest Sadowski)
  */
-public abstract class ClientMessageHandler<T extends IMessage> extends AbstractMessageHandler<T>
+public abstract class ClientMessageHandler<T extends IByteBufSerializable> extends AbstractMessageHandler<T>
 {
-    @SideOnly(Side.CLIENT)
-    public abstract void run(final EntityPlayerSP player, final T message);
+    @OnlyIn(Dist.CLIENT)
+    public abstract void run(final PlayerEntity player, final T message);
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public IMessage handleClientMessage(final T message)
+    @OnlyIn(Dist.CLIENT)
+    public IByteBufSerializable handleClientMessage(final T message)
     {
-        Minecraft.getMinecraft().addScheduledTask(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                ClientMessageHandler.this.run(Minecraft.getMinecraft().player, message);
-            }
-        });
+        Minecraft.getInstance().enqueue(() -> ClientMessageHandler.this.run(Minecraft.getInstance().player, message));
 
         return null;
     }
 
     @Override
-    public final IMessage handleServerMessage(final EntityPlayerMP player, final T message)
+    public final IByteBufSerializable handleServerMessage(final ServerPlayerEntity player, final T message)
     {
         return null;
     }

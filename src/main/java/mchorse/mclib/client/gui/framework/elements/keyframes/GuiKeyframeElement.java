@@ -1,5 +1,7 @@
 package mchorse.mclib.client.gui.framework.elements.keyframes;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.mclib.client.gui.framework.elements.GuiElement;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
@@ -201,10 +203,10 @@ public abstract class GuiKeyframeElement extends GuiElement
         {
             if (context.mouseButton == 0)
             {
-                boolean shift = Screen.isShiftKeyDown();
+                boolean shift = Screen.hasShiftDown();
 
                 /* Duplicate the keyframe */
-                if (Screen.isAltKeyDown() && !shift && this.which == Selection.KEYFRAME)
+                if (Screen.hasAltDown() && !shift && this.which == Selection.KEYFRAME)
                 {
                     this.duplicateKeyframe(context, mouseX, mouseY);
 
@@ -331,7 +333,7 @@ public abstract class GuiKeyframeElement extends GuiElement
         RenderSystem.lineWidth(Minecraft.getInstance().gameSettings.guiScale * 1.5F);
         RenderSystem.disableTexture();
         RenderSystem.enableBlend();
-        RenderSystem.blendFunc(RenderSystem.SourceFactor.SRC_ALPHA, RenderSystem.DestFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
         this.drawGraph(context, context.mouseX, context.mouseY);
 
@@ -382,7 +384,7 @@ public abstract class GuiKeyframeElement extends GuiElement
             String label = this.converter == null ? String.valueOf(j * mult) : this.converter.format(j * mult);
 
             GuiDraw.drawRect(x, this.area.y, x + 1, this.area.ey(), 0x44ffffff);
-            this.font.drawString(label, x + 4, this.area.y + 4, 0xffffff);
+            this.font.drawString(new MatrixStack(), label, x + 4, this.area.y + 4, 0xffffff);
         }
     }
 
