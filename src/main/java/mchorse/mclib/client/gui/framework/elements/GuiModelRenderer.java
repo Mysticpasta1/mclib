@@ -2,6 +2,7 @@ package mchorse.mclib.client.gui.framework.elements;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mchorse.mclib.McLib;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiContext;
 import mchorse.mclib.client.gui.framework.elements.utils.GuiDraw;
@@ -12,10 +13,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.vector.Matrix3f;
@@ -38,7 +39,7 @@ public abstract class GuiModelRenderer extends GuiElement
     private static MatrixStack mat = new MatrixStack();
 
     protected LivingEntity entity;
-    protected BlockState block = Blocks.GRASS.getDefaultState();
+    public BlockState block = Blocks.GRASS.getDefaultState();
 
     protected int timer;
     protected boolean dragging;
@@ -466,13 +467,13 @@ public abstract class GuiModelRenderer extends GuiElement
         {
             BlockRendererDispatcher renderer = this.mc.getBlockRendererDispatcher();
 
-            this.mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+            this.mc.getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
 
             RenderSystem.pushMatrix();
             RenderSystem.translatef(0, -0.5F, 0);
             RenderSystem.rotatef(-90.0F, 0.0F, 1.0F, 0.0F);
             RenderSystem.translatef(-0.5F, -0.5F, 0.5F);
-            renderer.renderBlockBrightness(this.block, 1.0F);
+            renderer.renderBlock(this.block, 1.0F);
             RenderSystem.translatef(0.0F, 0.0F, 1.0F);
             RenderSystem.popMatrix();
         }
